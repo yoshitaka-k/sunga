@@ -4,13 +4,19 @@ version = "0.1.0"
 edition = "2024"
 description = "Image Re Size"
 authors = ["yoshitaka-k"]
-repository = "yoshitaka-k/gacho"
+repository = "yoshitaka-k/resizer"
 license = "Apache-2.0"
 
 [profile.release]
 lto = true
 codegen-units = 1
 strip = true
+
+[build-dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+image = { version = "0.25.10", default-features = false, features = ["png"] }
+winresource = "0.1.31"
+ico = "0.5"
 
 [dependencies]
 egui = "0.36.1"
