@@ -1,7 +1,6 @@
 use crate::{event, ui};
+use crate::ui::main;
 use crate::ui::assets::{self, icon, label, svg};
-
-const PANEL_NAME: &str = "top_menubar";
 
 /// トップメニューバーを描画
 /// * `ui` - UI
@@ -13,7 +12,7 @@ pub(crate) fn view(
     let button_icon_color = assets::button_icon_color(ui);
 
     // トップメニューバーを作成
-    egui::Panel::top(PANEL_NAME).frame(style).show(ui, |ui| {
+    egui::Panel::top(main::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
                 ui.label("Top left");

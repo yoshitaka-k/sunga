@@ -1,5 +1,6 @@
 mod assets;
 mod main;
+mod setting;
 
 pub use main::render::Render;
 
@@ -12,6 +13,29 @@ pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
 pub(crate) const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 6,
 };
+
+/// 設定ウィンドウのタブ
+#[derive(PartialEq)]
+pub enum SettingTab {
+    General,
+    About,
+}
+
+/// 設定ウィンドウを表示するためのデータ
+pub(crate) struct SettingToken {
+    pub open: bool,
+    pub pos: Option<egui::Pos2>,
+    pub tab: SettingTab,
+}
+impl SettingToken {
+    pub fn new() -> Self {
+        Self {
+            open: false,
+            pos: None,
+            tab: SettingTab::General,
+        }
+    }
+}
 
 /// パネルのスタイルを設定
 /// * `ui` - UI

@@ -29,3 +29,25 @@ impl MainBottom {
         "Clear"
     }
 }
+
+/// 設定ウィンドウのラベル
+pub(crate) struct Setting;
+impl Setting {
+    /// 設定ウィンドウのタイトル
+    /// * `return` - 設定ウィンドウのタイトル
+    pub fn heading() -> &'static str {
+        "Settings"
+    }
+
+    /// 一般タブのラベル
+    /// * `return` - 一般タブのラベル
+    pub fn general() -> &'static str {
+        "General"
+    }
+
+    /// アバウトタブのラベル
+    /// * `return` - アバウトタブのラベル
+    pub fn about() -> &'static str {
+        "About"
+    }
+}
