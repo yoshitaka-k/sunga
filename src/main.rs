@@ -17,10 +17,10 @@ const MAX_WINDOW_HEIGHT: f32 = 1024.0;
 fn main() -> eframe::Result {
     env_logger::init();
 
-    /// アプリケーションインスタンスを作成
+    // アプリケーションインスタンスを作成
     let app = App::new();
 
-    /// ウィンドウオプションを作成
+    // ウィンドウオプションを作成
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title(format!("{} v{}", APP_NAME, VERSION))
@@ -31,7 +31,7 @@ fn main() -> eframe::Result {
         ,..Default::default()
     };
 
-    /// アプリケーションを実行
+    // アプリケーションを実行
     eframe::run_native(
         APP_NAME,
         options,
