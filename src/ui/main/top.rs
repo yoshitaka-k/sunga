@@ -38,12 +38,12 @@ pub(crate) fn view(
                 }
 
                 // ファイルダイアログを開くボタン
-                let hover_text = label::MainTop::file_open();
+                let hover_text = label::MainTop::files_open();
                 let file_open_button_image = egui::Image::new(svg::FILE_OPEN).tint(button_icon_color);
                 if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(file_open_button_image))
                     .on_hover_text(hover_text).clicked()
                 {
-                    pending_actions.push(event::EventAction::FileOpen);
+                    pending_actions.push(event::EventAction::FilesOpen);
                 }
             },
         );

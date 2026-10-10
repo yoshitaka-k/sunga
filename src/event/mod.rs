@@ -2,6 +2,6 @@
 pub(crate) enum EventAction {
     SettingOpen,
     FolderOpen,
-    FileOpen,
+    FilesOpen,
     Clear,
 }

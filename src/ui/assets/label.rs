@@ -9,8 +9,8 @@ impl MainTop {
 
     /// ファイルダイアログを開くボタンのラベル
     /// * `return` - ファイルダイアログを開くボタンのラベル
-    pub fn file_open() -> &'static str {
-        "File Open"
+    pub fn files_open() -> &'static str {
+        "Files Open"
     }
 
     /// フォルダダイアログを開くボタンのラベル
