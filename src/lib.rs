@@ -11,4 +11,4 @@ pub use app::App;
 pub use ui::Render;
 
 /// アプリケーション名
-pub const APP_NAME: &str = "Resizer";
+pub const APP_NAME: &str = "ReSizer";
