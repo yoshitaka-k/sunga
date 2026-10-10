@@ -1,0 +1,196 @@
+name: Rust Bundle Build
+
+on:
+  push:
+    # 「v1.0」や「v0.1.0-alpha」なタグがプッシュされたら動く
+    tags:
+      - 'v*'
+  # GitHubの画面から手動でいつでも走らせられるように
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.job.target }}
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          # Windows (Ubuntu上でクロスコンパイル)
+          - { os: ubuntu-latest, target: x86_64-pc-windows-gnu, artifact-name: windows }
+          # Linux (Ubuntu上でネイティブビルド)
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu, artifact-name: linux }
+          # macOS Intel (macos-latest は Apple Silicon なのでクロスコンパイル)
+          - { os: macos-latest,  target: x86_64-apple-darwin, artifact-name: macos-intel }
+          # macOS Apple Silicon (ネイティブビルド)
+          - { os: macos-latest,  target: aarch64-apple-darwin, artifact-name: macos-apple-silicon }
+
+    # avif-native が引き込む dav1d-sys は pkg-config でシステム libdav1d を探す。
+    # クロスビルドではそれが失敗するので、下でターゲット向けに静的ビルドした
+    # libdav1d.a を SYSTEM_DEPS_* で直接渡す。
+    # job-level にするのは cargo-bundle 側で dav1d-sys が再コンパイルされるため。
+    env:
+      SYSTEM_DEPS_DAV1D_NO_PKG_CONFIG: '1'
+      SYSTEM_DEPS_DAV1D_LINK: static
+      SYSTEM_DEPS_DAV1D_LIB: dav1d
+      SYSTEM_DEPS_DAV1D_SEARCH_NATIVE: /tmp/dav1d/lib
+      SYSTEM_DEPS_DAV1D_INCLUDE: /tmp/dav1d/include
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: ${{ matrix.job.target }}
+
+    # 0.12 で Linux / macOS 設定が [package.metadata.bundle.linux] 等へ移った。
+    # 未指定だと次のリリースで Cargo.toml とまたずれるので固定する。
+    - name: Install cargo-bundle
+      run: cargo install cargo-bundle --version 0.12.0 --locked
+
+    - name: Install dav1d build tools
+      run: |
+        case "${{ matrix.job.target }}" in
+          x86_64-pc-windows-gnu)
+            sudo apt-get update
+            sudo apt-get install -y gcc-mingw-w64-x86-64 meson ninja-build nasm
+            ;;
+          x86_64-unknown-linux-gnu)
+            sudo apt-get update
+            sudo apt-get install -y libasound2-dev meson ninja-build nasm
+            ;;
+          x86_64-apple-darwin | aarch64-apple-darwin)
+            brew install meson ninja nasm
+            ;;
+        esac
+
+    # dav1d-sys は dav1d >= 1.3.0 を要求する。apt の版はランナーによって足りないので
+    # 全ターゲットで 1.5.3 をソースから静的ビルドする。配布物に libdav1d を同梱しなくてよい。
+    - name: Build dav1d static
+      run: |
+        git clone --branch 1.5.3 --depth 1 https://github.com/videolan/dav1d.git /tmp/dav1d-src
+
+        case "${{ matrix.job.target }}" in
+          x86_64-pc-windows-gnu)
+            cat > /tmp/mingw-cross.txt <<'EOF'
+        [binaries]
+        c = 'x86_64-w64-mingw32-gcc'
+        ar = 'x86_64-w64-mingw32-ar'
+        strip = 'x86_64-w64-mingw32-strip'
+        windres = 'x86_64-w64-mingw32-windres'
+
+        [built-in options]
+        c_link_args = ['-static-libgcc']
+
+        [host_machine]
+        system = 'windows'
+        cpu_family = 'x86_64'
+        cpu = 'x86_64'
+        endian = 'little'
+        EOF
+            meson setup /tmp/dav1d-build /tmp/dav1d-src \
+              --default-library=static --buildtype=release --libdir=lib \
+              -Denable_tools=false -Denable_tests=false \
+              --prefix=/tmp/dav1d \
+              --cross-file /tmp/mingw-cross.txt
+            ;;
+          x86_64-apple-darwin)
+            cat > /tmp/x86_64-darwin-cross.txt <<'EOF'
+        [binaries]
+        c = 'clang'
+        ar = 'ar'
+        strip = 'strip'
+
+        [built-in options]
+        c_args = ['-arch', 'x86_64']
+        c_link_args = ['-arch', 'x86_64']
+
+        [host_machine]
+        system = 'darwin'
+        cpu_family = 'x86_64'
+        cpu = 'x86_64'
+        endian = 'little'
+        EOF
+            meson setup /tmp/dav1d-build /tmp/dav1d-src \
+              --default-library=static --buildtype=release --libdir=lib \
+              -Denable_tools=false -Denable_tests=false \
+              --prefix=/tmp/dav1d \
+              --cross-file /tmp/x86_64-darwin-cross.txt
+            ;;
+          *)
+            meson setup /tmp/dav1d-build /tmp/dav1d-src \
+              --default-library=static --buildtype=release --libdir=lib \
+              -Denable_tools=false -Denable_tests=false \
+              --prefix=/tmp/dav1d
+            ;;
+        esac
+
+        meson compile -C /tmp/dav1d-build
+        meson install -C /tmp/dav1d-build
+        test -f /tmp/dav1d/lib/libdav1d.a
+        ls -l /tmp/dav1d/lib/libdav1d.a
+
+    - name: Build and bundle
+      run: |
+        case "${{ matrix.job.target }}" in
+          x86_64-pc-windows-gnu)
+            cargo bundle --release --target ${{ matrix.job.target }} -f exe
+            ;;
+          x86_64-unknown-linux-gnu)
+            cargo bundle --release --target ${{ matrix.job.target }} -f deb
+            ;;
+          x86_64-apple-darwin | aarch64-apple-darwin)
+            cargo bundle --release --target ${{ matrix.job.target }} -f osx
+            ;;
+        esac
+
+    # 出来上がったバイナリを整理して成果物としてアップ
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        # 名前を「⚪︎⚪︎⚪︎⚪︎-v1.0.0-windows」な感じに揃える
+        name: ${{ github.event.repository.name }}-${{ github.ref_name }}-${{ matrix.job.artifact-name }}
+        path: |
+          target/${{ matrix.job.target }}/release/bundle/**/*
+        if-no-files-found: error
+
+  # Actions の成果物 zip をそのまま draft Release に載せる
+  release:
+    name: Create draft release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+    - name: Download artifact zips
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        mkdir -p dist
+        gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
+          --jq '.artifacts[] | [.name, .archive_download_url] | @tsv' \
+          | while IFS=$'\t' read -r name url; do
+              echo "Downloading ${name}.zip"
+              curl -sL \
+                -H "Authorization: Bearer ${GH_TOKEN}" \
+                -H "Accept: application/vnd.github+json" \
+                -o "dist/${name}.zip" \
+                "$url"
+              ls -lh "dist/${name}.zip"
+            done
+        test "$(ls dist/*.zip | wc -l)" -ge 1
+        for zip in dist/*.zip; do
+          unzip -t "$zip"
+        done
+
+    - name: Create draft release
+      uses: softprops/action-gh-release@v2
+      with:
+        draft: true
+        generate_release_notes: true
+        files: dist/*.zip
+        fail-on-unmatched-files: true
