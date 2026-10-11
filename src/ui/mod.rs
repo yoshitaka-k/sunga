@@ -14,6 +14,20 @@ pub(crate) const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 6,
 };
 
+/// ファイルダイアログを表示するためのトークン
+pub(crate) struct DialogToken {
+    pub file: bool,
+    pub folder: bool,
+}
+impl DialogToken {
+    pub fn new() -> Self {
+        Self {
+            file: false,
+            folder: false,
+        }
+    }
+}
+
 /// 設定ウィンドウのタブ
 #[derive(PartialEq)]
 pub enum SettingTab {

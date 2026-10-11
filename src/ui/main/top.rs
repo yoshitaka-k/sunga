@@ -25,6 +25,7 @@ pub(crate) fn view(
                     .on_hover_text(hover_text).clicked()
                 {
                     pending_actions.push(event::EventAction::SettingOpen);
+                    ui.ctx().request_repaint();
                 }
 
                 // フォルダダイアログを開くボタン
@@ -34,6 +35,7 @@ pub(crate) fn view(
                     .on_hover_text(hover_text).clicked()
                 {
                     pending_actions.push(event::EventAction::FolderOpen);
+                    ui.ctx().request_repaint();
                 }
 
                 // ファイルダイアログを開くボタン
@@ -43,6 +45,7 @@ pub(crate) fn view(
                     .on_hover_text(hover_text).clicked()
                 {
                     pending_actions.push(event::EventAction::FilesOpen);
+                    ui.ctx().request_repaint();
                 }
             },
         );

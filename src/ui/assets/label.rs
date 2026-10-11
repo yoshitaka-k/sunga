@@ -51,3 +51,13 @@ impl Setting {
         "About"
     }
 }
+
+/// ファイルダイアログのラベル
+pub(crate) struct FileDialog;
+impl FileDialog {
+    /// ファイルダイアログのタイトル
+    /// * `return` - ファイルダイアログのタイトル
+    pub fn image_files() -> &'static str {
+        "Image Files"
+    }
+}

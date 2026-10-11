@@ -12,6 +12,7 @@ pub(crate) struct Image {
     relative_path: PathBuf,
 }
 
+/// public methods
 impl Image {
     /// 新しい Image を作成
     /// * `path` - 画像ファイルのパス

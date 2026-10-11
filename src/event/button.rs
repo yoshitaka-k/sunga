@@ -1,8 +1,34 @@
-use crate::ui;
+use crate::{event, ui};
 
-// 設定ダイアログを開く
+/// ファイルダイアログを開く
 /// * `ui` - UI
-/// * `setting_token` - 設定ダイアログのトークン
+/// * `dialog_token` - ファイルダイアログを開くトークン
+pub(crate) fn files_open(
+    ui: &egui::Ui,
+    dialog_token: &mut ui::DialogToken,
+) {
+    dialog_token.file = true;
+
+    // 再描画を要求
+    ui.ctx().request_repaint();
+}
+
+/// フォルダダイアログを開く
+/// * `ui` - UI
+/// * `dialog_token` - フォルダダイアログを開くトークン
+pub(crate) fn folders_open(
+    ui: &egui::Ui,
+    dialog_token: &mut ui::DialogToken,
+) {
+    dialog_token.folder = true;
+
+    // 再描画を要求
+    ui.ctx().request_repaint();
+}
+
+/// 設定ダイアログを開く
+/// * `ui` - UI
+/// * `setting_token` - 設定ダイアログを開くトークン
 pub(crate) fn setting_open(
     ui: &egui::Ui,
     setting_token: &mut ui::SettingToken,

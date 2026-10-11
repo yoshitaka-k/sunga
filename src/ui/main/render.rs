@@ -1,7 +1,7 @@
 use crate::{app, error, event, file};
-use crate::event::{button, input};
+use crate::event::{button, input, open};
 use crate::ui::{self, setting};
-use crate::ui::assets::{font, svg};
+use crate::ui::assets::{label, font, svg};
 use crate::ui::main::{top, bottom, middle};
 
 /// 描画用のウィジェット
@@ -9,6 +9,7 @@ pub struct Render {
     app: app::App,
     files: file::OpenFiles,
     pending_actions: Vec<event::EventAction>,
+    dialog_token: ui::DialogToken,
     setting_token: ui::SettingToken,
 }
 
@@ -32,6 +33,7 @@ impl Render {
             app,
             files: file::OpenFiles::new(),
             pending_actions: Vec::new(),
+            dialog_token: ui::DialogToken::new(),
             setting_token: ui::SettingToken::new(),
         }
     }
@@ -43,7 +45,11 @@ impl eframe::App for Render {
     /// * `ui` - UI
     /// * `frame` - フレーム
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        // Command + Comma キーが押されたら設定ウィンドウを開く
+        input::command_comma(ui, &mut self.setting_token);
+
         // ファイルを開く
+        self.open_dialog();
         self.drop_files(ui);
 
         // 待機中のアクションを処理
@@ -79,6 +85,23 @@ impl Render {
         );
     }
 
+    /// ファイルダイアログを表示
+    fn open_dialog(&mut self) {
+        // ファイルダイアログを表示
+        if self.dialog_token.file {
+            self.dialog_token.file = false;
+            let result = open::file(label::FileDialog::image_files(), &mut self.files);
+            self.open_result(result);
+        }
+
+        // フォルダダイアログを表示
+        if self.dialog_token.folder {
+            self.dialog_token.folder = false;
+            let result = open::folder(label::FileDialog::image_files(), &mut self.files);
+            self.open_result(result);
+        }
+    }
+
     /// ファイルを開く結果を処理
     /// * `result` - ファイルを開く結果
     fn open_result(&mut self, result: error::Result<bool>) {
@@ -95,6 +118,12 @@ impl Render {
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
             match action {
+                event::EventAction::FilesOpen => {
+                    button::files_open(ui, &mut self.dialog_token);
+                },
+                event::EventAction::FolderOpen => {
+                    button::folders_open(ui, &mut self.dialog_token);
+                },
                 event::EventAction::SettingOpen => {
                     button::setting_open(ui, &mut self.setting_token);
                 },

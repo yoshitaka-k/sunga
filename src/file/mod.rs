@@ -7,10 +7,8 @@ use std::path::Path;
 
 /// 読み込める拡張子
 /// image crate でサポートされている拡張子
-/// これらの拡張子は読み込めるが、全て最適化可能ではない
-/// Unsupported メッセージを出す用にも利用するため
 /// * `return` - 読み込める拡張子
-fn allowed_extensions() -> Vec<&'static str> {
+pub(crate) fn allowed_extensions() -> Vec<&'static str> {
     vec![
         "png", "jpg", "jpeg", "gif", "webp", "bmp",
         "tiff", "tif", "ico",  "avif", "qoi", "exr",
