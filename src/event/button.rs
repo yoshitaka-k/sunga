@@ -1,4 +1,4 @@
-use crate::{event, ui};
+use crate::{file, ui};
 
 /// ファイルダイアログを開く
 /// * `ui` - UI
@@ -21,6 +21,19 @@ pub(crate) fn folders_open(
     dialog_token: &mut ui::DialogToken,
 ) {
     dialog_token.folder = true;
+
+    // 再描画を要求
+    ui.ctx().request_repaint();
+}
+
+/// 開いているファイルをクリア
+/// * `ui` - UI
+/// * `files` - 開いているファイル
+pub(crate) fn clear_files(
+    ui: &egui::Ui,
+    files: &mut file::OpenFiles,
+) {
+    files.clear();
 
     // 再描画を要求
     ui.ctx().request_repaint();

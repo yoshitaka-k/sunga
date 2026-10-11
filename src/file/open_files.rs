@@ -30,6 +30,11 @@ impl OpenFiles {
 
         Ok(true)
     }
+
+    /// ファイルをクリア
+    pub fn clear(&mut self) {
+        self.images.clear();
+    }
 }
 
 /// private methods

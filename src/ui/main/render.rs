@@ -124,10 +124,12 @@ impl Render {
                 event::EventAction::FolderOpen => {
                     button::folders_open(ui, &mut self.dialog_token);
                 },
+                event::EventAction::Clear => {
+                    button::clear_files(ui, &mut self.files);
+                },
                 event::EventAction::SettingOpen => {
                     button::setting_open(ui, &mut self.setting_token);
                 },
-                _ => (),
             }
         }
     }

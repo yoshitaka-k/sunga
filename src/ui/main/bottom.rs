@@ -24,6 +24,7 @@ pub(crate) fn view(
                     .on_hover_text(hover_text).clicked()
                 {
                     pending_actions.push(event::EventAction::Clear);
+                    ui.ctx().request_repaint();
                 }
             }
         );
