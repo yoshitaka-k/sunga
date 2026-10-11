@@ -12,3 +12,9 @@ pub use ui::Render;
 
 /// アプリケーション名
 pub const APP_NAME: &str = "ReSizer";
+
+/// GitHub リポジトリ URL
+pub const GITHUB_URL: &str = "https://github.com/{repository}";
+
+/// アップデート確認リクエスト URL
+pub const REQUEST_URL: &str = "https://api.github.com/repos/{repository}/releases/latest";

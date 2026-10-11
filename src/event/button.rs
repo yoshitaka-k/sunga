@@ -1,4 +1,4 @@
-use crate::{file, ui};
+use crate::{app, file, ui};
 
 /// ファイルダイアログを開く
 /// * `ui` - UI
@@ -56,4 +56,10 @@ pub(crate) fn setting_open(
 
     // 再描画を要求
     ui.ctx().request_repaint();
+}
+
+/// アップデートを確認する
+/// * `update_job` - 更新ジョブ
+pub(crate) fn check_for_update(update_job: &mut app::UpdateJob) {
+    update_job.run();
 }

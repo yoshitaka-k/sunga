@@ -4,6 +4,19 @@ pub(crate) mod icon;
 pub(crate) mod svg;
 pub(crate) mod label;
 
+/// アプリアイコン
+pub(crate) const APP_ICON: egui::ImageSource<'static> = svg::bytes_source(
+    "bytes://assets/icon.png",
+    include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/icon.png")),
+);
+
+/// ラベルと同じ色を返す
+/// * `ui` - UI
+/// * `return` - アイコンの色
+pub(crate) fn icon_color(ui: &egui::Ui) -> egui::Color32 {
+    ui.visuals().text_color()
+}
+
 /// ボタンアイコンの色
 /// * `ui` - UI
 /// * `return` - ボタンアイコンの色

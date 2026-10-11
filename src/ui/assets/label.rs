@@ -52,6 +52,22 @@ impl Setting {
     }
 }
 
+/// アバウトウィンドウのラベル
+pub(crate) struct SettingAbout;
+impl SettingAbout {
+    /// アバウトウィンドウのタイトル
+    /// * `return` - アバウトウィンドウのタイトル
+    pub fn heading() -> &'static str {
+        "About"
+    }
+
+    /// アップデート確認ボタンのラベル
+    /// * `return` - アップデート確認ボタンのラベル
+    pub fn update_check() -> &'static str {
+        "Check for Update"
+    }
+}
+
 /// ファイルダイアログのラベル
 pub(crate) struct FileDialog;
 impl FileDialog {
