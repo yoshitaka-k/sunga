@@ -13,11 +13,12 @@ pub enum ResizerError {
 /// ResizerError を表示
 impl fmt::Display for ResizerError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let code = self.code();
         match self {
-            ResizerError::FileNotFound(e, p, _, _) => write!(fmt, "File does not exist: {}\n\n{}", e, p.display()),
-            ResizerError::FileError(e, p, _, _) => write!(fmt, "File error: {}\n\n{}", e, p.display()),
-            ResizerError::InvalidVersion(_, _) => write!(fmt, "Invalid version"),
-            ResizerError::IndexError(i, _, _) => write!(fmt, "Index error: {}", i),
+            ResizerError::FileNotFound(e, p, _, _) => write!(fmt, "[{}] File does not exist: {}\n\n{}", code, e, p.display()),
+            ResizerError::FileError(e, p, _, _) => write!(fmt, "[{}] File error: {}\n\n{}", code, e, p.display()),
+            ResizerError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
+            ResizerError::IndexError(i, _, _) => write!(fmt, "[{}] Index error: {}", code, i),
         }
     }
 }
