@@ -26,7 +26,7 @@ impl MainBottom {
     /// クリアボタンのラベル
     /// * `return` - クリアボタンのラベル
     pub fn clear() -> &'static str {
-        "Clear"
+        "Cancel and Clear"
     }
 }
 

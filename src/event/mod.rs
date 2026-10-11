@@ -1,4 +1,5 @@
 pub(crate) mod button;
+pub(crate) mod drop;
 pub(crate) mod input;
 
 /// イベントアクション
