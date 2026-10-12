@@ -6,6 +6,7 @@ mod event;
 mod file;
 mod ui;
 mod error;
+mod resize;
 
 pub use app::App;
 pub use ui::Render;

@@ -6,8 +6,10 @@ pub type Result<T> = std::result::Result<T, ResizerError>;
 pub enum ResizerError {
     FileNotFound(String, path::PathBuf, String, u32),
     FileError(String, path::PathBuf, String, u32),
-    InvalidVersion(String, u32),
+    ResizeError(String, path::PathBuf, String, u32),
     IndexError(usize, String, u32),
+    InvalidVersion(String, u32),
+    LockPoisoned(String, u32),
 }
 
 /// ResizerError を表示
@@ -17,8 +19,10 @@ impl fmt::Display for ResizerError {
         match self {
             ResizerError::FileNotFound(e, p, _, _) => write!(fmt, "[{}] File does not exist: {}\n\n{}", code, e, p.display()),
             ResizerError::FileError(e, p, _, _) => write!(fmt, "[{}] File error: {}\n\n{}", code, e, p.display()),
-            ResizerError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
+            ResizerError::ResizeError(e, p, _, _) => write!(fmt, "[{}] Resize error: {}\n\n{}", code, e, p.display()),
             ResizerError::IndexError(i, _, _) => write!(fmt, "[{}] Index error: {}", code, i),
+            ResizerError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
+            ResizerError::LockPoisoned(_, _) => write!(fmt, "[{}] Lock poisoned", code),
         }
     }
 }
@@ -29,8 +33,10 @@ impl error::Error for ResizerError {
         match *self {
             ResizerError::FileNotFound(_, _, _, _) => None,
             ResizerError::FileError(_, _, _, _) => None,
-            ResizerError::InvalidVersion(_, _) => None,
+            ResizerError::ResizeError(_, _, _, _) => None,
             ResizerError::IndexError(_, _, _) => None,
+            ResizerError::InvalidVersion(_, _) => None,
+            ResizerError::LockPoisoned(_, _) => None,
         }
     }
 }
@@ -64,14 +70,16 @@ impl ResizerError {
         let (file, line) = Self::caller();
         Self::FileError(message.into(), path, file, line)
     }
-
-    /// バージョンが不正
-    /// * `return` - バージョンが不正
+    /// リサイズエラー
+    /// * `message` - エラーメッセージ
+    /// * `path` - ファイルパス
+    /// * `return` - リサイズエラー
     #[track_caller]
-    pub fn invalid_version() -> Self {
+    pub fn resize_error(message: impl Into<String>, path: path::PathBuf) -> Self {
         let (file, line) = Self::caller();
-        Self::InvalidVersion(file, line)
+        Self::ResizeError(message.into(), path, file, line)
     }
+
 
     /// インデックスエラー
     /// * `index` - インデックス
@@ -82,14 +90,32 @@ impl ResizerError {
         Self::IndexError(index, file, line)
     }
 
+    /// バージョンが不正
+    /// * `return` - バージョンが不正
+    #[track_caller]
+    pub fn invalid_version() -> Self {
+        let (file, line) = Self::caller();
+        Self::InvalidVersion(file, line)
+    }
+
+    /// ロックポイズンエラー
+    /// * `return` - ロックポイズンエラー
+    #[track_caller]
+    pub fn lock_poisoned() -> Self {
+        let (file, line) = Self::caller();
+        Self::LockPoisoned(file, line)
+    }
+
     /// 発生箇所のファイル名と行番号
     /// * `return` - ファイル名と行番号
     pub fn location(&self) -> (&str, u32) {
         match self {
             Self::FileNotFound(_, _, file, line)
             | Self::FileError(_, _, file, line)
-            | Self::InvalidVersion(file, line)
+            | Self::ResizeError(_, _, file, line)
             | Self::IndexError(_, file, line)
+            | Self::InvalidVersion(file, line)
+            | Self::LockPoisoned(file, line)
             => (file, *line),
         }
     }
@@ -101,8 +127,10 @@ impl ResizerError {
         match self {
             Self::FileNotFound(_, _, f, l) => format!("FNF_{}_{}", Self::file_to_code(f), l),
             Self::FileError(_, _, f, l) => format!("FE_{}_{}", Self::file_to_code(f), l),
-            Self::InvalidVersion(f, l) => format!("IVE_{}_{}", Self::file_to_code(f), l),
+            Self::ResizeError(_, _, f, l) => format!("RE_{}_{}", Self::file_to_code(f), l),
             Self::IndexError(_, f, l) => format!("IE_{}_{}", Self::file_to_code(f), l),
+            Self::InvalidVersion(f, l) => format!("IVE_{}_{}", Self::file_to_code(f), l),
+            Self::LockPoisoned(f, l) => format!("LP_{}_{}", Self::file_to_code(f), l),
         }
     }
 

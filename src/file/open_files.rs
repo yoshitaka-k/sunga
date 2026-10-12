@@ -35,10 +35,57 @@ impl OpenFiles {
     pub fn clear(&mut self) {
         self.images.clear();
     }
+
+    /// ファイルが空かどうか
+    /// * `return` - ファイルが空かどうか
+    pub fn is_empty(&self) -> bool {
+        self.images.is_empty()
+    }
+
+    /// 未処理ファイルがあるかどうか
+    /// * `return` - 未処理ファイルがあるかどうか
+    pub fn has_standby(&self) -> bool {
+        self.images.iter().any(|f| f.is_standby())
+    }
+
+    /// 待機中のファイルを1件取得
+    /// * `return` - 待機中のファイル1件
+    pub fn get_standby_file(&mut self) -> Option<&mut file::Image> {
+        self.images.iter_mut().find(|f| f.is_standby())
+    }
+
+    /// リサイズ結果を反映
+    /// * `result` - リサイズ結果
+    pub fn apply_result(&mut self, result: file::Image) {
+        if let Some(image) = self.images.iter_mut().find(|f| f.id() == result.id()) {
+            // リサイズ済みは反映しない
+            if image.is_resized() { return; }
+
+            // リサイズ結果を反映
+            *image = result;
+        }
+    }
 }
 
 /// private methods
 impl OpenFiles {
+    /// ファイルが待機中かリサイズ中かどうかを確認
+    /// * `path` - ファイルのパス
+    /// * `return` - 待機中かリサイズ中かどうか
+    fn is_standby_or_resizing(&self, path: &Path) -> bool {
+        self.images.iter().any(|f| f.path() == path && f.is_standby_or_resizing())
+    }
+
+    /// ファイルがリサイズ済みかどうかを確認
+    /// * `path` - ファイルのパス
+    /// * `return` - リサイズ済みかどうか
+    fn is_input_path(&self, path: &Path) -> bool {
+        self.images.iter().any(|f| {
+            f.path() == path
+            && f.is_resized()
+        })
+    }
+
     /// ファイルを検索
     /// * `path` - ドロップされたファイルのパス
     /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
@@ -60,7 +107,21 @@ impl OpenFiles {
                     .to_path_buf();
 
                 // 画像ファイル構造体を作成
-                let image = file::Image::new(path.to_path_buf(), relative_path);
+                let mut image = file::Image::new(path.to_path_buf(), relative_path);
+
+                // 同じパスが待機中かリサイズ中の場合はエラーを返す
+                if self.is_standby_or_resizing(&path) {
+                    image.set_status(file::Status::Error("Already in progress".to_string()));
+                    self.images.push(image);
+                    return Ok(false);
+                }
+
+                // 同じパスがリサイズ済みの場合はエラーを返す
+                if self.is_input_path(&path) {
+                    image.set_status(file::Status::Error("Already resized".to_string()));
+                    self.images.push(image);
+                    return Ok(false);
+                }
 
                 // 画像ファイル構造体を追加
                 self.images.push(image);

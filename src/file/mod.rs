@@ -1,7 +1,10 @@
-pub(crate) mod open_files;
-pub(crate) mod image;
+mod open_files;
+mod image;
+mod status;
+
 pub(crate) use open_files::OpenFiles;
 pub(crate) use image::Image;
+pub(crate) use status::Status;
 
 use std::path::Path;
 

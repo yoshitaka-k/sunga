@@ -9,7 +9,13 @@ pub(crate) fn view(
 ) {
     egui::CentralPanel::default().show(ui, |ui| {
         for image in open_files.images().iter() {
-            ui.label(image.path().to_string_lossy());
+
+            let label = format!("{}: {} ({})",
+                image.id(),
+                image.file_name(),
+                image.status().to_string(),
+            );
+            ui.label(label);
         }
     });
 }

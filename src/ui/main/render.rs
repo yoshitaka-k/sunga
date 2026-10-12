@@ -1,4 +1,4 @@
-use crate::{app, error, event, file};
+use crate::{app, error, event, file, resize};
 use crate::event::{button, input, open};
 use crate::ui::{self, setting};
 use crate::ui::assets::{label, font, svg};
@@ -11,6 +11,7 @@ pub struct Render {
     pending_actions: Vec<event::EventAction>,
     dialog_token: ui::DialogToken,
     setting_token: ui::SettingToken,
+    resize_job: resize::ResizeJob,
 }
 
 impl Render {
@@ -35,6 +36,7 @@ impl Render {
             pending_actions: Vec::new(),
             dialog_token: ui::DialogToken::new(),
             setting_token: ui::SettingToken::new(),
+            resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
         }
     }
 }
@@ -48,9 +50,15 @@ impl eframe::App for Render {
         // Command + Comma キーが押されたら設定ウィンドウを開く
         input::command_comma(ui, &mut self.setting_token);
 
+        // リサイズ結果を受信
+        self.resize_result();
+
         // ファイルを開く
         self.open_dialog();
         self.drop_files(ui);
+
+        // リサイズを実行
+        self.resize_run();
 
         // 待機中のアクションを処理
         self.process_pending_actions(ui);
@@ -111,6 +119,18 @@ impl Render {
             Ok(false) => println!("false"),
             Err(e) => println!("error: {}", e),
         }
+    }
+
+    /// リサイズを実行
+    fn resize_run(&mut self) {
+        // リサイズを実行
+        self.resize_job.run(&self.app, &mut self.files);
+    }
+
+    /// リサイズ結果を処理
+    fn resize_result(&mut self) {
+        // リサイズ結果を受信
+        self.resize_job.result(&mut self.files);
     }
 
     /// 待機中のアクションを処理
