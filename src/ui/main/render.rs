@@ -57,11 +57,11 @@ impl eframe::App for Render {
         self.open_dialog();
         self.drop_files(ui);
 
-        // リサイズを実行
-        self.resize_run();
-
         // 待機中のアクションを処理
         self.process_pending_actions(ui);
+
+        // リサイズを実行
+        self.resize_run();
 
         // トップメニューバーを描画
         top::view(ui, &mut self.pending_actions);
@@ -145,7 +145,9 @@ impl Render {
                     button::folders_open(ui, &mut self.dialog_token);
                 },
                 event::EventAction::Clear => {
-                    button::clear_files(ui, &mut self.files);
+                    if let Err(e) = button::cancel_and_clear_files(ui, &mut self.files, &mut self.resize_job) {
+                        println!("error: {}", e);
+                    }
                 },
                 event::EventAction::SettingOpen => {
                     button::setting_open(ui, &mut self.setting_token);

@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::sync::{mpsc, Mutex};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::collections::HashSet;
-use crate::{app, file};
+use crate::{app, error, file};
 
 // リサイズ実行中のカウント数
 const RUNNING_COUNT_NUM: usize = 1;
@@ -101,7 +101,23 @@ impl ResizeJob {
 
             // リサイズ結果を反映
             files.apply_result(result);
+
+            // キャンセルされたファイル ID を削除
+            let _ = self.remove_canceled_id(id);
         }
+    }
+
+    /// リサイズをキャンセル
+    pub fn stop_running(&self) {
+        self.running.store(false, Ordering::Release);
+    }
+
+    /// キャンセルに登録されているファイル ID を追加
+    /// * `id` - ファイル ID
+    /// * `return` - 成功かどうか
+    pub fn add_canceled_id(&self, id: u64) -> error::Result<()> {
+        self.canceled.lock().map_err(|_| error::ResizerError::lock_poisoned())?.insert(id);
+        Ok(())
     }
 }
 
@@ -118,5 +134,15 @@ impl ResizeJob {
     /// * `return` - リサイズ実行中のカウント
     fn clone_running_count(&self) -> Arc<AtomicUsize> {
         Arc::clone(&self.running_count)
+    }
+
+    /// キャンセルされたファイル ID を削除
+    /// * `id` - ファイル ID
+    /// * `return` - キャンセルされたファイル ID を削除
+    fn remove_canceled_id(&self, id: u64) -> error::Result<()> {
+        self.canceled.lock().map_err(|_| {
+            error::ResizerError::lock_poisoned()
+        })?.remove(&id);
+        Ok(())
     }
 }

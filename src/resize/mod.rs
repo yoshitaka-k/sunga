@@ -20,9 +20,12 @@ impl Token {
     /// キャンセルされたかどうか
     /// * `return` - キャンセルされたかどうか
     pub fn is_canceled(&self) -> error::Result<bool> {
-        Ok(!self.running.load(Ordering::Relaxed) || self.canceled.lock().map_err(|_| {
+        let canceled = self.canceled.lock().map_err(|_| {
             error::ResizerError::lock_poisoned()
-        })?.contains(&self.id))
+        })?;
+
+        // リサイズ実行中またはキャンセルされた場合は true
+        Ok(!self.running.load(Ordering::Acquire) || canceled.contains(&self.id))
     }
 }
 
@@ -38,6 +41,9 @@ impl Resizer {
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
         println!("TODO: resizing: {}", path.display());
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
         Ok(file::Status::Resized)
     }

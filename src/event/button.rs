@@ -1,4 +1,4 @@
-use crate::{app, file, ui};
+use crate::{app, error, file, resize, ui};
 
 /// ファイルダイアログを開く
 /// * `ui` - UI
@@ -29,14 +29,40 @@ pub(crate) fn folders_open(
 /// 開いているファイルをクリア
 /// * `ui` - UI
 /// * `files` - 開いているファイル
-pub(crate) fn clear_files(
+pub(crate) fn cancel_and_clear_files(
     ui: &egui::Ui,
     files: &mut file::OpenFiles,
-) {
+    resize_job: &mut resize::ResizeJob,
+) -> error::Result<()> {
+    // リサイズをキャンセル
+    resize_job.stop_running();
+
+    // エラーを格納する変数
+    let mut error = None;
+
+    // キャンセルにファイル ID を追加
+    for file in files.images() {
+        // 待機中またはリサイズ中でない場合はスキップ
+        if !file.is_standby_or_resizing() { continue; }
+
+        if let Err(e) = resize_job.add_canceled_id(*file.id()) {
+            error = Some(e);
+            break;
+        }
+    }
+
+    // 開いているファイルをクリア
     files.clear();
 
     // 再描画を要求
     ui.ctx().request_repaint();
+
+    // エラーがある場合はエラーを返す
+    if let Some(e) = error {
+        return Err(e);
+    }
+
+    Ok(())
 }
 
 /// 設定ダイアログを開く

@@ -101,6 +101,9 @@ impl Image {
             canceled: canceled.clone(),
         };
 
+        // ステータスをリサイズ中に設定
+        self.status = file::Status::Resizing;
+
         match resize::Resizer::resize(&self.path, &token) {
             Ok(status) => {
                 match status {
