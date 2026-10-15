@@ -1,12 +1,14 @@
-use crate::{error, file, ui};
+use crate::{app, error, file, ui};
 use crate::event::{button, drop};
 
 /// ドロップされたファイルを処理する
 /// * `ui` - ウィジェットのUI
+/// * `app` - アプリケーション
 /// * `open_files` - 開いているファイル
 /// * `return` - ドロップがなければ `None`、あれば処理結果
 pub(crate) fn drop(
     ui: &egui::Ui,
+    app: &app::App,
     open_files: &mut file::OpenFiles,
 ) -> Option<error::Result<bool>> {
     ui.ctx().input(|input| {
@@ -14,7 +16,7 @@ pub(crate) fn drop(
         if files.is_empty() {
             None
         } else {
-            Some(drop::files(&files, open_files))
+            Some(drop::files(&files, app, open_files))
         }
     })
 }

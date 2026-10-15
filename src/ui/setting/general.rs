@@ -7,7 +7,7 @@ pub(crate) fn view(
     app: &mut app::App,
 ) {
     // グループヘッダーパネルを表示
-    setting::group_header_panel(ui, "Output path");
+    setting::group_header_panel(ui, "Output");
 
     // フレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
@@ -35,5 +35,19 @@ pub(crate) fn view(
 
         // 出力パスの注意書きを表示
         setting::warning_note(ui, "Leave empty to overwrite the original files.");
+
+        ui.add_space(setting::ADD_SPACING);
+        ui.separator();
+        ui.add_space(setting::ADD_SPACING);
+
+        // 同じパスはスキップ
+        ui.horizontal(|ui| {
+            ui::add_label(ui, "Skip same path:", setting::GENERAL_LABEL_WIDTH);
+            ui.radio_value(app.skip_same_path_mut(), true, "Skip same path");
+            ui.radio_value(app.skip_same_path_mut(), false, "Don't skip same path");
+        });
+
+        // 同じパスはスキップの注意書きを表示
+        setting::warning_note(ui, "Skip if already completed. Retry canceled and errors.");
     });
 }

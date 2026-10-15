@@ -93,7 +93,7 @@ impl Render {
     /// ドロップされたファイルを処理
     /// * `ui` - UI
     fn drop_files(&mut self, ui: &egui::Ui) {
-        let Some(result) = input::drop(ui, &mut self.files) else { return; };
+        let Some(result) = input::drop(ui, &mut self.app, &mut self.files) else { return; };
 
         self.open_result(result);
 
@@ -109,14 +109,14 @@ impl Render {
         // ファイルダイアログを表示
         if self.dialog_token.file {
             self.dialog_token.file = false;
-            let result = open::file(label::FileDialog::image_files(), &mut self.files);
+            let result = open::file(&self.app, label::FileDialog::image_files(), &mut self.files);
             self.open_result(result);
         }
 
         // フォルダダイアログを表示
         if self.dialog_token.folder {
             self.dialog_token.folder = false;
-            let result = open::folder(label::FileDialog::image_files(), &mut self.files);
+            let result = open::folder(&self.app, label::FileDialog::image_files(), &mut self.files);
             self.open_result(result);
         }
     }

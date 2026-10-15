@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use getset::Getters;
 
-use crate::{file, error};
+use crate::{app, file, error};
 
 /// 開いたファイルの管理
 #[derive(Getters)]
@@ -23,10 +23,10 @@ impl OpenFiles {
 
     /// ファイルを追加
     /// * `file` - 追加するファイルのパス
-    pub fn add(&mut self, path: PathBuf) -> error::Result<bool> {
+    pub fn add(&mut self, app: &app::App, path: PathBuf) -> error::Result<bool> {
         let base_dir = path.parent().unwrap_or(&path);
 
-        if !self.find_file(&path, base_dir)? { return Ok(false); }
+        if !self.find_file(app, &path, base_dir)? { return Ok(false); }
 
         Ok(true)
     }
@@ -86,11 +86,24 @@ impl OpenFiles {
         })
     }
 
+    /// ファイルが入力パスと出力パスが同じかどうかを確認
+    /// * `path` - ファイルのパス
+    /// * `output_path` - 出力パス
+    /// * `return` - 入力パスと出力パスが同じかどうか
+    fn is_input_and_output(&self, path: &Path, output_path: &Path) -> bool {
+        self.images.iter().any(|f| {
+            f.path() == path
+                && f.output_path().as_deref() == Some(output_path)
+                && f.is_resized()
+        })
+    }
+
     /// ファイルを検索
     /// * `path` - ドロップされたファイルのパス
     /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
     /// * `return` - ファイルのパス
     fn find_file(&mut self,
+        app: &app::App,
         path: &Path,
         base_dir: &Path
     ) -> error::Result<bool> {
@@ -108,6 +121,15 @@ impl OpenFiles {
 
                 // 画像ファイル構造体を作成
                 let mut image = file::Image::new(path.to_path_buf(), relative_path);
+
+                // 同じパスはスキップ
+                let output_path = image.make_output_path(app);
+                if *app.skip_same_path()
+                  && self.is_input_and_output(&path, &output_path) {
+                    image.set_status(file::Status::Skipped);
+                    self.images.push(image);
+                    return Ok(false);
+                }
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
                 if self.is_standby_or_resizing(&path) {
@@ -135,7 +157,7 @@ impl OpenFiles {
                 })?;
 
                 // ディレクトリ内のファイルを検索
-                self.find_file(&entry.path(), base_dir)?;
+                self.find_file(app, &entry.path(), base_dir)?;
             }
         }
 

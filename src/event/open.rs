@@ -1,11 +1,12 @@
 use std::path::PathBuf;
-use crate::{error, file};
+use crate::{app, error, file};
 
 /// ファイルオープンダイアログを開いて選択結果を追加する
 /// * `label` - ファイルダイアログのラベル
 /// * `open_files` - 開いているファイル
 /// * `return` - ファイルを開けたかどうか
 pub(crate) fn file(
+    app: &app::App,
     label: &str,
     open_files: &mut file::OpenFiles,
 ) -> error::Result<bool> {
@@ -17,7 +18,7 @@ pub(crate) fn file(
         .pick_files();
 
     // ファイルを追加
-    open_paths(paths, open_files)
+    open_paths(app, paths, open_files)
 }
 
 /// フォルダダイアログを開いて選択結果を追加する
@@ -25,6 +26,7 @@ pub(crate) fn file(
 /// * `open_files` - 開いているファイル
 /// * `return` - フォルダを開けたかどうか
 pub(crate) fn folder(
+    app: &app::App,
     label: &str,
     open_files: &mut file::OpenFiles,
 ) -> error::Result<bool> {
@@ -36,7 +38,7 @@ pub(crate) fn folder(
         .pick_folders();
 
     // ファイルを追加
-    open_paths(paths, open_files)
+    open_paths(app, paths, open_files)
 }
 
 /// ファイルを追加
@@ -44,12 +46,13 @@ pub(crate) fn folder(
 /// * `open_files` - 開いているファイル
 /// * `return`: ファイルを開けたかどうか
 fn open_paths(
+    app: &app::App,
     paths: Option<Vec<PathBuf>>,
     open_files: &mut file::OpenFiles,
 ) -> error::Result<bool> {
     if let Some(paths) = paths {
         for path in paths {
-            if !open_files.add(path)? { return Ok(false); }
+            if !open_files.add(app, path)? { return Ok(false); }
         }
     }
 

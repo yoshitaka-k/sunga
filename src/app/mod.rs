@@ -24,12 +24,13 @@ pub struct App {
     /// リサイズできるファイル数
     resize_num: u8,
 
-    /// 同じパスはスキップ
-    skip_same_path: bool,
-
     /// 出力パス
     #[getset(get_mut = "pub")]
     output_path: String,
+
+    /// 同じパスはスキップ
+    #[getset(get_mut = "pub")]
+    skip_same_path: bool,
 }
 
 impl Default for App {
@@ -41,8 +42,8 @@ impl Default for App {
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
             resize_num: DEFAULT_RESIZE_NUM,
-            skip_same_path: true,
             output_path: "".to_string(),
+            skip_same_path: true,
         }
     }
 }

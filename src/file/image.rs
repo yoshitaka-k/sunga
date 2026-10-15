@@ -72,6 +72,16 @@ impl Image {
     pub fn file_name(&self) -> String {
         self.path.file_name().unwrap_or_default().to_string_lossy().to_string()
     }
+    /// 出力先を作成
+    /// * `app` - アプリケーションのインスタンス
+    /// * `return` - 出力先
+    pub fn make_output_path(&self, app: &app::App) -> PathBuf {
+        if app.output_path().is_empty() {
+            self.path.clone()
+        } else {
+            PathBuf::from(app.output_path()).join(self.relative_path.clone())
+        }
+    }
 
     /// ファイルをリサイズ
     /// * `app` - アプリケーションのインスタンス
@@ -148,14 +158,4 @@ impl Image {
 
 /// private methods
 impl Image {
-    /// 出力先を作成
-    /// * `app` - アプリケーションのインスタンス
-    /// * `return` - 出力先
-    fn make_output_path(&self, app: &app::App) -> PathBuf {
-        if app.output_path().is_empty() {
-            self.path.clone()
-        } else {
-            PathBuf::from(app.output_path()).join(self.relative_path.clone())
-        }
-    }
 }

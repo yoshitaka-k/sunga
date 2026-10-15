@@ -19,13 +19,16 @@ const WINDOW_HEIGHT: f32 = 340.0;
 // トップパネルの名前
 const TOP_PANEL_NAME: &str = "tab_panel";
 
+// パネルのスペースの幅
+const ADD_SPACING: f32 = 4.0;
+
 // ヘッダーのスペースの幅
 const HEADER_ICON_SPACING: f32 = 4.0;
 const WARNING_ICON_SPACING: f32 = 3.0;
 const SETTING_INDENT_SPACING: f32 = 10.0;
 
 // ラベルの幅
-pub(crate) const GENERAL_LABEL_WIDTH: f32 = 50.0;
+pub(crate) const GENERAL_LABEL_WIDTH: f32 = 100.0;
 
 /// 設定ウィンドウのヘッダーパネルを表示
 /// * `ui` - UI
