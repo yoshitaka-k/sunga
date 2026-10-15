@@ -1,12 +1,18 @@
 mod job;
+mod option;
 pub(crate) use job::ResizeJob;
+pub(crate) use option::Options;
 
 use std::path::Path;
 use std::sync::Arc;
 use std::sync:: Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::collections::HashSet;
+use image;
 use crate::{error, file, resize};
+
+/// 一時ファイルの拡張子
+const TEMP_EXTENSION: &str = "resizer.temp";
 
 /// リサイズトークン
 #[derive(Clone)]
@@ -29,18 +35,83 @@ impl Token {
     }
 }
 
+struct Size {
+    pub width: u32,
+    pub height: u32,
+}
+
 /// リサイズ
 pub struct Resizer;
 
 /// public methods
 impl Resizer {
     /// リサイズ
-    /// * `files` - リサイズするファイル
+    /// * `path` - リサイズするファイルのパス
+    /// * `output_path` - リサイズしたファイルの出力先のパス
+    /// * `options` - リサイズオプション
+    /// * `token` - リサイズトークン
     /// * `return` - リサイズが成功したかどうか
-    pub fn resize(path: &Path, token: &resize::Token) -> error::Result<file::Status> {
+    pub fn execute(
+        path: &Path,
+        output_path: &Path,
+        options: &resize::Options,
+        token: &resize::Token,
+    ) -> error::Result<file::Status> {
+        // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
-        println!("TODO: resizing: {}", path.display());
+        // 画像を読み込む
+        let image = image::ImageReader::open(&path).map_err(|e| {
+            error::ResizerError::resize_error(e.to_string(), path.to_path_buf())
+        })?.decode().map_err(|e| {
+            error::ResizerError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+
+        // ファイルの拡張子
+        let format = image::ImageFormat::from_path(path).map_err(|e| {
+            error::ResizerError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+        let extension = format.extensions_str()[0].to_string();
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+
+        // リサイズを実行
+        let resized = image.resize(
+            options.width,
+            options.height,
+            image::imageops::FilterType::Lanczos3,
+        );
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+
+        // 出力パスを作成
+        Self::make_output_path(output_path)?;
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+
+        // 一時ファイルのパスでリサイズ後の画像を保存
+        let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
+        resized.save_with_format(&temp_path, format).map_err(|e| {
+            error::ResizerError::resize_error(e.to_string(), output_path.to_path_buf())
+        })?;
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? {
+            // 一時ファイルを削除して終了
+            std::fs::remove_file(&temp_path).map_err(|e| {
+                error::ResizerError::resize_error(e.to_string(), output_path.to_path_buf())
+            })?;
+            return Ok(file::Status::Canceled);
+        }
+
+        // 一時ファイルを元のファイルに上書き
+        Self::replace_file(&temp_path, output_path)?;
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
@@ -51,4 +122,56 @@ impl Resizer {
 
 /// private methods
 impl Resizer {
+    /// 出力パスを作成
+    /// * `output_path` - 出力パス
+    /// * `return` - 出力パス
+    fn make_output_path(output_path: &Path) -> error::Result<()> {
+        // 親ディレクトリを取得
+        let Some(parent) = output_path.parent() else {
+            return Err(error::ResizerError::resize_error("Output path parent not found", output_path.to_path_buf()));
+        };
+
+        // 親ディレクトリを作成
+        std::fs::create_dir_all(parent).map_err(|e| {
+            error::ResizerError::resize_error(e.to_string(), output_path.to_path_buf())
+        })?;
+
+        Ok(())
+    }
+
+    /// 一時ファイルを元のファイルに上書き
+    /// * `from` - 一時ファイルのパス
+    /// * `to` - 元のファイルのパス
+    /// * `return` - 一時ファイルを元のファイルに上書きしたかどうか
+    fn replace_file(from: &Path, to: &Path) -> error::Result<()> {
+        // Windows 以外の環境ではファイルを直接上書き
+        #[cfg(not(target_os = "windows"))]
+        {
+            std::fs::rename(from, to).map_err(|e| {
+                error::ResizerError::resize_error(e.to_string(), to.to_path_buf())
+            })?;
+        }
+
+        // Windows 環境では MoveFileExW を使用してファイルを上書き
+        #[cfg(target_os = "windows")]
+        {
+            use std::os::windows::ffi::OsStrExt;
+            use winapi::um::winbase::{MoveFileExW, MOVEFILE_WRITE_THROUGH, MOVEFILE_REPLACE_EXISTING};
+
+            // Windows の API に渡すためにパスを UTF-16 に変換
+            let from_win: Vec<u16> = from.as_os_str().encode_wide().chain(Some(0)).collect();
+            let to_win: Vec<u16> = to.as_os_str().encode_wide().chain(Some(0)).collect();
+
+            // MoveFileExW を呼び出してファイルを上書き
+            let result = unsafe {
+                MoveFileExW(from_win.as_ptr(), to_win.as_ptr(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)
+            };
+
+            // エラーが発生した場合はエラーを返す
+            if result == 0 {
+                return Err(error::ResizerError::resize_error(std::io::Error::last_os_error().to_string(), to.to_path_buf()));
+            }
+        }
+        Ok(())
+    }
 }

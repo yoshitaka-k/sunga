@@ -25,6 +25,9 @@ pub(crate) struct Image {
     /// リサイズステータス
     #[getset(set = "pub")]
     status: file::Status,
+
+    /// 出力先
+    output_path: Option<PathBuf>,
 }
 
 /// public methods
@@ -42,6 +45,7 @@ impl Image {
             path,
             relative_path,
             status: file::Status::Standby,
+            output_path: None,
         }
     }
 
@@ -87,14 +91,19 @@ impl Image {
 
         // 幅・高さが0の場合は実行しない
         if *app.width() == 0 && *app.height() == 0 {
-            // return Err(error::ResizerError::resize_error("Width or height is 0", self.path.clone()));
+            return Err(error::ResizerError::resize_error("Width or height is 0", self.path.clone()));
         }
 
         // 倍率が0.0の場合は実行しない
         if *app.scale() == 0.0 {
-            // return Err(error::ResizerError::resize_error("Scale is 0.0", self.path.clone()));
+            return Err(error::ResizerError::resize_error("Scale is 0.0", self.path.clone()));
         }
 
+        // 出力先
+        let output_path = self.make_output_path(app);
+        self.output_path = Some(output_path.clone());
+
+        // リサイズトークン
         let token = resize::Token {
             id: self.id,
             running: running.clone(),
@@ -104,7 +113,14 @@ impl Image {
         // ステータスをリサイズ中に設定
         self.status = file::Status::Resizing;
 
-        match resize::Resizer::resize(&self.path, &token) {
+        // リサイズオプション
+        let options = resize::Options {
+            width: *app.width(),
+            height: *app.height(),
+            scale: *app.scale(),
+        };
+
+        match resize::Resizer::execute(&self.path, &output_path, &options, &token) {
             Ok(status) => {
                 match status {
                     file::Status::Resized => {
@@ -126,6 +142,20 @@ impl Image {
                 self.status = file::Status::Error(e.to_string());
                 return Err(error::ResizerError::resize_error(e.to_string(), self.path.clone()));
             }
+        }
+    }
+}
+
+/// private methods
+impl Image {
+    /// 出力先を作成
+    /// * `app` - アプリケーションのインスタンス
+    /// * `return` - 出力先
+    fn make_output_path(&self, app: &app::App) -> PathBuf {
+        if app.output_path().is_empty() {
+            self.path.clone()
+        } else {
+            PathBuf::from(app.output_path()).join(self.relative_path.clone())
         }
     }
 }

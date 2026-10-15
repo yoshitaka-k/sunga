@@ -4,8 +4,8 @@ pub(crate) use update::{UpdateJob, UpdatedToken};
 use getset::Getters;
 use serde::{Deserialize, Serialize};
 
-const DEFAULT_WIDTH: u32 = 0;
-const DEFAULT_HEIGHT: u32 = 0;
+const DEFAULT_WIDTH: u32 = 2560;
+const DEFAULT_HEIGHT: u32 = 1440;
 const DEFAULT_SCALE: f32 = 1.0;
 const DEFAULT_RESIZE_NUM: u8 = 4;
 
@@ -23,6 +23,12 @@ pub struct App {
 
     /// リサイズできるファイル数
     resize_num: u8,
+
+    /// 同じパスはスキップ
+    skip_same_path: bool,
+
+    /// 出力パス
+    output_path: String,
 }
 
 impl Default for App {
@@ -34,6 +40,8 @@ impl Default for App {
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
             resize_num: DEFAULT_RESIZE_NUM,
+            skip_same_path: true,
+            output_path: "".to_string(),
         }
     }
 }
