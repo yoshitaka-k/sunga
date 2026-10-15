@@ -30,6 +30,11 @@ impl Render {
             style.interaction.selectable_labels = false;
         });
 
+        // 前回保存した App があれば復元（なければ引数の app を使う）
+        let app = cc.storage
+            .and_then(|storage| eframe::get_value(storage, eframe::APP_KEY))
+            .unwrap_or(app);
+
         Self {
             app,
             files: file::OpenFiles::new(),
@@ -43,6 +48,12 @@ impl Render {
 
 /// eframe::App の実装
 impl eframe::App for Render {
+    /// 終了前に App の状態を保存
+    /// * `storage` - ストレージ
+    fn save(&mut self, storage: &mut dyn eframe::Storage) {
+        eframe::set_value(storage, eframe::APP_KEY, &self.app);
+    }
+
     /// 描画
     /// * `ui` - UI
     /// * `frame` - フレーム
@@ -72,7 +83,7 @@ impl eframe::App for Render {
 
         // 設定ウィンドウを描画している場合は描画しない
         if self.setting_token.open {
-            setting::view(ui, &mut self.setting_token);
+            setting::view(ui, &mut self.app, &mut self.setting_token);
         }
     }
 }
@@ -115,9 +126,9 @@ impl Render {
     fn open_result(&mut self, result: error::Result<bool>) {
         // ファイルを開く結果を処理
         match result {
-            Ok(true) =>  println!("success"),
-            Ok(false) => println!("false"),
-            Err(e) => println!("error: {}", e),
+            Ok(true) =>  println!("open success"),
+            Ok(false) => println!("open failed"),
+            Err(e) => println!("open error: {}", e),
         }
     }
 

@@ -7,6 +7,7 @@ use crate::ui::{self, setting};
 /// * `ctx` - コンテキスト
 pub(crate) fn view(
     ctx: &egui::Context,
+    app: &mut app::App,
     setting_token: &mut ui::SettingToken,
 ) {
     let window_id = egui::ViewportId::from_hash_of(setting::SETTING_WINDOW_ID);
@@ -50,7 +51,7 @@ pub(crate) fn view(
         // 設定ウィンドウの中央パネルを描画
         egui::CentralPanel::default().show(ui, |ui| {
             match setting_token.tab {
-                ui::SettingTab::General => setting::general::view(ui),
+                ui::SettingTab::General => setting::general::view(ui, app),
                 ui::SettingTab::About => setting::about::view(ui, &mut update_job),
             }
         });

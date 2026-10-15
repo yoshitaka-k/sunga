@@ -51,6 +51,52 @@ impl SettingToken {
     }
 }
 
+/// アイコンを追加
+/// * `ui` - UI
+/// * `icon` - アイコンのパス
+/// * `size` - アイコンのサイズ
+/// * `color` - アイコンの色
+/// * `return` - アイコンのUI
+pub(crate) fn add_icon(
+    ui: &mut egui::Ui,
+    icon: egui::ImageSource<'static>,
+    size: f32,
+    color: egui::Color32,
+) -> egui::Response {
+    ui.add(
+        egui::Image::new(icon)
+            .max_height(size)
+            .tint(color)
+    )
+}
+
+/// ラベルの幅を取得
+/// * `ui` - UI
+/// * `label` - ラベルのテキスト
+/// * `width` - ラベルの幅
+/// * `return` - ラベルのレスポンス
+pub(crate) fn add_label(
+    ui: &mut egui::Ui,
+    label: &str,
+    width: f32
+) -> egui::Response {
+    ui.allocate_ui_with_layout(
+        egui::vec2(width, ui.spacing().interact_size.y),
+        egui::Layout::right_to_left(egui::Align::Center),
+        |ui| {
+            ui.set_min_width(width);
+            ui.label(label)
+        }
+    ).inner
+}
+
+/// ラベルと同じ色を返す
+/// * `ui` - UI
+/// * `return` - アイコンの色
+pub(crate) fn icon_color(ui: &egui::Ui) -> egui::Color32 {
+    ui.visuals().text_color()
+}
+
 /// パネルのスタイルを設定
 /// * `ui` - UI
 /// * `inner_margin` - パネルの内側のマージン

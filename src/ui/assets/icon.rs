@@ -5,6 +5,8 @@ pub(crate) const APP_ICON_SIZE: f32 = 64.0;
 /// 設定アイコンのサイズ
 /// * `SETTINGS_ICON_SIZE` - 設定アイコンのサイズ
 pub(crate) const SETTINGS_ICON_SIZE: f32 = 14.0;
+pub(crate) const SETTINGS_TOP_ICON_SIZE: f32 = 16.0;
+pub(crate) const WARNING_ICON_SIZE: f32 = 14.0;
 
 /// ボタンアイコンのサイズ
 /// * `ICON_BUTTON_SIZE` - ボタンアイコンのサイズ

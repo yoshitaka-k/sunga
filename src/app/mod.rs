@@ -1,7 +1,7 @@
 mod update;
 pub(crate) use update::{UpdateJob, UpdatedToken};
 
-use getset::Getters;
+use getset::{Getters, MutGetters};
 use serde::{Deserialize, Serialize};
 
 const DEFAULT_WIDTH: u32 = 2560;
@@ -10,7 +10,7 @@ const DEFAULT_SCALE: f32 = 1.0;
 const DEFAULT_RESIZE_NUM: u8 = 4;
 
 /// 状態管理アプリケーション
-#[derive(Clone, Getters, Deserialize, Serialize)]
+#[derive(Clone, Getters, MutGetters, Deserialize, Serialize)]
 #[serde(default)]
 #[getset(get = "pub")]
 pub struct App {
@@ -28,6 +28,7 @@ pub struct App {
     skip_same_path: bool,
 
     /// 出力パス
+    #[getset(get_mut = "pub")]
     output_path: String,
 }
 
