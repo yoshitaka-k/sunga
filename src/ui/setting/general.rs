@@ -1,5 +1,6 @@
 use crate::app;
 use crate::ui::{self, setting};
+use crate::ui::assets::label;
 
 /// 設定の一般設定を表示する
 pub(crate) fn view(
@@ -7,14 +8,14 @@ pub(crate) fn view(
     app: &mut app::App,
 ) {
     // グループヘッダーパネルを表示
-    setting::group_header_panel(ui, "Output");
+    setting::group_header_panel(ui, label::SettingGeneral::header_output());
 
     // フレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, "Path:", setting::GENERAL_LABEL_WIDTH);
+            ui::add_label(ui, label::SettingGeneral::path(), setting::GENERAL_LABEL_WIDTH);
             ui.add(
                 egui::TextEdit::singleline(app.output_path_mut())
                     .desired_width(ui.available_width())
@@ -23,18 +24,18 @@ pub(crate) fn view(
         });
         ui.horizontal(|ui| {
             ui.add_space(setting::GENERAL_LABEL_WIDTH + ui.spacing().item_spacing.x);
-            if ui.button("Browse").clicked() {
+            if ui.button(label::SettingGeneral::browse()).clicked() {
                 if let Some(path) = rfd::FileDialog::new().pick_folder() {
                     *app.output_path_mut() = path.to_string_lossy().into_owned();
                 }
             }
-            if ui.button("Clear").clicked() {
+            if ui.button(label::SettingGeneral::clear()).clicked() {
                 app.output_path_mut().clear();
             }
         });
 
         // 出力パスの注意書きを表示
-        setting::warning_note(ui, "Leave empty to overwrite the original files.");
+        setting::warning_note(ui, label::SettingGeneral::output_warning_note());
 
         ui.add_space(setting::ADD_SPACING);
         ui.separator();
@@ -42,12 +43,12 @@ pub(crate) fn view(
 
         // 同じパスはスキップ
         ui.horizontal(|ui| {
-            ui::add_label(ui, "Skip same path:", setting::GENERAL_LABEL_WIDTH);
-            ui.radio_value(app.skip_same_path_mut(), true, "Skip same path");
-            ui.radio_value(app.skip_same_path_mut(), false, "Don't skip same path");
+            ui::add_label(ui, label::SettingGeneral::skip_same_path(), setting::GENERAL_LABEL_WIDTH);
+            ui.radio_value(app.skip_same_path_mut(), true, label::SettingGeneral::skip_same_path_option());
+            ui.radio_value(app.skip_same_path_mut(), false, label::SettingGeneral::dont_skip_same_path_option());
         });
 
         // 同じパスはスキップの注意書きを表示
-        setting::warning_note(ui, "Skip if already completed. Retry canceled and errors.");
+        setting::warning_note(ui, label::SettingGeneral::skip_same_path_warning_note());
     });
 }
