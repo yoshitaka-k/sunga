@@ -1,0 +1,38 @@
+{
+  "code": "ja",
+  "name": "日本語",
+  "labels": {
+    "main_top": {
+      "settings": "設定",
+      "files_open": "ファイルを開く",
+      "folder_open": "フォルダを開く"
+    },
+    "main_bottom": {
+      "clear": "キャンセルしてクリア"
+    },
+    "setting": {
+      "heading": "設定",
+      "general": "一般",
+      "resize": "リサイズ",
+      "about": "About"
+    },
+    "setting_general": {
+      "header_output": "出力",
+      "path": "パス",
+      "browse": "参照",
+      "clear": "クリア",
+      "output_warning_note": "空欄のままだと、元のファイルを上書きします。",
+      "skip_same_path": "同じパス:",
+      "skip_same_path_option": "スキップする",
+      "dont_skip_same_path_option": "スキップしない",
+      "skip_same_path_warning_note": "完了済みはスキップ。キャンセルとエラーはやり直します。"
+    },
+    "setting_about": {
+      "heading": "About",
+      "update_check": "アップデートを確認"
+    },
+    "file_dialog": {
+      "image_files": "画像ファイル"
+    }
+  }
+}

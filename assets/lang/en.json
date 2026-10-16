@@ -1,0 +1,38 @@
+{
+  "code": "en",
+  "name": "English",
+  "labels": {
+    "main_top": {
+      "settings": "Settings",
+      "files_open": "Files Open",
+      "folder_open": "Folder Open"
+    },
+    "main_bottom": {
+      "clear": "Cancel and Clear"
+    },
+    "setting": {
+      "heading": "Settings",
+      "general": "General",
+      "resize": "Resize",
+      "about": "About"
+    },
+    "setting_general": {
+      "header_output": "Output",
+      "path": "Path",
+      "browse": "Browse",
+      "clear": "Clear",
+      "output_warning_note": "Leave empty to overwrite the original files.",
+      "skip_same_path": "Skip same path:",
+      "skip_same_path_option": "Skip same path",
+      "dont_skip_same_path_option": "Don't skip same path",
+      "skip_same_path_warning_note": "Skip if already completed. Retry canceled and errors."
+    },
+    "setting_about": {
+      "heading": "About",
+      "update_check": "Check for Update"
+    },
+    "file_dialog": {
+      "image_files": "Image Files"
+    }
+  }
+}
