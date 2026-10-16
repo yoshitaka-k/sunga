@@ -8,7 +8,7 @@ use crate::ui::assets::{self, label, svg, icon};
 /// * `update_job` - アップデートジョブ
 pub(crate) fn view(ui: &mut egui::Ui, update_job: &mut UpdateJob) {
     // ヘッダーパネルを表示
-    setting::header_panel(ui, svg::INFO, label::SettingAbout::heading(), Some(update_job));
+    setting::header_panel(ui, svg::INFO, label::current().setting_about.heading, Some(update_job));
 
     ui.separator();
 

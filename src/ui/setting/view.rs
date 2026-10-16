@@ -14,7 +14,7 @@ pub(crate) fn view(
 
     // 設定ウィンドウのオプションを設定
     let mut options = egui::ViewportBuilder::default()
-        .with_title(label::Setting::heading())
+        .with_title(label::current().setting.heading)
         .with_inner_size([setting::WINDOW_WIDTH, setting::WINDOW_HEIGHT])
         .with_maximize_button(false)
         .with_resizable(false);

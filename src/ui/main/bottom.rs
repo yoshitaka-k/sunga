@@ -18,7 +18,7 @@ pub(crate) fn view(
                 ui.label("Top left");
             },
             |ui| {
-                let hover_text = label::MainBottom::clear();
+                let hover_text = label::current().main_bottom.clear;
                 let clear_button_image = egui::Image::new(svg::CLEAR_ALL).tint(button_icon_color);
                 if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(clear_button_image))
                     .on_hover_text(hover_text).clicked()

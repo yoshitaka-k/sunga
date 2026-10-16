@@ -109,14 +109,14 @@ impl Render {
         // ファイルダイアログを表示
         if self.dialog_token.file {
             self.dialog_token.file = false;
-            let result = open::file(&self.app, label::FileDialog::image_files(), &mut self.files);
+            let result = open::file(&self.app, label::current().file_dialog.image_files, &mut self.files);
             self.open_result(result);
         }
 
         // フォルダダイアログを表示
         if self.dialog_token.folder {
             self.dialog_token.folder = false;
-            let result = open::folder(&self.app, label::FileDialog::image_files(), &mut self.files);
+            let result = open::folder(&self.app, label::current().file_dialog.image_files, &mut self.files);
             self.open_result(result);
         }
     }

@@ -14,8 +14,8 @@ pub(crate) fn view(
         ui.horizontal(|ui| {
             ui::add_icon(ui, svg::SETTINGS, icon::SETTINGS_TOP_ICON_SIZE, color);
 
-            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::General, label::Setting::general());
-            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::About, label::Setting::about());
+            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::General, label::current().setting.general);
+            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::About, label::current().setting.about);
         });
     });
 }
