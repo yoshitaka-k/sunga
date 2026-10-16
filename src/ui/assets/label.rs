@@ -1,4 +1,8 @@
-include!(concat!(env!("OUT_DIR"), "/lang_generated.rs"));
+mod generated {
+    include!(concat!(env!("OUT_DIR"), "/lang_generated.rs"));
+}
+
+pub(crate) use generated::*;
 
 /// 現在の言語を返す
 /// * `return` - 現在の言語

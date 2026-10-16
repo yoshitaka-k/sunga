@@ -15,7 +15,7 @@ pub(crate) fn view(
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, label::current().setting_general.path, setting::GENERAL_LABEL_WIDTH);
+            ui::add_label(ui, label::current().setting_general.path, setting::GENERAL_PATH_LABEL_WIDTH);
             ui.add(
                 egui::TextEdit::singleline(app.output_path_mut())
                     .desired_width(ui.available_width())
@@ -23,7 +23,7 @@ pub(crate) fn view(
             );
         });
         ui.horizontal(|ui| {
-            ui.add_space(setting::GENERAL_LABEL_WIDTH + ui.spacing().item_spacing.x);
+            ui.add_space(setting::GENERAL_PATH_LABEL_WIDTH + ui.spacing().item_spacing.x);
             if ui.button(label::current().setting_general.browse).clicked() {
                 if let Some(path) = rfd::FileDialog::new().pick_folder() {
                     *app.output_path_mut() = path.to_string_lossy().into_owned();

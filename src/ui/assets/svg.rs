@@ -2,7 +2,7 @@ mod generated {
     include!(concat!(env!("OUT_DIR"), "/svg_generated.rs"));
 }
 
-pub use generated::*;
+pub(crate) use generated::*;
 
 /// 埋め込み画像を egui の ImageSource にする
 /// * `uri` - 画像の URI

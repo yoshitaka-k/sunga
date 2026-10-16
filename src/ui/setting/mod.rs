@@ -14,7 +14,7 @@ const SETTING_WINDOW_ID: &str = "setting_window";
 
 // ウィンドウのサイズ
 const WINDOW_WIDTH: f32 = 480.0;
-const WINDOW_HEIGHT: f32 = 340.0;
+const WINDOW_HEIGHT: f32 = 260.0;
 
 // トップパネルの名前
 const TOP_PANEL_NAME: &str = "tab_panel";
@@ -28,7 +28,8 @@ const WARNING_ICON_SPACING: f32 = 3.0;
 const SETTING_INDENT_SPACING: f32 = 10.0;
 
 // ラベルの幅
-pub(crate) const GENERAL_LABEL_WIDTH: f32 = 100.0;
+const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
+const GENERAL_LABEL_WIDTH: f32 = 94.0;
 
 /// 設定ウィンドウのヘッダーパネルを表示
 /// * `ui` - UI
