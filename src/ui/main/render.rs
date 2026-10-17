@@ -78,7 +78,7 @@ impl eframe::App for Render {
         let row_height = self.row_height(ui);
 
         // トップメニューバーを描画
-        top::view(ui, &mut self.pending_actions);
+        top::view(ui, &self.app, &mut self.pending_actions);
         // 下部メニューバーを描画
         bottom::view(ui, &mut self.pending_actions);
         // 中央パネルを描画

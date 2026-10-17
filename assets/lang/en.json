@@ -3,6 +3,9 @@
   "name": "English",
   "labels": {
     "main_top": {
+      "header_resize": "Resize",
+      "header_scale": "Scale",
+      "header_sized": "Sized",
       "settings": "Settings",
       "files_open": "Files Open",
       "folder_open": "Folder Open"

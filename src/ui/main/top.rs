@@ -1,4 +1,4 @@
-use crate::{event, ui};
+use crate::{app, event, ui};
 use crate::ui::main;
 use crate::ui::assets::{self, icon, label, svg};
 
@@ -6,6 +6,7 @@ use crate::ui::assets::{self, icon, label, svg};
 /// * `ui` - UI
 pub(crate) fn view(
     ui: &mut egui::Ui,
+    app: &app::App,
     pending_actions: &mut Vec<event::EventAction>,
 ) {
     let style = ui::panel_style(ui, ui::TOP_PANEL_INNER_MARGIN);
@@ -15,7 +16,14 @@ pub(crate) fn view(
     egui::Panel::top(main::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
-                ui.label("Top left");
+                ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, assets::icon_color(ui)));
+                ui.label(format!("{}: ", label::current().main_top.header_resize));
+
+                if *app.is_scale() {
+                    ui.label(format!("{}: {}% ", label::current().main_top.header_scale, (app.scale() * 100.0).round()));
+                } else {
+                    ui.label(format!("{}: {}x{} pixels", label::current().main_top.header_sized, app.width(), app.height()));
+                }
             },
             |ui| {
                 // 設定ボタン

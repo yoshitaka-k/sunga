@@ -3,6 +3,9 @@
   "name": "日本語",
   "labels": {
     "main_top": {
+      "header_resize": "リサイズ",
+      "header_scale": "倍率",
+      "header_sized": "サイズ",
       "settings": "設定",
       "files_open": "ファイルを開く",
       "folder_open": "フォルダを開く"
