@@ -5,5 +5,6 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/yoshitaka-k/sunga)
 ![Lines of code](https://www.aschey.tech/tokei/github/yoshitaka-k/sunga)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/yoshitaka-k/sunga)
+[![License](https://img.shields.io/github/license/yoshitaka-k/sunga)](https://github.com/yoshitaka-k/sunga/blob/main/LICENSE)
 
 Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（寸画）でも作ってみようと思って作成なぅ
