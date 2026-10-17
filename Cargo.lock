@@ -3575,25 +3575,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19b30a45b0cd0bcca8037f3d0dc3421eaf95327a17cad11964fb8179b4fc4832"
 
 [[package]]
-name = "resizer"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui",
- "egui_extras",
- "ehttp",
- "env_logger",
- "getset",
- "ico",
- "image",
- "log",
- "rfd",
- "serde",
- "serde_json",
- "winresource",
-]
-
-[[package]]
 name = "resvg"
 version = "0.45.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4077,6 +4058,25 @@ name = "subtle"
 version = "2.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
+
+[[package]]
+name = "sunga"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "egui",
+ "egui_extras",
+ "ehttp",
+ "env_logger",
+ "getset",
+ "ico",
+ "image",
+ "log",
+ "rfd",
+ "serde",
+ "serde_json",
+ "winresource",
+]
 
 [[package]]
 name = "svgtypes"

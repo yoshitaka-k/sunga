@@ -12,7 +12,7 @@ use image::{self, GenericImageView};
 use crate::{error, file, resize};
 
 /// 一時ファイルの拡張子
-const TEMP_EXTENSION: &str = "resizer.temp";
+const TEMP_EXTENSION: &str = "sunga.temp";
 
 /// リサイズトークン
 #[derive(Clone)]
@@ -27,7 +27,7 @@ impl Token {
     /// * `return` - キャンセルされたかどうか
     pub fn is_canceled(&self) -> error::Result<bool> {
         let canceled = self.canceled.lock().map_err(|_| {
-            error::ResizerError::lock_poisoned()
+            error::SungaError::lock_poisoned()
         })?;
 
         // リサイズ実行中またはキャンセルされた場合は true
@@ -41,10 +41,10 @@ struct Size {
 }
 
 /// リサイズ
-pub struct Resizer;
+pub struct Sunga;
 
 /// public methods
-impl Resizer {
+impl Sunga {
     /// リサイズ
     /// * `path` - リサイズするファイルのパス
     /// * `output_path` - リサイズしたファイルの出力先のパス
@@ -62,9 +62,9 @@ impl Resizer {
 
         // 画像を読み込む
         let image = image::ImageReader::open(&path).map_err(|e| {
-            error::ResizerError::resize_error(e.to_string(), path.to_path_buf())
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
         })?.decode().map_err(|e| {
-            error::ResizerError::resize_error(e.to_string(), path.to_path_buf())
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
         })?;
 
         // キャンセルされた場合は処理を中断
@@ -72,7 +72,7 @@ impl Resizer {
 
         // ファイルの拡張子
         let format = image::ImageFormat::from_path(path).map_err(|e| {
-            error::ResizerError::resize_error(e.to_string(), path.to_path_buf())
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
         })?;
         let extension = format.extensions_str()[0].to_string();
 
@@ -94,14 +94,14 @@ impl Resizer {
         // 一時ファイルのパスでリサイズ後の画像を保存
         let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
         resized.save_with_format(&temp_path, format).map_err(|e| {
-            error::ResizerError::resize_error(e.to_string(), output_path.to_path_buf())
+            error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
         })?;
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? {
             // 一時ファイルを削除して終了
             std::fs::remove_file(&temp_path).map_err(|e| {
-                error::ResizerError::resize_error(e.to_string(), output_path.to_path_buf())
+                error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
             })?;
             return Ok(file::Status::Canceled);
         }
@@ -117,7 +117,7 @@ impl Resizer {
 }
 
 /// private methods
-impl Resizer {
+impl Sunga {
     /// リサイズ
     /// * `image` - リサイズする画像
     /// * `options` - リサイズオプション
@@ -141,12 +141,12 @@ impl Resizer {
     fn make_output_path(output_path: &Path) -> error::Result<()> {
         // 親ディレクトリを取得
         let Some(parent) = output_path.parent() else {
-            return Err(error::ResizerError::resize_error("Output path parent not found", output_path.to_path_buf()));
+            return Err(error::SungaError::resize_error("Output path parent not found", output_path.to_path_buf()));
         };
 
         // 親ディレクトリを作成
         std::fs::create_dir_all(parent).map_err(|e| {
-            error::ResizerError::resize_error(e.to_string(), output_path.to_path_buf())
+            error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
         })?;
 
         Ok(())
@@ -161,7 +161,7 @@ impl Resizer {
         #[cfg(not(target_os = "windows"))]
         {
             std::fs::rename(from, to).map_err(|e| {
-                error::ResizerError::resize_error(e.to_string(), to.to_path_buf())
+                error::SungaError::resize_error(e.to_string(), to.to_path_buf())
             })?;
         }
 
@@ -182,7 +182,7 @@ impl Resizer {
 
             // エラーが発生した場合はエラーを返す
             if result == 0 {
-                return Err(error::ResizerError::resize_error(std::io::Error::last_os_error().to_string(), to.to_path_buf()));
+                return Err(error::SungaError::resize_error(std::io::Error::last_os_error().to_string(), to.to_path_buf()));
             }
         }
         Ok(())

@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![warn(clippy::all, rust_2018_idioms)]
 
-use resizer::{APP_NAME, App, Render};
+use sunga::{APP_NAME, App, Render};
 
 /// アプリケーションバージョン
 const VERSION: &str = env!("CARGO_PKG_VERSION");

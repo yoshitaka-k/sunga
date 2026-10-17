@@ -101,12 +101,12 @@ impl Image {
 
         // 幅・高さが0の場合は実行しない
         if *app.width() == 0 && *app.height() == 0 {
-            return Err(error::ResizerError::resize_error("Width or height is 0", self.path.clone()));
+            return Err(error::SungaError::resize_error("Width or height is 0", self.path.clone()));
         }
 
         // 倍率が0.0の場合は実行しない
         if *app.scale() == 0.0 {
-            return Err(error::ResizerError::resize_error("Scale is 0.0", self.path.clone()));
+            return Err(error::SungaError::resize_error("Scale is 0.0", self.path.clone()));
         }
 
         // 出力先
@@ -131,7 +131,7 @@ impl Image {
             is_scale: *app.is_scale(),
         };
 
-        match resize::Resizer::execute(&self.path, &output_path, &options, &token) {
+        match resize::Sunga::execute(&self.path, &output_path, &options, &token) {
             Ok(status) => {
                 match status {
                     file::Status::Resized => {
@@ -144,14 +144,14 @@ impl Image {
                     }
                     file::Status::Error(e) => {
                         self.status = file::Status::Error(e.clone());
-                        Err(error::ResizerError::resize_error(e.to_string(), self.path.clone()))
+                        Err(error::SungaError::resize_error(e.to_string(), self.path.clone()))
                     }
                     _ => Ok(self.status.clone())
                 }
             }
             Err(e) => {
                 self.status = file::Status::Error(e.to_string());
-                return Err(error::ResizerError::resize_error(e.to_string(), self.path.clone()));
+                return Err(error::SungaError::resize_error(e.to_string(), self.path.clone()));
             }
         }
     }

@@ -1,3 +1,3 @@
 @echo off
 
-if exist "%APPDATA%\Resizer" rd /s /q "%APPDATA%\Resizer" 2>nul
+if exist "%APPDATA%\Sunga" rd /s /q "%APPDATA%\Sunga" 2>nul

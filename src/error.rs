@@ -1,9 +1,9 @@
 use std::{path, error, fmt};
 
-pub type Result<T> = std::result::Result<T, ResizerError>;
+pub type Result<T> = std::result::Result<T, SungaError>;
 
 #[derive(Debug)]
-pub enum ResizerError {
+pub enum SungaError {
     FileNotFound(String, path::PathBuf, String, u32),
     FileError(String, path::PathBuf, String, u32),
     ResizeError(String, path::PathBuf, String, u32),
@@ -12,37 +12,37 @@ pub enum ResizerError {
     LockPoisoned(String, u32),
 }
 
-/// ResizerError を表示
-impl fmt::Display for ResizerError {
+/// SungaError を表示
+impl fmt::Display for SungaError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         let code = self.code();
         match self {
-            ResizerError::FileNotFound(e, p, _, _) => write!(fmt, "[{}] File does not exist: {}\n\n{}", code, e, p.display()),
-            ResizerError::FileError(e, p, _, _) => write!(fmt, "[{}] File error: {}\n\n{}", code, e, p.display()),
-            ResizerError::ResizeError(e, p, _, _) => write!(fmt, "[{}] Resize error: {}\n\n{}", code, e, p.display()),
-            ResizerError::IndexError(i, _, _) => write!(fmt, "[{}] Index error: {}", code, i),
-            ResizerError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
-            ResizerError::LockPoisoned(_, _) => write!(fmt, "[{}] Lock poisoned", code),
+            SungaError::FileNotFound(e, p, _, _) => write!(fmt, "[{}] File does not exist: {}\n\n{}", code, e, p.display()),
+            SungaError::FileError(e, p, _, _) => write!(fmt, "[{}] File error: {}\n\n{}", code, e, p.display()),
+            SungaError::ResizeError(e, p, _, _) => write!(fmt, "[{}] Resize error: {}\n\n{}", code, e, p.display()),
+            SungaError::IndexError(i, _, _) => write!(fmt, "[{}] Index error: {}", code, i),
+            SungaError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
+            SungaError::LockPoisoned(_, _) => write!(fmt, "[{}] Lock poisoned", code),
         }
     }
 }
 
-/// ResizerError を表示
-impl error::Error for ResizerError {
+/// SungaError を表示
+impl error::Error for SungaError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match *self {
-            ResizerError::FileNotFound(_, _, _, _) => None,
-            ResizerError::FileError(_, _, _, _) => None,
-            ResizerError::ResizeError(_, _, _, _) => None,
-            ResizerError::IndexError(_, _, _) => None,
-            ResizerError::InvalidVersion(_, _) => None,
-            ResizerError::LockPoisoned(_, _) => None,
+            SungaError::FileNotFound(_, _, _, _) => None,
+            SungaError::FileError(_, _, _, _) => None,
+            SungaError::ResizeError(_, _, _, _) => None,
+            SungaError::IndexError(_, _, _) => None,
+            SungaError::InvalidVersion(_, _) => None,
+            SungaError::LockPoisoned(_, _) => None,
         }
     }
 }
 
-/// ResizerError のメソッド
-impl ResizerError {
+/// SungaError のメソッド
+impl SungaError {
     /// 呼び出し元のファイル名と行番号
     /// * `return` - 呼び出し元のファイル名と行番号
     #[track_caller]

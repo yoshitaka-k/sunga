@@ -108,7 +108,7 @@ impl OpenFiles {
         base_dir: &Path
     ) -> error::Result<bool> {
         let metadata = path.metadata().map_err(|e| {
-            error::ResizerError::file_error(e.to_string(), path.to_path_buf())
+            error::SungaError::file_error(e.to_string(), path.to_path_buf())
         })?;
 
         if metadata.is_file() {
@@ -150,10 +150,10 @@ impl OpenFiles {
             }
         } else if metadata.is_dir() {
             for entry in fs::read_dir(&path).map_err(|e| {
-                error::ResizerError::file_error(e.to_string(), path.to_path_buf())
+                error::SungaError::file_error(e.to_string(), path.to_path_buf())
             })? {
                 let entry = entry.map_err(|e| {
-                    error::ResizerError::file_error(e.to_string(), path.to_path_buf())
+                    error::SungaError::file_error(e.to_string(), path.to_path_buf())
                 })?;
 
                 // ディレクトリ内のファイルを検索

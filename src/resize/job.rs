@@ -116,7 +116,7 @@ impl ResizeJob {
     /// * `id` - ファイル ID
     /// * `return` - 成功かどうか
     pub fn add_canceled_id(&self, id: u64) -> error::Result<()> {
-        self.canceled.lock().map_err(|_| error::ResizerError::lock_poisoned())?.insert(id);
+        self.canceled.lock().map_err(|_| error::SungaError::lock_poisoned())?.insert(id);
         Ok(())
     }
 }
@@ -141,7 +141,7 @@ impl ResizeJob {
     /// * `return` - キャンセルされたファイル ID を削除
     fn remove_canceled_id(&self, id: u64) -> error::Result<()> {
         self.canceled.lock().map_err(|_| {
-            error::ResizerError::lock_poisoned()
+            error::SungaError::lock_poisoned()
         })?.remove(&id);
         Ok(())
     }

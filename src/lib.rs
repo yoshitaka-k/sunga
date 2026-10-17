@@ -12,7 +12,7 @@ pub use app::App;
 pub use ui::Render;
 
 /// アプリケーション名
-pub const APP_NAME: &str = "ReSizer";
+pub const APP_NAME: &str = "Sunga";
 
 /// GitHub リポジトリ URL
 pub const GITHUB_URL: &str = "https://github.com/{repository}";
