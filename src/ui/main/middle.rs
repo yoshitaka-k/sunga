@@ -11,8 +11,10 @@ pub(crate) fn view(
     row_height: f32,
 ) {
     egui::CentralPanel::default().show(ui, |ui| {
+        // ファイルの総数を取得
         let total_length = open_files.len();
 
+        // ビューポートの高さを取得
         let viewport_height: f32 = ui.available_height();
         let _row_stride: f32 = row_height + ui.spacing().item_spacing.y;
         let _item_spacing: f32 = ui.spacing().item_spacing.y;
@@ -26,16 +28,18 @@ pub(crate) fn view(
             ui, row_height, total_length,
             |ui, row_range|
         {
+            // 行の幅と行間を取得
             let width = ui.available_width();
             let row_spacing = ui.spacing().item_spacing.y;
-
             let start = row_range.start;
 
+            // 表示させる範囲のファイルを取得
             let visibles: Vec<_> = open_files.images()
                 .get(row_range)
                 .unwrap_or(&[])
                 .to_vec();
 
+            // ファイルがない場合はアップロードノートを表示
             if visibles.len() == 0 {
                 ui.horizontal(|ui| {
                     ui.add(main::icon_widget(svg::UPLOAD_FILE, icon::MIDDLE_LIST_ICON_SIZE, assets::list_empty_color(ui)));
