@@ -36,6 +36,12 @@ impl OpenFiles {
         self.images.clear();
     }
 
+    /// ファイルの件数を取得
+    /// * `return` - ファイルの件数
+    pub fn len(&self) -> usize {
+        self.images.len()
+    }
+
     /// ファイルが空かどうか
     /// * `return` - ファイルが空かどうか
     pub fn is_empty(&self) -> bool {

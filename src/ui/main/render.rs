@@ -1,8 +1,8 @@
 use crate::{app, error, event, file, resize};
 use crate::event::{button, input, open};
 use crate::ui::{self, setting};
-use crate::ui::assets::{label, font, svg};
-use crate::ui::main::{top, bottom, middle};
+use crate::ui::assets::{label, font, svg, icon};
+use crate::ui::main::{self, top, bottom, middle};
 
 /// 描画用のウィジェット
 pub struct Render {
@@ -74,12 +74,15 @@ impl eframe::App for Render {
         // リサイズを実行
         self.resize_run();
 
+        // 行の高さを取得
+        let row_height = self.row_height(ui);
+
         // トップメニューバーを描画
         top::view(ui, &mut self.pending_actions);
         // 下部メニューバーを描画
         bottom::view(ui, &mut self.pending_actions);
         // 中央パネルを描画
-        middle::view(ui, &self.files);
+        middle::view(ui, &self.files, row_height);
 
         // 設定ウィンドウを描画している場合は描画しない
         if self.setting_token.open {
@@ -90,6 +93,13 @@ impl eframe::App for Render {
 
 /// private methods
 impl Render {
+    /// 行の高さを取得
+    /// * `ui` - UI
+    /// * `return` - 行の高さ
+    fn row_height(&self, ui: &egui::Ui) -> f32 {
+        ui.text_style_height(&egui::TextStyle::Body).max(icon::LIST_ICON_SIZE) + main::SEPARATOR_HEIGHT
+    }
+
     /// ドロップされたファイルを処理
     /// * `ui` - UI
     fn drop_files(&mut self, ui: &egui::Ui) {

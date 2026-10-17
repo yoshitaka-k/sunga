@@ -10,6 +10,9 @@
     "main_bottom": {
       "clear": "キャンセルしてクリア"
     },
+    "main_middle": {
+      "upload_note": "リサイズするファイルまたはフォルダをドラッグ&ドロップしてください。"
+    },
     "setting": {
       "heading": "設定",
       "general": "一般",

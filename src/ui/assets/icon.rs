@@ -2,6 +2,10 @@
 /// * `APP_ICON_SIZE` - アプリアイコンのサイズ
 pub(crate) const APP_ICON_SIZE: f32 = 64.0;
 
+/// リストアイコンのサイズ
+pub(crate) const MIDDLE_LIST_ICON_SIZE: f32 = 16.0;
+pub(crate) const LIST_ICON_SIZE: f32 = 14.0;
+
 /// 設定アイコンのサイズ
 /// * `SETTINGS_ICON_SIZE` - 設定アイコンのサイズ
 pub(crate) const SETTINGS_ICON_SIZE: f32 = 14.0;

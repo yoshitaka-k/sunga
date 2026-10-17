@@ -10,6 +10,9 @@
     "main_bottom": {
       "clear": "Cancel and Clear"
     },
+    "main_middle": {
+      "upload_note": "Files or Folders to Resize Drag & Drop."
+    },
     "setting": {
       "heading": "Settings",
       "general": "General",

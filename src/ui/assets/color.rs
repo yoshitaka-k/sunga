@@ -4,6 +4,12 @@
 pub(crate) const DARK_MODE_PANEL_COLOR: egui::Color32 = egui::Color32::from_rgb(35, 35, 35);
 pub(crate) const LIGHT_MODE_PANEL_COLOR: egui::Color32 = egui::Color32::from_rgb(225, 225, 225);
 
+/// リストなし時のテキスト色
+/// * `DARK_MODE_LIST_EMPTY_COLOR` - ダークモードのリストなし時のテキスト色
+/// * `LIGHT_MODE_LIST_EMPTY_COLOR` - ライトモードのリストなし時のテキスト色
+pub(crate) const DARK_MODE_LIST_EMPTY_COLOR: egui::Color32 = egui::Color32::from_rgb(90, 90, 90);
+pub(crate) const LIGHT_MODE_LIST_EMPTY_COLOR: egui::Color32 = egui::Color32::from_rgb(130, 130, 130);
+
 /// ボタンアイコンの色
 /// * `DARK_MODE_BUTTON_ICON_COLOR` - ダークモードのボタンアイコンの色
 /// * `LIGHT_MODE_BUTTON_ICON_COLOR` - ライトモードのボタンアイコンの色
