@@ -52,6 +52,7 @@ pub(crate) fn view(
         egui::CentralPanel::default().show(ui, |ui| {
             match setting_token.tab {
                 ui::SettingTab::General => setting::general::view(ui, app),
+                ui::SettingTab::Resize => setting::resize::view(ui, app),
                 ui::SettingTab::About => setting::about::view(ui, &mut update_job),
             }
         });

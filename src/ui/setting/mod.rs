@@ -1,6 +1,7 @@
 mod view;
 mod top;
 mod general;
+mod resize;
 mod about;
 
 pub(crate) use view::view;
@@ -26,10 +27,12 @@ const ADD_SPACING: f32 = 4.0;
 const HEADER_ICON_SPACING: f32 = 4.0;
 const WARNING_ICON_SPACING: f32 = 3.0;
 const SETTING_INDENT_SPACING: f32 = 10.0;
+const RESIZE_INDENT_SPACING: f32 = 8.0;
 
 // ラベルの幅
 const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
 const GENERAL_LABEL_WIDTH: f32 = 94.0;
+const RESIZE_LABEL_WIDTH: f32 = 60.0;
 
 /// 設定ウィンドウのヘッダーパネルを表示
 /// * `ui` - UI

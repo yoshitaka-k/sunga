@@ -27,6 +27,14 @@
       "dont_skip_same_path_option": "スキップしない",
       "skip_same_path_warning_note": "完了済みはスキップ。キャンセルとエラーはやり直します。"
     },
+    "setting_resize": {
+      "header_sized": "サイズ",
+      "width": "幅",
+      "height": "高さ",
+      "sized_warning_note": "指定した値に収まるようにリサイズします。",
+      "header_scale": "倍率",
+      "scale": "倍率"
+    },
     "setting_about": {
       "heading": "About",
       "update_check": "アップデートを確認"

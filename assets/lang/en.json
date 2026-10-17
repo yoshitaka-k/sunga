@@ -27,6 +27,14 @@
       "dont_skip_same_path_option": "Don't skip same path",
       "skip_same_path_warning_note": "Skip if already completed. Retry canceled and errors."
     },
+    "setting_resize": {
+      "header_sized": "Sized",
+      "width": "Width",
+      "height": "Height",
+      "sized_warning_note": "Resize to fit the specified values.",
+      "header_scale": "Scale",
+      "scale": "Scale"
+    },
     "setting_about": {
       "heading": "About",
       "update_check": "Check for Update"

@@ -8,7 +8,7 @@ use std::sync::Arc;
 use std::sync:: Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::collections::HashSet;
-use image;
+use image::{self, GenericImageView};
 use crate::{error, file, resize};
 
 /// 一時ファイルの拡張子
@@ -80,11 +80,7 @@ impl Resizer {
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
         // リサイズを実行
-        let resized = image.resize(
-            options.width,
-            options.height,
-            image::imageops::FilterType::Lanczos3,
-        );
+        let resized = Self::resize(&image, options);
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
@@ -122,6 +118,23 @@ impl Resizer {
 
 /// private methods
 impl Resizer {
+    /// リサイズ
+    /// * `image` - リサイズする画像
+    /// * `options` - リサイズオプション
+    /// * `return` - リサイズした画像
+    fn resize(image: &image::DynamicImage, options: &resize::Options) -> image::DynamicImage {
+        if options.is_scale {
+            // 倍率を使用する場合
+            let (width, height) = image.dimensions();
+            let width = width as f32 * options.scale;
+            let height = height as f32 * options.scale;
+            image.resize(width as u32, height as u32, image::imageops::FilterType::Lanczos3)
+        } else {
+            // 幅と高さを使用する場合
+            image.resize(options.width, options.height, image::imageops::FilterType::Lanczos3)
+        }
+    }
+
     /// 出力パスを作成
     /// * `output_path` - 出力パス
     /// * `return` - 出力パス

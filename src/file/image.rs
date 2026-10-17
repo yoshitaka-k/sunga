@@ -128,6 +128,7 @@ impl Image {
             width: *app.width(),
             height: *app.height(),
             scale: *app.scale(),
+            is_scale: *app.is_scale(),
         };
 
         match resize::Resizer::execute(&self.path, &output_path, &options, &token) {

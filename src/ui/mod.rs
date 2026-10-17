@@ -32,6 +32,7 @@ impl DialogToken {
 #[derive(PartialEq)]
 pub enum SettingTab {
     General,
+    Resize,
     About,
 }
 
