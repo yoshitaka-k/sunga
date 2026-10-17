@@ -11,11 +11,20 @@ pub(crate) fn files(
     app: &app::App,
     open_files: &mut file::OpenFiles,
 ) -> error::Result<bool> {
-    let Some(file) = files.first() else {
+    if files.is_empty() {
         return Ok(false);
-    };
+    }
 
-    path(app, file.path().to_path_buf(), open_files)
+    let mut result: bool = true;
+
+    for file in files {
+        if !path(app, file.path().to_path_buf(), open_files)? {
+            result = false;
+            break;
+        }
+    }
+
+    Ok(result)
 }
 
 /// パスからファイルを開く
