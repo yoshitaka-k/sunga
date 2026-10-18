@@ -6,6 +6,7 @@ mod middle;
 const TOP_PANEL_NAME: &str = "top_menubar";
 const BOTTOM_PANEL_NAME: &str = "bottom_menubar";
 const SEPARATOR_HEIGHT: f32 = 4.0;
+const LIST_ICON_INDENT: f32 = 2.0;
 
 /// アイコンウィジェットを作成
 /// * `icon` - アイコン

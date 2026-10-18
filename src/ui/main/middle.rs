@@ -61,19 +61,22 @@ pub(crate) fn view(
                     ui.painter().rect_filled(row_rect, 1.0, assets::alternate_background_color(ui));
                 }
 
-                let label = format!("{}: {} ({})",
-                    image.id(),
-                    image.file_name(),
-                    image.status().to_string(),
-                );
-
                 ui.scope_builder(
                     egui::UiBuilder::new()
                         .max_rect(row_rect)
                         .layout(egui::Layout::left_to_right(egui::Align::Center)),
                     |ui|
                 {
-                    ui.label(label);
+                    ui.horizontal(|ui| {
+                        let spacing = ui.spacing().item_spacing.x;
+
+                        ui.add_space(main::LIST_ICON_INDENT);
+                        ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
+                        status_icon(ui, image.status());
+                        ui.spacing_mut().item_spacing.x = spacing;
+                        ui.separator();
+                        ui.label(image.file_name());
+                    });
                 });
 
                 // 最終行以外は行下端に区切り線
@@ -87,4 +90,33 @@ pub(crate) fn view(
             }
         });
     });
+}
+
+/// ステータスアイコンを描画
+/// * `ui` - UI
+/// * `status` - ステータス
+/// * `return` - ステータスアイコン
+fn status_icon(ui: &mut egui::Ui, status: &file::Status) -> egui::Response {
+     let widget = match status {
+        file::Status::Standby => {
+            main::icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+        },
+        file::Status::Resizing => {
+            main::icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+        },
+        file::Status::Resized => {
+            main::icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+        },
+        file::Status::Skipped => {
+            main::icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+        },
+        file::Status::Canceled => {
+            main::icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+        },
+        file::Status::Error(_) => {
+            main::icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+        },
+    };
+
+    ui.add(widget).on_hover_text(status.to_string())
 }
