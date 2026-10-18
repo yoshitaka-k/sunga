@@ -15,7 +15,6 @@ pub(crate) fn view(
     egui::Panel::bottom(main::BOTTOM_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
-                ui.label("Top left");
             },
             |ui| {
                 let hover_text = label::current().main_bottom.clear;
