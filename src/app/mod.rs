@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 const DEFAULT_WIDTH: u32 = 2560;
 const DEFAULT_HEIGHT: u32 = 1440;
-const DEFAULT_SCALE: f32 = 2.0;
+const DEFAULT_SCALE: u16 = 100;
 const DEFAULT_RESIZE_NUM: u8 = 4;
 
 /// 状態管理アプリケーション
@@ -19,7 +19,7 @@ pub struct App {
     height: u32,
 
     /// リサイズする倍率
-    scale: f32,
+    scale: u16,
 
     /// 倍率を使用するかどうか
     is_scale: bool,

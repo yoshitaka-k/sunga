@@ -99,14 +99,17 @@ impl Image {
             return Ok(self.status.clone());
         }
 
-        // 幅・高さが0の場合は実行しない
-        if *app.width() == 0 && *app.height() == 0 {
-            return Err(error::SungaError::resize_error("Width or height is 0", self.path.clone()));
+        // 幅が範囲外の場合は実行しない
+        if *app.width() < resize::SIZED_RANGE_MIN ||  *app.width() > resize::SIZED_RANGE_MAX {
+            return Err(error::SungaError::resize_error("Width is out of range ({}..{})", self.path.clone(), resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX));
         }
-
-        // 倍率が0.0の場合は実行しない
-        if *app.scale() == 0.0 {
-            return Err(error::SungaError::resize_error("Scale is 0.0", self.path.clone()));
+        // 高さが範囲外の場合は実行しない
+        if *app.height() < resize::SIZED_RANGE_MIN || *app.height() > resize::SIZED_RANGE_MAX {
+            return Err(error::SungaError::resize_error("Height is out of range ({}..{})", self.path.clone(), resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX));
+        }
+        // 倍率が範囲外の場合は実行しない
+        if *app.scale() < resize::SCALE_RANGE_MIN || *app.scale() > resize::SCALE_RANGE_MAX {
+            return Err(error::SungaError::resize_error("Scale is out of range ({}..{})", self.path.clone(), resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX));
         }
 
         // 出力先

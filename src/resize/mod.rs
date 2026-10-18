@@ -14,6 +14,14 @@ use crate::{error, file, resize};
 /// 一時ファイルの拡張子
 const TEMP_EXTENSION: &str = "sunga.temp";
 
+/// サイズの範囲
+pub(crate) const SIZED_RANGE_MIN: u32 = 10;
+pub(crate) const SIZED_RANGE_MAX: u32 = 10000;
+
+/// 倍率の範囲
+pub(crate) const SCALE_RANGE_MIN: u16 = 10;
+pub(crate) const SCALE_RANGE_MAX: u16 = 500;
+
 /// リサイズトークン
 #[derive(Clone)]
 pub struct Token {
@@ -125,9 +133,10 @@ impl Sunga {
     fn resize(image: &image::DynamicImage, options: &resize::Options) -> image::DynamicImage {
         if options.is_scale {
             // 倍率を使用する場合
+            let scale = options.scale as f32 / 100.0;
             let (width, height) = image.dimensions();
-            let width = width as f32 * options.scale;
-            let height = height as f32 * options.scale;
+            let width = width as f32 * scale;
+            let height = height as f32 * scale;
             image.resize(width as u32, height as u32, image::imageops::FilterType::Lanczos3)
         } else {
             // 幅と高さを使用する場合

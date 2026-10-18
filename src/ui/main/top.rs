@@ -20,7 +20,7 @@ pub(crate) fn view(
                 ui.label(format!("{}: ", label::current().main_top.header_resize));
 
                 if *app.is_scale() {
-                    ui.label(format!("{}: {}% ", label::current().main_top.header_scale, (app.scale() * 100.0).round()));
+                    ui.label(format!("{}: {}% ", label::current().main_top.header_scale, app.scale()));
                 } else {
                     ui.label(format!("{}: {}x{} pixels", label::current().main_top.header_sized, app.width(), app.height()));
                 }
