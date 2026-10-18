@@ -101,15 +101,18 @@ impl Image {
 
         // 幅が範囲外の場合は実行しない
         if *app.width() < resize::SIZED_RANGE_MIN ||  *app.width() > resize::SIZED_RANGE_MAX {
-            return Err(error::SungaError::resize_error("Width is out of range ({}..{})", self.path.clone(), resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX));
+            let msg = format!("Width is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
+            return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
         // 高さが範囲外の場合は実行しない
         if *app.height() < resize::SIZED_RANGE_MIN || *app.height() > resize::SIZED_RANGE_MAX {
-            return Err(error::SungaError::resize_error("Height is out of range ({}..{})", self.path.clone(), resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX));
+            let msg = format!("Height is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
+            return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
         // 倍率が範囲外の場合は実行しない
         if *app.scale() < resize::SCALE_RANGE_MIN || *app.scale() > resize::SCALE_RANGE_MAX {
-            return Err(error::SungaError::resize_error("Scale is out of range ({}..{})", self.path.clone(), resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX));
+            let msg = format!("Scale is out of range ({}..{})", resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX);
+            return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
 
         // 出力先
