@@ -1,5 +1,5 @@
 use crate::file;
-use crate::ui::main;
+use crate::ui::{self, main};
 use crate::ui::assets::{self, icon, svg, label};
 
 /// ミドルパネルを描画
@@ -9,6 +9,7 @@ pub(crate) fn view(
     ui: &mut egui::Ui,
     open_files: &file::OpenFiles,
     row_height: f32,
+    status_color: &ui::StatusColor,
 ) {
     egui::CentralPanel::default().show(ui, |ui| {
         // ファイルの総数を取得
@@ -72,7 +73,7 @@ pub(crate) fn view(
 
                         ui.add_space(main::LIST_ICON_INDENT);
                         ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
-                        status_icon(ui, image.status());
+                        status_icon(ui, image.status(), status_color);
                         ui.spacing_mut().item_spacing.x = spacing;
                         ui.separator();
                         ui.label(image.file_name());
@@ -96,25 +97,25 @@ pub(crate) fn view(
 /// * `ui` - UI
 /// * `status` - ステータス
 /// * `return` - ステータスアイコン
-fn status_icon(ui: &mut egui::Ui, status: &file::Status) -> egui::Response {
+fn status_icon(ui: &mut egui::Ui, status: &file::Status, status_color: &ui::StatusColor) -> egui::Response {
      let widget = match status {
         file::Status::Standby => {
-            main::icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+            main::icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby)
         },
         file::Status::Resizing => {
-            main::icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+            main::icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing)
         },
         file::Status::Resized => {
-            main::icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+            main::icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, status_color.resized)
         },
         file::Status::Skipped => {
-            main::icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+            main::icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped)
         },
         file::Status::Canceled => {
-            main::icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+            main::icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled)
         },
         file::Status::Error(_) => {
-            main::icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, assets::list_empty_color(ui))
+            main::icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error)
         },
     };
 

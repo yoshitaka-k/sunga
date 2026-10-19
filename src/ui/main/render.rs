@@ -12,6 +12,8 @@ pub struct Render {
     dialog_token: ui::DialogToken,
     setting_token: ui::SettingToken,
     resize_job: resize::ResizeJob,
+
+    status_color: ui::StatusColor,
 }
 
 impl Render {
@@ -42,6 +44,7 @@ impl Render {
             dialog_token: ui::DialogToken::new(),
             setting_token: ui::SettingToken::new(),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
+            status_color: ui::StatusColor::new(&cc.egui_ctx),
         }
     }
 }
@@ -82,7 +85,7 @@ impl eframe::App for Render {
         // 下部メニューバーを描画
         bottom::view(ui, &mut self.pending_actions);
         // 中央パネルを描画
-        middle::view(ui, &self.files, row_height);
+        middle::view(ui, &self.files, row_height, &self.status_color);
 
         // 設定ウィンドウを描画している場合は描画しない
         if self.setting_token.open {

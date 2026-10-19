@@ -4,6 +4,8 @@ pub(crate) mod icon;
 pub(crate) mod svg;
 pub(crate) mod label;
 
+use crate::file;
+
 /// アプリアイコン
 pub(crate) const APP_ICON: egui::ImageSource<'static> = svg::bytes_source(
     "bytes://assets/icon.png",
@@ -24,8 +26,26 @@ pub(crate) fn alternate_background_color(ui: &egui::Ui) -> egui::Color32 {
 /// ラベルと同じ色を返す
 /// * `ui` - UI
 /// * `return` - アイコンの色
-pub(crate) fn icon_color(ui: &egui::Ui) -> egui::Color32 {
-    ui.visuals().text_color()
+pub(crate) fn status_color(ctx: &egui::Context,status: file::Status) -> egui::Color32 {
+    if ctx.global_style().visuals.dark_mode {
+        match status {
+            file::Status::Standby => color::DARK_MODE_STANDBY_COLOR,
+            file::Status::Resizing => color::DARK_MODE_RESIZING_COLOR,
+            file::Status::Resized => color::DARK_MODE_RESIZED_COLOR,
+            file::Status::Skipped => color::DARK_MODE_SKIPPED_COLOR,
+            file::Status::Canceled => color::DARK_MODE_CANCELED_COLOR,
+            file::Status::Error(_) => color::DARK_MODE_ERROR_COLOR,
+        }
+    } else {
+        match status {
+            file::Status::Standby => color::LIGHT_MODE_STANDBY_COLOR,
+            file::Status::Resizing => color::LIGHT_MODE_RESIZING_COLOR,
+            file::Status::Resized => color::LIGHT_MODE_RESIZED_COLOR,
+            file::Status::Skipped => color::LIGHT_MODE_SKIPPED_COLOR,
+            file::Status::Canceled => color::LIGHT_MODE_CANCELED_COLOR,
+            file::Status::Error(_) => color::LIGHT_MODE_ERROR_COLOR,
+        }
+    }
 }
 
 /// リストなし時のテキスト色
