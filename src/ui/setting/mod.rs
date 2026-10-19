@@ -48,7 +48,7 @@ pub(crate) fn header_panel(
     let spacing = ui.spacing().item_spacing.x;
 
     // ボタンの色を設定
-    let icon_color = assets::icon_color(ui);
+    let icon_color = ui::icon_color(ui);
 
     ui.horizontal(|ui| {
         ui.spacing_mut().item_spacing.x = HEADER_ICON_SPACING;

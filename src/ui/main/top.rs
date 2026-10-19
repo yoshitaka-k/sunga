@@ -16,7 +16,7 @@ pub(crate) fn view(
     egui::Panel::top(main::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
-                ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, assets::icon_color(ui)));
+                ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
                 ui.label(format!("{}: ", label::current().main_top.header_resize));
 
                 if *app.is_scale() {
