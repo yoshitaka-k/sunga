@@ -14,7 +14,7 @@ pub(crate) fn view(
     // ボトムメニューバーを作成
     egui::Panel::bottom(main::BOTTOM_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
-            |ui| {
+            |_ui| {
             },
             |ui| {
                 let hover_text = label::current().main_bottom.clear;
