@@ -52,9 +52,7 @@ impl OpenFiles {
     pub fn add(&mut self, app: &app::App, path: PathBuf) -> error::Result<bool> {
         let base_dir = path.parent().unwrap_or(&path);
 
-        if !self.find_file(app, &path, base_dir)? { return Ok(false); }
-
-        Ok(true)
+        Ok(self.find_file(app, &path, base_dir)?)
     }
 
     /// ファイルをクリア
@@ -233,23 +231,16 @@ impl OpenFiles {
 
         if metadata.is_file() {
             if file::is_allowed_extension(&path) {
-                // strip_prefix は path を借りるので、
-                // 先に String にして into_owned()で所有権を移す
+                // base_dir からの相対パスを求め、所有権のある PathBuf にする
                 let relative_path = path.strip_prefix(base_dir)
-                    .unwrap_or(&path)
+                    .unwrap_or(path)
                     .to_path_buf();
 
                 // 画像ファイル構造体を作成
                 let mut image = file::Image::new(path.to_path_buf(), relative_path);
 
-                // 同じパスはスキップ
+                // 出力パスを作成
                 let output_path = image.make_output_path(app);
-                if *app.skip_same_path()
-                  && self.is_input_and_output(&path, &output_path) {
-                    image.set_status(file::Status::Skipped);
-                    self.images.push(image);
-                    return Ok(false);
-                }
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
                 if self.is_standby_or_resizing(&path) {
@@ -258,9 +249,9 @@ impl OpenFiles {
                     return Ok(false);
                 }
 
-                // 同じパスがリサイズ済みの場合はエラーを返す
-                if self.is_input_path(&path) {
-                    image.set_status(file::Status::Error("Already resized".to_string()));
+                // 同じパスはスキップ
+                if *app.skip_same_path() && self.is_input_and_output(&path, &output_path) {
+                    image.set_status(file::Status::Skipped);
                     self.images.push(image);
                     return Ok(false);
                 }

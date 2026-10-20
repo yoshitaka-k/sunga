@@ -20,7 +20,6 @@ pub(crate) fn files(
     for file in files {
         if !path(app, file.path().to_path_buf(), open_files)? {
             result = false;
-            break;
         }
     }
 
