@@ -25,7 +25,21 @@ pub(crate) fn view(
 
                 // ジョブの状態を取得
                 let status = files.job_status();
-                main::status_icon(ui, &status, status_color);
+
+                // 完了色
+                // 優先度: リサイズ済み > 変更なし > スキップ > 完了
+                let completed_color = if files.resized_len() > 0 {
+                    status_color.resized
+                } else if files.unchanged_len() > 0 {
+                    status_color.unchanged
+                } else if files.skipped_len() > 0 {
+                    status_color.skipped
+                } else {
+                    status_color.resized
+                };
+
+                // ジョブ状態のアイコン
+                main::status_icon(ui, &status, status_color, completed_color);
 
                 ui.separator();
 
@@ -44,7 +58,7 @@ pub(crate) fn view(
                 // 完了
                 ui.scope(|ui| {
                     ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                    ui::rich_label(ui, &files.completed_len().to_string(), status_color.resized);
+                    ui::rich_label(ui, &files.completed_len().to_string(), completed_color);
                     ui.spacing_mut().item_spacing.x = spacing;
                     ui.label(format!("{},", label::current().main_bottom.completed));
                 }).response.on_hover_ui(|ui| {

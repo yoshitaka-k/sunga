@@ -73,7 +73,7 @@ pub(crate) fn view(
 
                         ui.add_space(main::LIST_ICON_INDENT);
                         ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
-                        main::status_icon(ui, image.status(), status_color);
+                        main::status_icon(ui, image.status(), status_color, status_color.resized);
                         ui.spacing_mut().item_spacing.x = spacing;
                         ui.separator();
                         ui.label(image.file_name());

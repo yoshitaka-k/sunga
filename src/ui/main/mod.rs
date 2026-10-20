@@ -23,8 +23,15 @@ fn icon_widget(icon: egui::ImageSource<'static>, size: f32, color: egui::Color32
 /// ステータスアイコンを描画
 /// * `ui` - UI
 /// * `status` - ステータス
+/// * `status_color` - ステータスカラー
+/// * `completed_color` - 完了色
 /// * `return` - ステータスアイコン
-fn status_icon(ui: &mut egui::Ui, status: &file::Status, status_color: &ui::StatusColor) -> egui::Response {
+fn status_icon(
+    ui: &mut egui::Ui,
+    status: &file::Status,
+    status_color: &ui::StatusColor,
+    completed_color: egui::Color32
+) -> egui::Response {
     let widget = match status {
        file::Status::Standby => {
            icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby)
@@ -33,7 +40,7 @@ fn status_icon(ui: &mut egui::Ui, status: &file::Status, status_color: &ui::Stat
            icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing)
        },
        file::Status::Resized => {
-           icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, status_color.resized)
+           icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, completed_color)
        },
        file::Status::Unchanged => {
            icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged)
