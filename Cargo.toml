@@ -1,6 +1,6 @@
 [package]
 name = "sunga"
-version = "0.8.2"
+version = "0.8.3"
 edition = "2024"
 description = "Image Re Size"
 authors = ["yoshitaka-k"]
@@ -12,12 +12,36 @@ lto = true
 codegen-units = 1
 strip = true
 
+[package.metadata.bundle]
+identifier = "jp.ktgwya.sunga"
+name = "Sunga"
+icon = ["target/bundle-icons/*.png"]
+category = "Utility"
+short_description = "Image Re Size"
+deb_depends = [
+    "libgtk-3-0",
+    "libxcb-render0",
+    "libxcb-shape0",
+    "libxcb-xfixes0",
+    "libxkbcommon0",
+    "libvulkan1",
+    "libssl3",
+]
+
+[package.metadata.winresource]
+ProductName = "Sunga"
+FileDescription = "Image Re Size"
+OriginalFilename = "Sunga.exe"
+
 [build-dependencies]
 serde = { version = "1.0.229", features = ["derive"] }
 image = { version = "0.25.10", default-features = false, features = ["png"] }
 serde_json = "1.0.151"
 winresource = "0.1.31"
 ico = "0.5"
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = ["winbase"] }
 
 [dependencies]
 egui = "0.36.1"
