@@ -7,6 +7,8 @@ pub enum Status {
     Resizing,
     /// リサイズ完了
     Resized,
+    /// 変更なし
+    Unchanged,
     /// リサイズキャンセル
     Canceled,
     /// 同じパスはスキップ
@@ -23,6 +25,7 @@ impl Status {
             Status::Standby => "Standby".to_string(),
             Status::Resizing => "Resizing".to_string(),
             Status::Resized => "Resized".to_string(),
+            Status::Unchanged => "Unchanged".to_string(),
             Status::Canceled => "Canceled".to_string(),
             Status::Skipped => "Skipped".to_string(),
             Status::Error(message) => format!("Error: {}", message),

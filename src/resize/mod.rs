@@ -89,6 +89,23 @@ impl Sunga {
 
         // リサイズを実行
         let resized = Self::resize(&image, options);
+        println!("image: {:?}", image.dimensions());
+        println!("resized: {:?}", resized.dimensions());
+
+        // 同じサイズの場合はスキップ
+        if resized.width() == image.width() && resized.height() == image.height() {
+            // 出力ファイルが存在しない場合は作成
+            if path != output_path && !output_path.exists() {
+                // 出力パスを作成
+                Self::make_output_path(output_path)?;
+
+                // ファイルをコピー
+                std::fs::copy(&path, &output_path).map_err(|e| {
+                    error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
+                })?;
+            }
+            return Ok(file::Status::Unchanged);
+        }
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
@@ -131,17 +148,21 @@ impl Sunga {
     /// * `options` - リサイズオプション
     /// * `return` - リサイズした画像
     fn resize(image: &image::DynamicImage, options: &resize::Options) -> image::DynamicImage {
-        if options.is_scale {
+        let (orig_width, orig_height) = image.dimensions();
+
+        let (width, height) = if options.is_scale {
             // 倍率を使用する場合
             let scale = options.scale as f32 / 100.0;
-            let (width, height) = image.dimensions();
-            let width = width as f32 * scale;
-            let height = height as f32 * scale;
-            image.resize(width as u32, height as u32, image::imageops::FilterType::Lanczos3)
+            (
+                (orig_width as f32 * scale) as u32,
+                (orig_height as f32 * scale) as u32,
+            )
         } else {
             // 幅と高さを使用する場合
-            image.resize(options.width, options.height, image::imageops::FilterType::Lanczos3)
-        }
+            (options.width, options.height)
+        };
+
+        image.resize(width, height, image::imageops::FilterType::Lanczos3)
     }
 
     /// 出力パスを作成

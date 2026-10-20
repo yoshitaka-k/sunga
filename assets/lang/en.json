@@ -15,9 +15,10 @@
       "clear": "Cancel and Clear",
       "standby": "standby",
       "resizing": "resizing",
-      "completed": "completed",
       "resized": "resized",
+      "unchanged": "unchanged",
       "skipped": "skipped",
+      "completed": "completed",
       "canceled": "canceled",
       "error": "error"
     },

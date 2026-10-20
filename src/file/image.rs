@@ -144,6 +144,14 @@ impl Image {
                         self.status = file::Status::Resized;
                         Ok(self.status.clone())
                     }
+                    file::Status::Unchanged => {
+                        self.status = file::Status::Unchanged;
+                        Ok(self.status.clone())
+                    }
+                    file::Status::Skipped => {
+                        self.status = file::Status::Skipped;
+                        Ok(self.status.clone())
+                    }
                     file::Status::Canceled => {
                         self.status = file::Status::Canceled;
                         Ok(self.status.clone())

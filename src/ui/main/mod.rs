@@ -35,6 +35,9 @@ fn status_icon(ui: &mut egui::Ui, status: &file::Status, status_color: &ui::Stat
        file::Status::Resized => {
            icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, status_color.resized)
        },
+       file::Status::Unchanged => {
+           icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged)
+       },
        file::Status::Skipped => {
            icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped)
        },

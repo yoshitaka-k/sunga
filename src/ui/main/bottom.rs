@@ -56,6 +56,14 @@ pub(crate) fn view(
                         ui.label(label::current().main_bottom.resized);
                     });
 
+                    // 変更なし
+                    ui.horizontal(|ui| {
+                        ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
+                        ui::rich_label(ui, &files.unchanged_len().to_string(), status_color.unchanged);
+                        ui.spacing_mut().item_spacing.x = spacing;
+                        ui.label(label::current().main_bottom.unchanged);
+                    });
+
                     // スキップ
                     ui.horizontal(|ui| {
                         ui.spacing_mut().item_spacing.x = LEN_SPACING_X;

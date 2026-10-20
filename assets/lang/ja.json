@@ -15,9 +15,10 @@
       "clear": "キャンセルしてクリア",
       "standby": "未処理",
       "resizing": "処理中",
-      "completed": "完了",
       "resized": "リサイズ済み",
+      "unchanged": "変更なし",
       "skipped": "スキップ",
+      "completed": "完了",
       "canceled": "キャンセル",
       "error": "エラー"
     },
