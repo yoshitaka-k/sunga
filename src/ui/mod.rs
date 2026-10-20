@@ -5,9 +5,6 @@ mod modal;
 
 pub use main::render::Render;
 
-// スペースの幅
-pub(crate) const SPACING_ZERO: f32 = 0.0;
-
 // パネルの内側のマージン
 pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 4,

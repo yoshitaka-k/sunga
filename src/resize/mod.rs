@@ -43,14 +43,8 @@ impl Token {
     }
 }
 
-struct Size {
-    pub width: u32,
-    pub height: u32,
-}
-
 /// リサイズ
 pub struct Sunga;
-
 /// public methods
 impl Sunga {
     /// リサイズ

@@ -132,12 +132,6 @@ impl OpenFiles {
         self.file_info.skipped_len
     }
 
-    /// キャンセルされたファイルの数を取得
-    /// * `return` - キャンセルされたファイルの数
-    pub fn canceled_len(&self) -> u32 {
-        self.file_info.canceled_len
-    }
-
     /// エラーのファイルの数を取得
     /// * `return` - エラーのファイルの数
     pub fn error_len(&self) -> u32 {
@@ -203,16 +197,6 @@ impl OpenFiles {
     /// * `return` - 待機中かリサイズ中かどうか
     fn is_standby_or_resizing(&self, path: &Path) -> bool {
         self.images.iter().any(|f| f.path() == path && f.is_standby_or_resizing())
-    }
-
-    /// ファイルがリサイズ済みかどうかを確認
-    /// * `path` - ファイルのパス
-    /// * `return` - リサイズ済みかどうか
-    fn is_input_path(&self, path: &Path) -> bool {
-        self.images.iter().any(|f| {
-            f.path() == path
-            && f.is_resized()
-        })
     }
 
     /// ファイルが入力パスと出力パスが同じかどうかを確認
