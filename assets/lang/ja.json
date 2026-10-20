@@ -11,7 +11,14 @@
       "folder_open": "フォルダを開く"
     },
     "main_bottom": {
-      "clear": "キャンセルしてクリア"
+      "clear": "キャンセルしてクリア",
+      "standby": "未処理",
+      "resizing": "処理中",
+      "completed": "完了",
+      "resized": "リサイズ済み",
+      "skipped": "スキップ",
+      "canceled": "キャンセル",
+      "error": "エラー"
     },
     "main_middle": {
       "upload_note": "リサイズするファイルまたはフォルダをドラッグ&ドロップしてください。"

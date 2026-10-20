@@ -11,7 +11,8 @@ struct FileInfo {
     resized_len: u32,
     skipped_len: u32,
     canceled_len: u32,
-    error_len: u32
+    error_len: u32,
+    completed_len: u32
 }
 impl FileInfo {
     pub fn new() -> Self {
@@ -22,6 +23,7 @@ impl FileInfo {
             skipped_len: 0,
             canceled_len: 0,
             error_len: 0,
+            completed_len: 0,
         }
     }
 }
@@ -88,12 +90,55 @@ impl OpenFiles {
         self.file_info.skipped_len = skipped_len;
         self.file_info.canceled_len = canceled_len;
         self.file_info.error_len = error_len;
+        self.file_info.completed_len = resized_len + skipped_len;
     }
 
     /// ファイルの件数を取得
     /// * `return` - ファイルの件数
     pub fn len(&self) -> usize {
         self.images.len()
+    }
+
+    /// 待機中のファイルの数を取得
+    /// * `return` - 待機中のファイルの数
+    pub fn standby_len(&self) -> u32 {
+        self.file_info.standby_len
+    }
+
+    /// リサイズ中のファイルの数を取得
+    /// * `return` - リサイズ中のファイルの数
+    pub fn resizing_len(&self) -> u32 {
+        self.file_info.resizing_len
+    }
+
+    /// リサイズ済みのファイルの数を取得
+    /// * `return` - リサイズ済みのファイルの数
+    pub fn resized_len(&self) -> u32 {
+        self.file_info.resized_len
+    }
+
+    /// スキップされたファイルの数を取得
+    /// * `return` - スキップされたファイルの数
+    pub fn skipped_len(&self) -> u32 {
+        self.file_info.skipped_len
+    }
+
+    /// キャンセルされたファイルの数を取得
+    /// * `return` - キャンセルされたファイルの数
+    pub fn canceled_len(&self) -> u32 {
+        self.file_info.canceled_len
+    }
+
+    /// エラーのファイルの数を取得
+    /// * `return` - エラーのファイルの数
+    pub fn error_len(&self) -> u32 {
+        self.file_info.error_len
+    }
+
+    /// 完了したファイルの数を取得
+    /// * `return` - 完了したファイルの数
+    pub fn completed_len(&self) -> u32 {
+        self.file_info.completed_len
     }
 
     /// ジョブの状態を取得

@@ -11,7 +11,14 @@
       "folder_open": "Folder Open"
     },
     "main_bottom": {
-      "clear": "Cancel and Clear"
+      "clear": "Cancel and Clear",
+      "standby": "standby",
+      "resizing": "resizing",
+      "completed": "completed",
+      "resized": "resized",
+      "skipped": "skipped",
+      "canceled": "canceled",
+      "error": "error"
     },
     "main_middle": {
       "upload_note": "Files or Folders to Resize Drag & Drop."

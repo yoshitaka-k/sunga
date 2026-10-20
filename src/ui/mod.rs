@@ -4,8 +4,8 @@ mod setting;
 
 pub use main::render::Render;
 
-use crate::file;
-use crate::ui::assets::color;
+// スペースの幅
+pub(crate) const SPACING_ZERO: f32 = 0.0;
 
 // パネルの内側のマージン
 pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
@@ -14,6 +14,9 @@ pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
 pub(crate) const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 6,
 };
+
+use crate::file;
+use crate::ui::assets::color;
 
 /// ファイルダイアログを表示するためのトークン
 pub(crate) struct DialogToken {
@@ -119,6 +122,15 @@ pub(crate) fn add_label(
 /// * `return` - アイコンの色
 pub(crate) fn icon_color(ui: &egui::Ui) -> egui::Color32 {
     ui.visuals().text_color()
+}
+
+/// テキストカラーを設定する
+/// * `ui` - UI
+/// * `text` - テキスト
+/// * `color` - カラー
+/// * `return` - ラベルのレスポンス
+pub(crate) fn rich_label(ui: &mut egui::Ui, text: &str, color: egui::Color32) -> egui::Response {
+    ui.label(egui::RichText::new(text).color(color))
 }
 
 /// パネルのスタイルを設定
