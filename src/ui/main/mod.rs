@@ -8,6 +8,9 @@ const BOTTOM_PANEL_NAME: &str = "bottom_menubar";
 const SEPARATOR_HEIGHT: f32 = 4.0;
 const LIST_ICON_INDENT: f32 = 2.0;
 
+use crate::{file, ui};
+use crate::ui::assets::{icon, svg};
+
 /// アイコンウィジェットを作成
 /// * `icon` - アイコン
 /// * `size` - アイコンのサイズ
@@ -15,4 +18,33 @@ const LIST_ICON_INDENT: f32 = 2.0;
 /// * `return` - アイコンウィジェット
 fn icon_widget(icon: egui::ImageSource<'static>, size: f32, color: egui::Color32) -> impl egui::Widget {
     egui::Image::new(icon).max_height(size).tint(color)
+}
+
+/// ステータスアイコンを描画
+/// * `ui` - UI
+/// * `status` - ステータス
+/// * `return` - ステータスアイコン
+fn status_icon(ui: &mut egui::Ui, status: &file::Status, status_color: &ui::StatusColor) -> egui::Response {
+    let widget = match status {
+       file::Status::Standby => {
+           icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby)
+       },
+       file::Status::Resizing => {
+           icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing)
+       },
+       file::Status::Resized => {
+           icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, status_color.resized)
+       },
+       file::Status::Skipped => {
+           icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped)
+       },
+       file::Status::Canceled => {
+           icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled)
+       },
+       file::Status::Error(_) => {
+           icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error)
+       },
+   };
+
+   ui.add(widget).on_hover_text(status.to_string())
 }

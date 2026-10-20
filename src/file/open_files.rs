@@ -4,11 +4,34 @@ use getset::Getters;
 
 use crate::{app, file, error};
 
+/// ファイル情報
+struct FileInfo {
+    standby_len: u32,
+    resizing_len: u32,
+    resized_len: u32,
+    skipped_len: u32,
+    canceled_len: u32,
+    error_len: u32
+}
+impl FileInfo {
+    pub fn new() -> Self {
+        Self {
+            standby_len: 0,
+            resizing_len: 0,
+            resized_len: 0,
+            skipped_len: 0,
+            canceled_len: 0,
+            error_len: 0,
+        }
+    }
+}
+
 /// 開いたファイルの管理
 #[derive(Getters)]
 #[getset(get = "pub")]
 pub(crate) struct OpenFiles {
     images: Vec<file::Image>,
+    file_info: FileInfo,
 }
 
 /// public methods
@@ -18,6 +41,7 @@ impl OpenFiles {
     pub fn new() -> Self {
         Self {
              images: Vec::new(),
+             file_info: FileInfo::new(),
         }
     }
 
@@ -36,10 +60,55 @@ impl OpenFiles {
         self.images.clear();
     }
 
+    /// ファイル情報を更新
+    pub fn update_file_info(&mut self) {
+        let mut standby_len = 0;
+        let mut resizing_len = 0;
+        let mut resized_len = 0;
+        let mut skipped_len = 0;
+        let mut canceled_len = 0;
+        let mut error_len = 0;
+
+        // 各ファイルの情報を集計
+        for file in &self.images {
+            match file.status() {
+                file::Status::Standby => standby_len += 1,
+                file::Status::Resizing => resizing_len += 1,
+                file::Status::Resized => resized_len += 1,
+                file::Status::Skipped => skipped_len += 1,
+                file::Status::Canceled => canceled_len += 1,
+                file::Status::Error(_) => error_len += 1,
+            }
+        }
+
+        // ファイル情報を更新
+        self.file_info.standby_len = standby_len;
+        self.file_info.resizing_len = resizing_len;
+        self.file_info.resized_len = resized_len;
+        self.file_info.skipped_len = skipped_len;
+        self.file_info.canceled_len = canceled_len;
+        self.file_info.error_len = error_len;
+    }
+
     /// ファイルの件数を取得
     /// * `return` - ファイルの件数
     pub fn len(&self) -> usize {
         self.images.len()
+    }
+
+    /// ジョブの状態を取得
+    /// 優先度: リサイズ中 > エラー > リサイズ済み・スキップ > 待機
+    /// * `return` - ジョブの状態
+    pub fn job_status(&self) -> file::Status {
+        if self.file_info.resizing_len > 0 {
+            file::Status::Resizing
+        } else if self.file_info.error_len > 0 {
+            file::Status::Error(String::new())
+        } else if (self.file_info.resized_len + self.file_info.skipped_len) > 0 {
+            file::Status::Resized
+        } else {
+            file::Status::Standby
+        }
     }
 
     /// ファイルが空かどうか

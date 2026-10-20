@@ -83,7 +83,7 @@ impl eframe::App for Render {
         // トップメニューバーを描画
         top::view(ui, &self.app, &mut self.pending_actions);
         // 下部メニューバーを描画
-        bottom::view(ui, &mut self.pending_actions);
+        bottom::view(ui, &mut self.files, &mut self.pending_actions, &self.status_color);
         // 中央パネルを描画
         middle::view(ui, &self.files, row_height, &self.status_color);
 
