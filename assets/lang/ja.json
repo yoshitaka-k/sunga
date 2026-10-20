@@ -8,7 +8,8 @@
       "header_sized": "サイズ",
       "settings": "設定",
       "files_open": "ファイルを開く",
-      "folder_open": "フォルダを開く"
+      "folder_open": "フォルダを開く",
+      "file_or_folder_open": "ファイルまたはフォルダを開く"
     },
     "main_bottom": {
       "clear": "キャンセルしてクリア",

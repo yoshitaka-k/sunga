@@ -8,7 +8,8 @@
       "header_sized": "Sized",
       "settings": "Settings",
       "files_open": "Files Open",
-      "folder_open": "Folder Open"
+      "folder_open": "Folder Open",
+      "file_or_folder_open": "File or Folder Open"
     },
     "main_bottom": {
       "clear": "Cancel and Clear",

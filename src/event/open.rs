@@ -32,7 +32,14 @@ pub(crate) fn folder(
 ) -> error::Result<bool> {
     let extensions = file::allowed_extensions();
 
-    // フォルダを選択
+    // Macのみファイルとフォルダを同時選択できる
+    #[cfg(target_os = "macos")]
+    let paths = rfd::FileDialog::new()
+        .add_filter(label, &extensions)
+        .pick_files_or_folders();
+
+    // Mac以外は複数フォルダ選択のみ
+    #[cfg(not(target_os = "macos"))]
     let paths = rfd::FileDialog::new()
         .add_filter(label, &extensions)
         .pick_folders();
