@@ -54,6 +54,18 @@
     },
     "file_dialog": {
       "image_files": "画像ファイル"
+    },
+    "modal_error": {
+      "heading": "エラーが発生しました"
+    },
+    "modal_updated": {
+      "heading": "アップデートされました",
+      "new_version": "新しいバージョン",
+      "current_version": "現在のバージョン",
+      "download": "ダウンロード",
+      "available": "新しいバージョンがあります。",
+      "latest": "アプリケーションは最新です。",
+      "failed": "アップデートの確認に失敗しました。"
     }
   }
 }

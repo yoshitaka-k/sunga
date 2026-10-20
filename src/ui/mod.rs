@@ -1,6 +1,7 @@
 mod assets;
 mod main;
 mod setting;
+mod modal;
 
 pub use main::render::Render;
 
@@ -14,8 +15,11 @@ pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
 pub(crate) const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 6,
 };
+pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
+    left: 8, right: 8, top: 0, bottom: 0,
+};
 
-use crate::file;
+use crate::{file, error};
 use crate::ui::assets::color;
 
 /// ファイルダイアログを表示するためのトークン
@@ -29,6 +33,54 @@ impl DialogToken {
             file: false,
             folder: false,
         }
+    }
+}
+
+/// エラーモーダルを表示するためのトークン
+pub(crate) struct ErrorToken {
+    pub open: bool,
+    pub value: Option<error::SungaError>,
+    pub dismissed: bool,
+}
+
+impl ErrorToken {
+    pub fn new() -> Self {
+        Self {
+            open: false,
+            value: None,
+            dismissed: false,
+        }
+    }
+
+    /// エラーモーダルを表示
+    /// * `error` - エラー内容
+    pub fn show(&mut self, error: error::SungaError) {
+        if self.dismissed {
+            return;
+        }
+
+        // 同じ失敗が毎フレーム来ても、ログは最初の1回だけ出す
+        if self.value.is_none() {
+            let (file, line) = error.location();
+            log::error!("{error} @ {file}:{line}");
+        }
+
+        self.open = true;
+        self.value = Some(error);
+    }
+
+    /// エラーモーダルを非表示
+    pub fn dismiss(&mut self) {
+        self.open = false;
+        self.value = None;
+        self.dismissed = true;
+    }
+
+    /// エラーモーダルをリセット
+    pub fn reset(&mut self) {
+        self.open = false;
+        self.value = None;
+        self.dismissed = false;
     }
 }
 

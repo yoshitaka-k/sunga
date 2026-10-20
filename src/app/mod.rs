@@ -1,5 +1,5 @@
 mod update;
-pub(crate) use update::{UpdateJob, UpdatedToken};
+pub(crate) use update::{UpdateJob, UpdateCheck, UpdatedToken};
 
 use getset::{Getters, MutGetters};
 use serde::{Deserialize, Serialize};

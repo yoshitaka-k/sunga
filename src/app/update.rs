@@ -10,7 +10,7 @@ use crate::error;
 pub(crate) enum UpdateCheck {
     Available { version: String, url: String },
     Latest,
-    Failed,
+    Failed(String),
 }
 
 /// 更新モーダルを表示するためのトークン
@@ -101,7 +101,7 @@ impl UpdateJob {
                                 Err(error) => {
                                     println!("error: {:?}", error);
                                     token.open = true;
-                                    token.check = Some(UpdateCheck::Failed);
+                                    token.check = Some(UpdateCheck::Failed(error.to_string()));
                                 }
                             }
                         }
@@ -109,7 +109,7 @@ impl UpdateJob {
                         Err(error) => {
                             println!("error: {:?}", error);
                             token.open = true;
-                            token.check = Some(UpdateCheck::Failed);
+                            token.check = Some(UpdateCheck::Failed(error.to_string()));
                         }
                     }
                 }
@@ -117,7 +117,7 @@ impl UpdateJob {
                 Err(error) => {
                     println!("error: {:?}", error);
                     token.open = true;
-                    token.check = Some(UpdateCheck::Failed);
+                    token.check = Some(UpdateCheck::Failed(error.to_string()));
                 }
             }
 

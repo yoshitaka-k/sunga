@@ -11,7 +11,9 @@ pub struct Render {
     pending_actions: Vec<event::EventAction>,
     dialog_token: ui::DialogToken,
     setting_token: ui::SettingToken,
+    updated_token: app::UpdatedToken,
     resize_job: resize::ResizeJob,
+    update_job: app::UpdateJob,
 
     status_color: ui::StatusColor,
 }
@@ -43,7 +45,9 @@ impl Render {
             pending_actions: Vec::new(),
             dialog_token: ui::DialogToken::new(),
             setting_token: ui::SettingToken::new(),
+            updated_token: app::UpdatedToken::new(),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
+            update_job: app::UpdateJob::new(cc.egui_ctx.clone()),
             status_color: ui::StatusColor::new(&cc.egui_ctx),
         }
     }
@@ -89,7 +93,13 @@ impl eframe::App for Render {
 
         // 設定ウィンドウを描画している場合は描画しない
         if self.setting_token.open {
-            setting::view(ui, &mut self.app, &mut self.setting_token);
+            setting::view(
+                ui,
+                &mut self.app,
+                &mut self.setting_token,
+                &mut self.update_job,
+                &mut self.updated_token,
+            );
         }
     }
 }

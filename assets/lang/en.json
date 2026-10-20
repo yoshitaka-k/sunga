@@ -54,6 +54,18 @@
     },
     "file_dialog": {
       "image_files": "Image Files"
+    },
+    "modal_error": {
+      "heading": "An error occurred"
+    },
+    "modal_updated": {
+      "heading": "Updated",
+      "new_version": "New Version",
+      "current_version": "Current Version",
+      "download": "Download",
+      "available": "There is a new version available.",
+      "latest": "The application is the latest version.",
+      "failed": "Failed to check for updates."
     }
   }
 }
