@@ -55,6 +55,7 @@ impl SungaError {
     /// * `message` - エラーメッセージ
     /// * `path` - ファイルパス
     /// * `return` - ファイルが見つからないエラー
+    #[allow(dead_code)]
     #[track_caller]
     pub fn file_not_found(message: impl Into<String>, path: path::PathBuf) -> Self {
         let (file, line) = Self::caller();
@@ -80,10 +81,10 @@ impl SungaError {
         Self::ResizeError(message.into(), path, file, line)
     }
 
-
     /// インデックスエラー
     /// * `index` - インデックス
     /// * `return` - インデックスエラー
+    #[allow(dead_code)]
     #[track_caller]
     pub fn index_error(index: usize) -> Self {
         let (file, line) = Self::caller();
