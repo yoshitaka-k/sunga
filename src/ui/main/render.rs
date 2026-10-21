@@ -86,11 +86,27 @@ impl eframe::App for Render {
         let row_height = self.row_height(ui);
 
         // トップメニューバーを描画
-        top::view(ui, &self.app, &mut self.pending_actions);
+        top::view(
+            ui,
+            &self.app,
+            &mut self.pending_actions,
+        );
+
         // 下部メニューバーを描画
-        bottom::view(ui, &mut self.files, &mut self.pending_actions, &self.status_color);
+        bottom::view(
+            ui,
+            &mut self.files,
+            &mut self.pending_actions,
+            &self.status_color,
+        );
+
         // 中央パネルを描画
-        middle::view(ui, &self.files, row_height, &self.status_color);
+        middle::view(
+            ui,
+            &self.files,
+            row_height,
+            &self.status_color,
+        );
 
         // 設定ウィンドウを描画している場合は描画しない
         if self.setting_token.open {
@@ -187,17 +203,21 @@ impl Render {
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
             match action {
+                /// ファイルダイアログを表示
                 event::EventAction::FilesOpen => {
                     button::files_open(ui, &mut self.dialog_token);
                 },
+                /// フォルダダイアログを表示
                 event::EventAction::FolderOpen => {
                     button::folders_open(ui, &mut self.dialog_token);
                 },
+                /// ファイルをクリア
                 event::EventAction::Clear => {
                     if let Err(e) = button::cancel_and_clear_files(ui, &mut self.files, &mut self.resize_job) {
                         println!("error: {}", e);
                     }
                 },
+                /// 設定ウィンドウを表示
                 event::EventAction::SettingOpen => {
                     button::setting_open(ui, &mut self.setting_token);
                 },
