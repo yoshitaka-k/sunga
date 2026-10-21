@@ -203,21 +203,21 @@ impl Render {
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
             match action {
-                /// ファイルダイアログを表示
+                // ファイルダイアログを表示
                 event::EventAction::FilesOpen => {
                     button::files_open(ui, &mut self.dialog_token);
                 },
-                /// フォルダダイアログを表示
+                // フォルダダイアログを表示
                 event::EventAction::FolderOpen => {
                     button::folders_open(ui, &mut self.dialog_token);
                 },
-                /// ファイルをクリア
+                // ファイルをクリア
                 event::EventAction::Clear => {
                     if let Err(e) = button::cancel_and_clear_files(ui, &mut self.files, &mut self.resize_job) {
                         println!("error: {}", e);
                     }
                 },
-                /// 設定ウィンドウを表示
+                // 設定ウィンドウを表示
                 event::EventAction::SettingOpen => {
                     button::setting_open(ui, &mut self.setting_token);
                 },
