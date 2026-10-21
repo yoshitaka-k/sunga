@@ -83,8 +83,6 @@ impl Sunga {
 
         // リサイズを実行
         let resized = Self::resize(&image, options);
-        println!("image: {:?}", image.dimensions());
-        println!("resized: {:?}", resized.dimensions());
 
         // 同じサイズの場合はスキップ
         if resized.width() == image.width() && resized.height() == image.height() {
