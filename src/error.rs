@@ -10,6 +10,7 @@ pub enum SungaError {
     IndexError(usize, String, u32),
     InvalidVersion(String, u32),
     LockPoisoned(String, u32),
+    OpenFailed(String, u32),
 }
 
 /// SungaError を表示
@@ -23,6 +24,7 @@ impl fmt::Display for SungaError {
             SungaError::IndexError(i, _, _) => write!(fmt, "[{}] Index error: {}", code, i),
             SungaError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
             SungaError::LockPoisoned(_, _) => write!(fmt, "[{}] Lock poisoned", code),
+            SungaError::OpenFailed(_, _) => write!(fmt, "[{}] Open failed", code),
         }
     }
 }
@@ -37,6 +39,7 @@ impl error::Error for SungaError {
             SungaError::IndexError(_, _, _) => None,
             SungaError::InvalidVersion(_, _) => None,
             SungaError::LockPoisoned(_, _) => None,
+            SungaError::OpenFailed(_, _) => None,
         }
     }
 }
@@ -71,6 +74,7 @@ impl SungaError {
         let (file, line) = Self::caller();
         Self::FileError(message.into(), path, file, line)
     }
+
     /// リサイズエラー
     /// * `message` - エラーメッセージ
     /// * `path` - ファイルパス
@@ -107,6 +111,16 @@ impl SungaError {
         Self::LockPoisoned(file, line)
     }
 
+    /// ファイルを開く失敗
+    /// * `message` - エラーメッセージ
+    /// * `return` - ファイルを開く失敗
+    #[allow(dead_code)]
+    #[track_caller]
+    pub fn open_failed() -> Self {
+        let (file, line) = Self::caller();
+        Self::OpenFailed(file, line)
+    }
+
     /// 発生箇所のファイル名と行番号
     /// * `return` - ファイル名と行番号
     #[allow(dead_code)]
@@ -118,6 +132,7 @@ impl SungaError {
             | Self::IndexError(_, file, line)
             | Self::InvalidVersion(file, line)
             | Self::LockPoisoned(file, line)
+            | Self::OpenFailed(file, line)
             => (file, *line),
         }
     }
@@ -133,6 +148,7 @@ impl SungaError {
             Self::IndexError(_, f, l) => format!("IE_{}_{}", Self::file_to_code(f), l),
             Self::InvalidVersion(f, l) => format!("IVE_{}_{}", Self::file_to_code(f), l),
             Self::LockPoisoned(f, l) => format!("LP_{}_{}", Self::file_to_code(f), l),
+            Self::OpenFailed(f, l) => format!("OF_{}_{}", Self::file_to_code(f), l),
         }
     }
 

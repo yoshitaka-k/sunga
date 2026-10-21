@@ -1,6 +1,6 @@
 use crate::{app, error, event, file, resize};
 use crate::event::{button, input, open};
-use crate::ui::{self, setting};
+use crate::ui::{self, modal, setting};
 use crate::ui::assets::{label, font, svg, icon};
 use crate::ui::main::{self, top, bottom, middle};
 
@@ -12,9 +12,9 @@ pub struct Render {
     dialog_token: ui::DialogToken,
     setting_token: ui::SettingToken,
     updated_token: app::UpdatedToken,
+    error_token: ui::ErrorToken,
     resize_job: resize::ResizeJob,
     update_job: app::UpdateJob,
-
     status_color: ui::StatusColor,
 }
 
@@ -46,6 +46,7 @@ impl Render {
             dialog_token: ui::DialogToken::new(),
             setting_token: ui::SettingToken::new(),
             updated_token: app::UpdatedToken::new(),
+            error_token: ui::ErrorToken::new(),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
             update_job: app::UpdateJob::new(cc.egui_ctx.clone()),
             status_color: ui::StatusColor::new(&cc.egui_ctx),
@@ -101,6 +102,11 @@ impl eframe::App for Render {
                 &mut self.updated_token,
             );
         }
+
+        // エラーメッセージを描画
+        if self.error_token.open {
+            modal::error(ui.ctx(), &mut self.error_token);
+        }
     }
 }
 
@@ -147,11 +153,20 @@ impl Render {
     /// ファイルを開く結果を処理
     /// * `result` - ファイルを開く結果
     fn open_result(&mut self, result: error::Result<bool>) {
+        self.error_token.reset();
+
         // ファイルを開く結果を処理
         match result {
-            Ok(true) =>  println!("open success"),
-            Ok(false) => println!("open failed"),
-            Err(e) => println!("open error: {}", e),
+            Ok(true) => (),
+            Ok(false) => {
+                eprintln!("open failed");
+                // 一括追加したときモーダルでると煩わしいので一旦コメントアウト
+                // self.error_token.show(error::SungaError::open_failed());
+            },
+            Err(e) => {
+                eprintln!("open error: {}", e);
+                self.error_token.show(e);
+            }
         }
     }
 
