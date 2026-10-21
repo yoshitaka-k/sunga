@@ -109,6 +109,7 @@ impl SungaError {
 
     /// 発生箇所のファイル名と行番号
     /// * `return` - ファイル名と行番号
+    #[allow(dead_code)]
     pub fn location(&self) -> (&str, u32) {
         match self {
             Self::FileNotFound(_, _, file, line)
