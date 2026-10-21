@@ -5,7 +5,9 @@ pub(crate) mod open;
 
 /// イベントアクション
 pub(crate) enum EventAction {
+    #[allow(dead_code)]
     FilesOpen,
+
     FolderOpen,
     SettingOpen,
     Clear,
