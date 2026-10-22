@@ -223,7 +223,7 @@ impl Render {
                     button::setting_open(ui, &mut self.setting_token);
                 },
                 // ファイルをクリック
-                event::EventAction::Click(id) => {
+                event::EventAction::Click { id } => {
                     self.files.set_selected_id(Some(id));
                 }
             }

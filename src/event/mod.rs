@@ -11,5 +11,5 @@ pub(crate) enum EventAction {
     FolderOpen,
     SettingOpen,
     Clear,
-    Click(u64),
+    Click { id: u64 },
 }

@@ -102,7 +102,7 @@ pub(crate) fn view(
 
                 // 行がクリックされた場合は選択されたアイテムを更新
                 if response.clicked() {
-                    pending_actions.push(event::EventAction::Click(*image.id()));
+                    pending_actions.push(event::EventAction::Click { id: *image.id() });
                     row_clicked = true;
                 }
             }
