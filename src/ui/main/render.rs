@@ -241,7 +241,7 @@ impl Render {
                 // ファイルをダブルクリック
                 event::EventAction::DoubleClick(path) => {
                     if let Err(e) = click::double_click(&path) {
-                        eprintln!("Error revealing file: {}", e);
+                        eprintln!("Error double click: {}", e);
                         self.error_token.reset();
                         self.error_token.show(e);
                     }
@@ -249,7 +249,7 @@ impl Render {
                 // エンターキーが押されたら選択された行を開く
                 event::EventAction::Enter(path) => {
                     if let Err(e) = click::double_click(&path) {
-                        eprintln!("Error revealing file: {}", e);
+                        eprintln!("Error enter key: {}", e);
                         self.error_token.reset();
                         self.error_token.show(e);
                     }
