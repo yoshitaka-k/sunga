@@ -63,3 +63,19 @@ pub(crate) fn enter(
         }
     }
 }
+
+/// スペースキーが押されたら選択された行を開く
+/// * `ui` - ウィジェットのUI
+/// * `files` - 開いているファイル
+/// * `pending_actions` - 処理予約
+pub(crate) fn space(
+    ui: &mut egui::Ui,
+    files: &file::OpenFiles,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    if ui.input(|input| input.key_pressed(egui::Key::Space)) {
+        if let Some(image) = files.selected_image() {
+            pending_actions.push(event::EventAction::Space(image.reveal_path().clone()));
+        }
+    }
+}

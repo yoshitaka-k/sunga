@@ -3,6 +3,7 @@ pub(crate) mod input;
 pub(crate) mod drop;
 pub(crate) mod open;
 pub(crate) mod click;
+pub(crate) mod key;
 
 /// イベントアクション
 pub(crate) enum EventAction {
@@ -15,4 +16,5 @@ pub(crate) enum EventAction {
     Click { id: u64 },
     DoubleClick(std::path::PathBuf),
     Enter(std::path::PathBuf),
+    Space(std::path::PathBuf),
 }

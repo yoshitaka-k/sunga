@@ -1,5 +1,5 @@
 use crate::{app, error, event, file, resize};
-use crate::event::{button, click, input, open};
+use crate::event::{button, click, input, open, key};
 use crate::ui::{self, modal, setting};
 use crate::ui::assets::{label, font, svg, icon};
 use crate::ui::main::{self, top, bottom, middle};
@@ -144,6 +144,9 @@ impl Render {
 
         // エンターキーが押されたら選択された行を開く
         input::enter(ui, &self.files, &mut self.pending_actions);
+
+        // スペースキーが押されたら選択された行を開く
+        input::space(ui, &self.files, &mut self.pending_actions);
     }
 
     /// ドロップされたファイルを処理
@@ -250,6 +253,14 @@ impl Render {
                 event::EventAction::Enter(path) => {
                     if let Err(e) = click::double_click(&path) {
                         eprintln!("Error enter key: {}", e);
+                        self.error_token.reset();
+                        self.error_token.show(e);
+                    }
+                }
+                // スペースキーが押されたら選択された行を開く
+                event::EventAction::Space(path) => {
+                    if let Err(e) = key::space(&path) {
+                        eprintln!("Error space key: {}", e);
                         self.error_token.reset();
                         self.error_token.show(e);
                     }
