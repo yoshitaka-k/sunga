@@ -1,4 +1,4 @@
-use std::{path, error, fmt};
+use std::{path, error, fmt, io};
 
 pub type Result<T> = std::result::Result<T, SungaError>;
 
@@ -11,6 +11,7 @@ pub enum SungaError {
     InvalidVersion(String, u32),
     LockPoisoned(String, u32),
     OpenFailed(String, u32),
+    Io(io::Error, String, u32),
 }
 
 /// SungaError を表示
@@ -25,6 +26,7 @@ impl fmt::Display for SungaError {
             SungaError::InvalidVersion(_, _) => write!(fmt, "[{}] Invalid version", code),
             SungaError::LockPoisoned(_, _) => write!(fmt, "[{}] Lock poisoned", code),
             SungaError::OpenFailed(_, _) => write!(fmt, "[{}] Open failed", code),
+            SungaError::Io(e, _, _) => write!(fmt, "[{}] IO error: {}", code, e),
         }
     }
 }
@@ -40,7 +42,16 @@ impl error::Error for SungaError {
             SungaError::InvalidVersion(_, _) => None,
             SungaError::LockPoisoned(_, _) => None,
             SungaError::OpenFailed(_, _) => None,
+            SungaError::Io(ref e, _, _) => Some(e),
         }
+    }
+}
+
+/// std::io::Error を SungaError に変換
+impl From<io::Error> for SungaError {
+    #[track_caller]
+    fn from(e: io::Error) -> Self {
+        Self::io(e)
     }
 }
 
@@ -58,7 +69,6 @@ impl SungaError {
     /// * `message` - エラーメッセージ
     /// * `path` - ファイルパス
     /// * `return` - ファイルが見つからないエラー
-    #[allow(dead_code)]
     #[track_caller]
     pub fn file_not_found(message: impl Into<String>, path: path::PathBuf) -> Self {
         let (file, line) = Self::caller();
@@ -121,6 +131,15 @@ impl SungaError {
         Self::OpenFailed(file, line)
     }
 
+    /// IO エラー
+    /// * `error` - IO エラー
+    /// * `return` - IO エラー
+    #[track_caller]
+    pub fn io(error: io::Error) -> Self {
+        let (file, line) = Self::caller();
+        Self::Io(error, file, line)
+    }
+
     /// 発生箇所のファイル名と行番号
     /// * `return` - ファイル名と行番号
     #[allow(dead_code)]
@@ -133,6 +152,7 @@ impl SungaError {
             | Self::InvalidVersion(file, line)
             | Self::LockPoisoned(file, line)
             | Self::OpenFailed(file, line)
+            | Self::Io(_, file, line)
             => (file, *line),
         }
     }
@@ -149,6 +169,7 @@ impl SungaError {
             Self::InvalidVersion(f, l) => format!("IVE_{}_{}", Self::file_to_code(f), l),
             Self::LockPoisoned(f, l) => format!("LP_{}_{}", Self::file_to_code(f), l),
             Self::OpenFailed(f, l) => format!("OF_{}_{}", Self::file_to_code(f), l),
+            Self::Io(_, f, l) => format!("IO_{}_{}", Self::file_to_code(f), l),
         }
     }
 

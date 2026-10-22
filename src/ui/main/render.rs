@@ -1,5 +1,5 @@
 use crate::{app, error, event, file, resize};
-use crate::event::{button, input, open};
+use crate::event::{button, click, input, open};
 use crate::ui::{self, modal, setting};
 use crate::ui::assets::{label, font, svg, icon};
 use crate::ui::main::{self, top, bottom, middle};
@@ -216,6 +216,8 @@ impl Render {
                 event::EventAction::Clear => {
                     if let Err(e) = button::cancel_and_clear_files(ui, &mut self.files, &mut self.resize_job) {
                         println!("error: {}", e);
+                        self.error_token.reset();
+                        self.error_token.show(e);
                     }
                 },
                 // 設定ウィンドウを表示
@@ -225,6 +227,14 @@ impl Render {
                 // ファイルをクリック
                 event::EventAction::Click { id } => {
                     self.files.set_selected_id(Some(id));
+                }
+                // ファイルをダブルクリック
+                event::EventAction::DoubleClick(path) => {
+                    if let Err(e) = click::double_click(&path) {
+                        eprintln!("Error revealing file: {}", e);
+                        self.error_token.reset();
+                        self.error_token.show(e);
+                    }
                 }
             }
         }

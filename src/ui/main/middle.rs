@@ -105,6 +105,11 @@ pub(crate) fn view(
                     pending_actions.push(event::EventAction::Click { id: *image.id() });
                     row_clicked = true;
                 }
+
+                // 行がダブルクリックされた場合はファイルパスを取得
+                if response.double_clicked() {
+                    pending_actions.push(event::EventAction::DoubleClick(image.path().clone()));
+                }
             }
 
             row_clicked
