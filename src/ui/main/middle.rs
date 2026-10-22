@@ -108,7 +108,7 @@ pub(crate) fn view(
 
                 // 行がダブルクリックされた場合はファイルパスを取得
                 if response.double_clicked() {
-                    pending_actions.push(event::EventAction::DoubleClick(image.path().clone()));
+                    pending_actions.push(event::EventAction::DoubleClick(image.reveal_path().clone()));
                 }
             }
 

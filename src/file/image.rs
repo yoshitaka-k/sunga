@@ -72,6 +72,16 @@ impl Image {
     pub fn file_name(&self) -> String {
         self.path.file_name().unwrap_or_default().to_string_lossy().to_string()
     }
+
+    /// 出力ファイルのパスを取得
+    /// * `return` - 出力ファイルのパス
+    pub fn reveal_path(&self) -> &PathBuf {
+        match self.output_path {
+            Some(ref path) if path.exists() => path,
+            _ => &self.path,
+        }
+    }
+
     /// 出力先を作成
     /// * `app` - アプリケーションのインスタンス
     /// * `return` - 出力先
