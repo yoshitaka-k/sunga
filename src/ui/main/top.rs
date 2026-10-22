@@ -38,17 +38,24 @@ pub(crate) fn view(
 
                 // フォルダダイアログを開くボタン
                 #[cfg(target_os = "macos")]
-                let hover_text = label::current().main_top.file_or_folder_open;
-                #[cfg(not(target_os = "macos"))]
-                let hover_text = label::current().main_top.folder_open;
-
-                // フォルダダイアログを開くボタン
-                let folder_open_button_image = egui::Image::new(svg::FOLDER_OPEN).tint(button_icon_color);
-                if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(folder_open_button_image))
-                    .on_hover_text(hover_text).clicked()
                 {
-                    pending_actions.push(event::EventAction::FolderOpen);
-                    ui.ctx().request_repaint();
+                    let svg_image = egui::Image::new(svg::UPLOAD).tint(button_icon_color);
+                    if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
+                        .on_hover_text(label::current().main_top.file_or_folder_open).clicked()
+                    {
+                        pending_actions.push(event::EventAction::FolderOpen);
+                        ui.ctx().request_repaint();
+                    }
+                }
+                #[cfg(not(target_os = "macos"))]
+                {
+                    let svg_image = egui::Image::new(svg::FOLDER_OPEN).tint(button_icon_color);
+                    if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
+                        .on_hover_text(label::current().main_top.folder_open).clicked()
+                    {
+                        pending_actions.push(event::EventAction::FolderOpen);
+                        ui.ctx().request_repaint();
+                    }
                 }
 
                 // ファイルダイアログを開くボタン
