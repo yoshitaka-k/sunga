@@ -103,9 +103,10 @@ impl eframe::App for Render {
         // 中央パネルを描画
         middle::view(
             ui,
-            &self.files,
+            &mut self.files,
             row_height,
             &self.status_color,
+            &mut self.pending_actions,
         );
 
         // 設定ウィンドウを描画している場合は描画しない
@@ -221,6 +222,10 @@ impl Render {
                 event::EventAction::SettingOpen => {
                     button::setting_open(ui, &mut self.setting_token);
                 },
+                // ファイルをクリック
+                event::EventAction::Click(id) => {
+                    self.files.set_selected_id(Some(id));
+                }
             }
         }
     }

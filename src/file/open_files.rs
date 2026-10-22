@@ -1,6 +1,6 @@
 use std::fs;
 use std::path::{Path, PathBuf};
-use getset::Getters;
+use getset::{Getters, Setters};
 
 use crate::{app, file, error};
 
@@ -31,11 +31,14 @@ impl FileInfo {
 }
 
 /// 開いたファイルの管理
-#[derive(Getters)]
+#[derive(Getters, Setters)]
 #[getset(get = "pub")]
 pub(crate) struct OpenFiles {
     images: Vec<file::Image>,
     file_info: FileInfo,
+
+    #[getset(set = "pub")]
+    selected_id: Option<u64>,
 }
 
 /// public methods
@@ -46,6 +49,7 @@ impl OpenFiles {
         Self {
              images: Vec::new(),
              file_info: FileInfo::new(),
+             selected_id: None,
         }
     }
 
@@ -57,9 +61,10 @@ impl OpenFiles {
         Ok(self.find_file(app, &path, base_dir)?)
     }
 
-    /// ファイルをクリア
+    /// 諸々クリア
     pub fn clear(&mut self) {
         self.images.clear();
+        self.selected_id = None;
     }
 
     /// ファイル情報を更新
