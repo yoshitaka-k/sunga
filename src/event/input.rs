@@ -1,4 +1,4 @@
-use crate::{app, error, file, ui};
+use crate::{app, error, event, file, ui};
 use crate::event::{button, drop};
 
 /// ドロップされたファイルを処理する
@@ -45,5 +45,21 @@ pub(crate) fn command_w(
         && input.key_pressed(egui::Key::W)
     }) {
         setting_token.open = false;
+    }
+}
+
+/// エンターキーが押されたら選択された行を開く
+/// * `ui` - ウィジェットのUI
+/// * `files` - 開いているファイル
+/// * `pending_actions` - 処理予約
+pub(crate) fn enter(
+    ui: &mut egui::Ui,
+    files: &file::OpenFiles,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    if ui.input(|input| input.key_pressed(egui::Key::Enter)) {
+        if let Some(image) = files.selected_image() {
+            pending_actions.push(event::EventAction::Enter(image.reveal_path().clone()));
+        }
     }
 }

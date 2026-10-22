@@ -182,6 +182,16 @@ impl OpenFiles {
         self.images.iter_mut().find(|f| f.is_standby())
     }
 
+    /// 選択されたファイルを取得
+    /// * `return` - 選択されたファイル
+    pub fn selected_image(&self) -> Option<&file::Image> {
+        if let Some(id) = self.selected_id {
+            self.images.iter().find(|f| *f.id() == id)
+        } else {
+            None
+        }
+    }
+
     /// リサイズ結果を反映
     /// * `result` - リサイズ結果
     pub fn apply_result(&mut self, result: file::Image) {

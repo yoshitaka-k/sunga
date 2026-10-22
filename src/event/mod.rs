@@ -14,4 +14,5 @@ pub(crate) enum EventAction {
     Clear,
     Click { id: u64 },
     DoubleClick(std::path::PathBuf),
+    Enter(std::path::PathBuf),
 }

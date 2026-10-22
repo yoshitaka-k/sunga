@@ -141,6 +141,9 @@ impl Render {
     fn input_events(&mut self, ui: &mut egui::Ui) {
         // Command + Comma キーが押されたら設定ウィンドウを開く
         input::command_comma(ui, &mut self.setting_token);
+
+        // エンターキーが押されたら選択された行を開く
+        input::enter(ui, &self.files, &mut self.pending_actions);
     }
 
     /// ドロップされたファイルを処理
@@ -237,6 +240,14 @@ impl Render {
                 }
                 // ファイルをダブルクリック
                 event::EventAction::DoubleClick(path) => {
+                    if let Err(e) = click::double_click(&path) {
+                        eprintln!("Error revealing file: {}", e);
+                        self.error_token.reset();
+                        self.error_token.show(e);
+                    }
+                }
+                // エンターキーが押されたら選択された行を開く
+                event::EventAction::Enter(path) => {
                     if let Err(e) = click::double_click(&path) {
                         eprintln!("Error revealing file: {}", e);
                         self.error_token.reset();
