@@ -66,8 +66,8 @@ impl eframe::App for Render {
     /// * `ui` - UI
     /// * `frame` - フレーム
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        // Command + Comma キーが押されたら設定ウィンドウを開く
-        input::command_comma(ui, &mut self.setting_token);
+        // 入力イベントを処理
+        self.input_events(ui);
 
         // リサイズ結果を受信
         self.resize_result();
@@ -134,6 +134,13 @@ impl Render {
     /// * `return` - 行の高さ
     fn row_height(&self, ui: &egui::Ui) -> f32 {
         ui.text_style_height(&egui::TextStyle::Body).max(icon::LIST_ICON_SIZE) + main::SEPARATOR_HEIGHT
+    }
+
+    /// 入力イベントを処理
+    /// * `ui` - UI
+    fn input_events(&mut self, ui: &mut egui::Ui) {
+        // Command + Comma キーが押されたら設定ウィンドウを開く
+        input::command_comma(ui, &mut self.setting_token);
     }
 
     /// ドロップされたファイルを処理
