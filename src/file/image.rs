@@ -55,6 +55,12 @@ impl Image {
         matches!(self.status, file::Status::Standby)
     }
 
+    /// ファイルがリサイズ中かどうか
+    /// * `return` - ファイルがリサイズ中かどうか
+    pub fn is_resizing(&self) -> bool {
+        matches!(self.status, file::Status::Resizing)
+    }
+
     /// ファイルがリサイズ済みかどうか
     /// * `return` - ファイルがリサイズ済みかどうか
     pub fn is_resized(&self) -> bool {

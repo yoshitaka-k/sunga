@@ -17,4 +17,5 @@ pub(crate) enum EventAction {
     DoubleClick(std::path::PathBuf),
     Enter(std::path::PathBuf),
     Space(std::path::PathBuf),
+    Backspace,
 }

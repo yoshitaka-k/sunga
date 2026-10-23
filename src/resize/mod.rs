@@ -126,9 +126,6 @@ impl Sunga {
         // 一時ファイルを元のファイルに上書き
         Self::replace_file(&temp_path, output_path)?;
 
-        // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
-
         Ok(file::Status::Resized)
     }
 }

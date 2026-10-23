@@ -64,6 +64,18 @@ pub(crate) fn enter(
     }
 }
 
+/// バックスペースキーが押されたら選択された行をキャンセル
+/// * `ui` - ウィジェットのUI
+/// * `pending_actions` - 処理予約
+pub(crate) fn backspace(
+    ui: &mut egui::Ui,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    if ui.input(|input| input.key_pressed(egui::Key::Backspace)) {
+        pending_actions.push(event::EventAction::Backspace);
+    }
+}
+
 /// スペースキーが押されたら選択された行を開く
 /// * `ui` - ウィジェットのUI
 /// * `files` - 開いているファイル

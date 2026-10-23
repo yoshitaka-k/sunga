@@ -1,5 +1,29 @@
 use std::path::Path;
-use crate::error;
+use crate::{error, file, resize};
+
+/// バックスペースキーが押されたらファイルをキャンセルする
+/// * `files` - ファイル一覧
+/// * `resize_job` - リサイズジョブ
+pub fn backspace(
+    files: &mut file::OpenFiles,
+    resize_job: &mut resize::ResizeJob
+) -> error::Result<()> {
+    let Some(image) = files.selected_image() else { return Ok(()) };
+    let id = *image.id();
+
+    // 選択中のファイルをキャンセル
+    // リサイズ中のファイルはリサイズジョブにも中断を伝える
+    // 待機中・リサイズ中以外のファイルはキャンセルできない
+    if image.is_resizing() {
+        resize_job.add_canceled_id(id)?;
+    } else if !image.is_standby() {
+        return Ok(());
+    }
+
+    files.set_status_canceled(id);
+
+    Ok(())
+}
 
 /// スペースキーが押されたらファイルを選択表示する
 /// * `path` - ファイルのパス

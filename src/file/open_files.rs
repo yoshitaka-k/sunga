@@ -192,6 +192,17 @@ impl OpenFiles {
         }
     }
 
+    /// キャンセルされたファイルのステータスを更新
+    /// 待機中とリサイズ中のファイルはキャンセルできる
+    /// * `id` - キャンセルされたファイルの ID
+    pub fn set_status_canceled(&mut self, id: u64) {
+        if let Some(image) = self.images.iter_mut().find(|i| *i.id() == id) {
+            if image.is_standby_or_resizing() {
+                image.set_status(file::Status::Canceled);
+            }
+        }
+    }
+
     /// リサイズ結果を反映
     /// * `result` - リサイズ結果
     pub fn apply_result(&mut self, result: file::Image) {

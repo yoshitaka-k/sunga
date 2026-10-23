@@ -147,6 +147,9 @@ impl Render {
 
         // スペースキーが押されたら選択された行を開く
         input::space(ui, &self.files, &mut self.pending_actions);
+
+        // バックスペースキーが押されたら選択された行をキャンセル
+        input::backspace(ui, &mut self.pending_actions);
     }
 
     /// ドロップされたファイルを処理
@@ -261,6 +264,14 @@ impl Render {
                 event::EventAction::Space(path) => {
                     if let Err(e) = key::space(&path) {
                         eprintln!("Error space key: {}", e);
+                        self.error_token.reset();
+                        self.error_token.show(e);
+                    }
+                }
+                // バックスペースキーが押されたら選択された行をキャンセル
+                event::EventAction::Backspace => {
+                    if let Err(e) = key::backspace(&mut self.files, &mut self.resize_job) {
+                        eprintln!("Error canceling file: {}", e);
                         self.error_token.reset();
                         self.error_token.show(e);
                     }

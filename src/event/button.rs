@@ -41,11 +41,11 @@ pub(crate) fn cancel_and_clear_files(
     let mut error = None;
 
     // キャンセルにファイル ID を追加
-    for file in files.images() {
-        // 待機中またはリサイズ中でない場合はスキップ
-        if !file.is_standby_or_resizing() { continue; }
+    for image in files.images() {
+        // リサイズ中でない場合はスキップ
+        if !image.is_resizing() { continue; }
 
-        if let Err(e) = resize_job.add_canceled_id(*file.id()) {
+        if let Err(e) = resize_job.add_canceled_id(*image.id()) {
             error = Some(e);
             break;
         }
