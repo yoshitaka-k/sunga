@@ -6,11 +6,13 @@ use crate::{app, error, file, resize, ui};
 pub(crate) fn files_open(
     ui: &egui::Ui,
     dialog_token: &mut ui::DialogToken,
-) {
+) -> error::Result<()> {
     dialog_token.file = true;
 
     // 再描画を要求
     ui.ctx().request_repaint();
+
+    Ok(())
 }
 
 /// フォルダダイアログを開く
@@ -19,11 +21,13 @@ pub(crate) fn files_open(
 pub(crate) fn folders_open(
     ui: &egui::Ui,
     dialog_token: &mut ui::DialogToken,
-) {
+) -> error::Result<()> {
     dialog_token.folder = true;
 
     // 再描画を要求
     ui.ctx().request_repaint();
+
+    Ok(())
 }
 
 /// 開いているファイルをクリア
@@ -71,7 +75,7 @@ pub(crate) fn cancel_and_clear_files(
 pub(crate) fn setting_open(
     ui: &egui::Ui,
     setting_token: &mut ui::SettingToken,
-) {
+) -> error::Result<()> {
     // 設定ダイアログを開く
     setting_token.open = true;
 
@@ -82,10 +86,16 @@ pub(crate) fn setting_open(
 
     // 再描画を要求
     ui.ctx().request_repaint();
+
+    Ok(())
 }
 
 /// アップデートを確認する
 /// * `update_job` - 更新ジョブ
-pub(crate) fn check_for_update(update_job: &mut app::UpdateJob) {
+pub(crate) fn check_for_update(
+    update_job: &mut app::UpdateJob
+) -> error::Result<()> {
     update_job.run();
+
+    Ok(())
 }

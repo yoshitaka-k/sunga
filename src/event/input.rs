@@ -24,12 +24,15 @@ pub(crate) fn drop(
 /// Command + Comma キーが押されたら設定ウィンドウを開く
 /// * `ui` - ウィジェットのUI
 /// * `setting_token` - 設定ウィンドウトークン
-pub(crate) fn command_comma(ui: &mut egui::Ui, setting_token: &mut ui::SettingToken) {
+pub(crate) fn command_comma(
+    ui: &mut egui::Ui,
+    setting_token: &mut ui::SettingToken
+) {
     if ui.input(|input| {
         input.modifiers.matches_exact(egui::Modifiers::COMMAND)
         && input.key_pressed(egui::Key::Comma)
     }) {
-        button::setting_open(ui, setting_token);
+        let _ = button::setting_open(ui, setting_token);
     }
 }
 

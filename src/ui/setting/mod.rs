@@ -60,7 +60,7 @@ pub(crate) fn header_panel(
         if let Some(update_job) = update_job {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 if ui.button(label::current().setting_about.update_check).clicked() {
-                    button::check_for_update(update_job);
+                    let _ =button::check_for_update(update_job);
                 }
             });
         }

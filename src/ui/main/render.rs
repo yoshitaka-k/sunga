@@ -219,63 +219,49 @@ impl Render {
     /// * `pending_actions` - 待機中のアクション
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
-            match action {
+            let result = match action {
                 // ファイルダイアログを表示
                 event::EventAction::FilesOpen => {
-                    button::files_open(ui, &mut self.dialog_token);
+                    button::files_open(ui, &mut self.dialog_token)
                 },
                 // フォルダダイアログを表示
                 event::EventAction::FolderOpen => {
-                    button::folders_open(ui, &mut self.dialog_token);
+                    button::folders_open(ui, &mut self.dialog_token)
                 },
                 // ファイルをクリア
                 event::EventAction::Clear => {
-                    if let Err(e) = button::cancel_and_clear_files(ui, &mut self.files, &mut self.resize_job) {
-                        println!("error: {}", e);
-                        self.error_token.reset();
-                        self.error_token.show(e);
-                    }
+                    button::cancel_and_clear_files(ui, &mut self.files, &mut self.resize_job)
                 },
                 // 設定ウィンドウを表示
                 event::EventAction::SettingOpen => {
-                    button::setting_open(ui, &mut self.setting_token);
+                    button::setting_open(ui, &mut self.setting_token)
                 },
                 // ファイルをクリック
                 event::EventAction::Click { id } => {
-                    self.files.set_selected_id(Some(id));
+                    click::click(id, &mut self.files)
                 }
                 // ファイルをダブルクリック
                 event::EventAction::DoubleClick(path) => {
-                    if let Err(e) = click::double_click(&path) {
-                        eprintln!("Error double click: {}", e);
-                        self.error_token.reset();
-                        self.error_token.show(e);
-                    }
+                    click::double_click(&path)
                 }
                 // エンターキーが押されたら選択された行を開く
                 event::EventAction::Enter(path) => {
-                    if let Err(e) = click::double_click(&path) {
-                        eprintln!("Error enter key: {}", e);
-                        self.error_token.reset();
-                        self.error_token.show(e);
-                    }
+                    click::double_click(&path)
                 }
                 // スペースキーが押されたら選択された行を開く
                 event::EventAction::Space(path) => {
-                    if let Err(e) = key::space(&path) {
-                        eprintln!("Error space key: {}", e);
-                        self.error_token.reset();
-                        self.error_token.show(e);
-                    }
+                    key::space(&path)
                 }
                 // バックスペースキーが押されたら選択された行をキャンセル
                 event::EventAction::Backspace => {
-                    if let Err(e) = key::backspace(&mut self.files, &mut self.resize_job) {
-                        eprintln!("Error canceling file: {}", e);
-                        self.error_token.reset();
-                        self.error_token.show(e);
-                    }
+                    key::backspace(&mut self.files, &mut self.resize_job)
                 }
+            };
+
+            if let Err(e) = result {
+                eprintln!("Error processing action: {}", e);
+                self.error_token.reset();
+                self.error_token.show(e);
             }
         }
     }

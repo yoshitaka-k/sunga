@@ -1,5 +1,17 @@
 use std::path::Path;
-use crate::error;
+use crate::{error, file};
+
+/// ファイルを選択状態にする
+/// * `id` - ファイルのID
+/// * `files` - ファイルのリスト
+/// * `return` - エラーが発生したかどうか
+pub(crate) fn click(
+    id: u64,
+    files: &mut file::OpenFiles
+) -> error::Result<()> {
+    files.set_selected_id(Some(id));
+    Ok(())
+}
 
 /// ダブルクリックで Finder でファイルを選択表示する
 /// * `path` - ファイルのパス
