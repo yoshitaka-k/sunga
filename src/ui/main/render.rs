@@ -13,6 +13,7 @@ pub struct Render {
     setting_token: ui::SettingToken,
     updated_token: app::UpdatedToken,
     error_token: ui::ErrorToken,
+    scroll_token: ui::ScrollToken,
     resize_job: resize::ResizeJob,
     update_job: app::UpdateJob,
     status_color: ui::StatusColor,
@@ -47,6 +48,7 @@ impl Render {
             setting_token: ui::SettingToken::new(),
             updated_token: app::UpdatedToken::new(),
             error_token: ui::ErrorToken::new(),
+            scroll_token: ui::ScrollToken::new(),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
             update_job: app::UpdateJob::new(cc.egui_ctx.clone()),
             status_color: ui::StatusColor::new(&cc.egui_ctx),
@@ -107,6 +109,7 @@ impl eframe::App for Render {
             row_height,
             &self.status_color,
             &mut self.pending_actions,
+            &mut self.scroll_token,
         );
 
         // 設定ウィンドウを描画している場合は描画しない
@@ -264,11 +267,11 @@ impl Render {
                 }
                 // 上矢印キーが押されたら選択された行を上に移動する
                 event::EventAction::Up { id } => {
-                    key::up(id, &mut self.files)
+                    key::up(id, &mut self.files, &mut self.scroll_token)
                 }
                 // 下矢印キーが押されたら選択された行を下に移動する
                 event::EventAction::Down { id } => {
-                    key::down(id, &mut self.files)
+                    key::down(id, &mut self.files, &mut self.scroll_token)
                 }
             };
 

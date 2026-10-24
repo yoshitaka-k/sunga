@@ -182,6 +182,16 @@ impl OpenFiles {
         self.images.iter_mut().find(|f| f.is_standby())
     }
 
+    /// 選択されたファイルのインデックスを取得
+    /// * `return` - 選択されたファイルのインデックス
+    pub fn selected_index(&self) -> Option<usize> {
+        if let Some(id) = self.selected_id {
+            self.images.iter().position(|f| *f.id() == id)
+        } else {
+            None
+        }
+    }
+
     /// 選択されたファイルを取得
     /// * `return` - 選択されたファイル
     pub fn selected_image(&self) -> Option<&file::Image> {

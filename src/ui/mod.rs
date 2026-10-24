@@ -19,6 +19,18 @@ pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
 use crate::{file, error};
 use crate::ui::assets::color;
 
+/// スクロールエリアを表示するためのトークン
+pub(crate) struct ScrollToken {
+    pub selected: bool,
+}
+impl ScrollToken {
+    pub fn new() -> Self {
+        Self {
+            selected: false,
+        }
+    }
+}
+
 /// ファイルダイアログを表示するためのトークン
 pub(crate) struct DialogToken {
     pub file: bool,

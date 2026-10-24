@@ -7,12 +7,15 @@ use crate::ui::assets::{self, icon, svg, label};
 /// * `open_files` - 開いているファイル
 /// * `row_height` - 行の高さ
 /// * `status_color` - ステータスカラー
+/// * `pending_actions` - 待機中のアクション
+/// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn view(
     ui: &mut egui::Ui,
     open_files: &mut file::OpenFiles,
     row_height: f32,
     status_color: &ui::StatusColor,
     pending_actions: &mut Vec<event::EventAction>,
+    scroll_token: &mut ui::ScrollToken,
 ) {
     egui::CentralPanel::default().show(ui, |ui| {
         // ファイルの総数を取得
@@ -20,25 +23,45 @@ pub(crate) fn view(
 
         // ビューポートの高さを取得
         let viewport_height: f32 = ui.available_height();
-        let _row_stride: f32 = row_height + ui.spacing().item_spacing.y;
-        let _item_spacing: f32 = ui.spacing().item_spacing.y;
+        let row_stride: f32 = row_height + ui.spacing().item_spacing.y;
 
         // スクロールエリアを作成
         let scroll_area = egui::ScrollArea::vertical()
+            .animated(false)
             .auto_shrink([false, false])
             .max_height(viewport_height);
 
+        // スクロールエリアを表示
         let row_clicked: bool = scroll_area.show_rows(
             ui, row_height, total_length,
             |ui, row_range|
         {
-            // 行がクリックされたかどうか
-            let mut row_clicked: bool = false;
-
             // 行の幅と行間を取得
             let width = ui.available_width();
             let row_spacing = ui.spacing().item_spacing.y;
             let start = row_range.start;
+
+            // 選択された行がある場合はスクロールエリアの表示位置を調整
+            if scroll_token.selected {
+                if let Some(index) = open_files.selected_index() {
+                    // スクロール位置への矩形を計算・作成
+                    let area = ui.max_rect();
+                    let top = area.top() + (index as f32 - start as f32) * row_stride;
+                    let rect = egui::Rect::from_min_size(
+                        egui::pos2(area.left(), top),
+                        egui::vec2(area.width(), row_height),
+                    );
+
+                    // スクロールエリアの表示位置を調整
+                    // ui.scroll_to_rect(rect, None);
+                    ui.scroll_to_rect_animation(rect, None, egui::style::ScrollAnimation::none());
+                }
+
+                scroll_token.selected = false;
+            }
+
+            // 行がクリックされたかどうか
+            let mut row_clicked: bool = false;
 
             // 表示させる範囲のファイルを取得
             let visibles: Vec<_> = open_files.images()

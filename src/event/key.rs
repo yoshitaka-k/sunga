@@ -1,26 +1,38 @@
 use std::path::Path;
-use crate::{error, file, resize};
+use crate::{error, file, resize, ui};
 
+/// 上矢印キーが押されたら選択された行を上に移動する
+/// * `id` - 選択された行のID
+/// * `files` - ファイル一覧
+/// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn up(
     id: u64,
-    files: &mut file::OpenFiles
+    files: &mut file::OpenFiles,
+    scroll_token: &mut ui::ScrollToken
 ) -> error::Result<()> {
     let mut min = files.images().iter().map(|image| *image.id()).min().unwrap_or(1);
     if id > min { min = id - 1; }
 
     files.set_selected_id(Some(min));
+    scroll_token.selected = true;
 
     Ok(())
 }
 
+/// 下矢印キーが押されたら選択された行を下に移動する
+/// * `id` - 選択された行のID
+/// * `files` - ファイル一覧
+/// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn down(
     id: u64,
-    files: &mut file::OpenFiles
+    files: &mut file::OpenFiles,
+    scroll_token: &mut ui::ScrollToken
 ) -> error::Result<()> {
     let mut max = files.images().iter().map(|image| *image.id()).max().unwrap_or(1);
     if id < max { max = id + 1; }
 
     files.set_selected_id(Some(max));
+    scroll_token.selected = true;
 
     Ok(())
 }
