@@ -176,6 +176,18 @@ impl OpenFiles {
         self.images.iter().any(|f| f.is_standby())
     }
 
+    /// リサイズ中のファイルがあるかどうか
+    /// * `return` - リサイズ中のファイルがあるかどうか
+    pub fn has_resizing(&self) -> bool {
+        self.images.iter().any(|f| f.is_resizing())
+    }
+
+    /// エラーのファイルがあるかどうか
+    /// * `return` - エラーのファイルがあるかどうか
+    pub fn has_error(&self) -> bool {
+        self.images.iter().any(|f| f.is_error())
+    }
+
     /// 待機中のファイルを1件取得
     /// * `return` - 待機中のファイル1件
     pub fn get_standby_file(&mut self) -> Option<&mut file::Image> {

@@ -8,6 +8,7 @@ const DEFAULT_WIDTH: u32 = 2560;
 const DEFAULT_HEIGHT: u32 = 1440;
 const DEFAULT_SCALE: u16 = 100;
 const DEFAULT_RESIZE_NUM: u8 = 4;
+const DEFAULT_SOUND_VOLUME: u8 = 5;
 
 /// 状態管理アプリケーション
 #[derive(Clone, Getters, MutGetters, Deserialize, Serialize)]
@@ -32,6 +33,12 @@ pub struct App {
 
     /// 同じパスはスキップ
     skip_same_path: bool,
+
+    /// サウンドを再生するかどうか
+    play_sound: bool,
+
+    /// サウンドの音量
+    sound_volume: u8,
 }
 
 impl Default for App {
@@ -46,6 +53,8 @@ impl Default for App {
             resize_num: DEFAULT_RESIZE_NUM,
             output_path: "".to_string(),
             skip_same_path: true,
+            play_sound: true,
+            sound_volume: DEFAULT_SOUND_VOLUME,
         }
     }
 }

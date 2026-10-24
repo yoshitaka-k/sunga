@@ -1,7 +1,7 @@
 use crate::{app, error, event, file, resize};
 use crate::event::{button, click, input, open, key};
 use crate::ui::{self, modal, setting};
-use crate::ui::assets::{label, font, svg, icon};
+use crate::ui::assets::{label, font, svg, icon, sounds};
 use crate::ui::main::{self, top, bottom, middle};
 
 /// 描画用のウィジェット
@@ -17,6 +17,7 @@ pub struct Render {
     resize_job: resize::ResizeJob,
     update_job: app::UpdateJob,
     status_color: ui::StatusColor,
+    sound: sounds::SoundPlayer,
 }
 
 impl Render {
@@ -52,6 +53,7 @@ impl Render {
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
             update_job: app::UpdateJob::new(cc.egui_ctx.clone()),
             status_color: ui::StatusColor::new(&cc.egui_ctx),
+            sound: sounds::SoundPlayer::new(),
         }
     }
 }
@@ -220,8 +222,27 @@ impl Render {
 
     /// リサイズ結果を処理
     fn resize_result(&mut self) {
+        // 待機中かリサイズ中かどうかをチェック
+        let was_busy = self.files.has_standby() || self.files.has_resizing();
+
         // リサイズ結果を受信
         self.resize_job.result(&mut self.files);
+
+        // 最適化後か最適化中が終わっているかどうかをチェック
+        let now_idle = !self.files.has_standby() && !self.files.has_resizing();
+
+        // 効果音を再生
+        if *self.app.play_sound() && was_busy && now_idle {
+            // 効果音の音量を設定
+            self.sound.set_volume(*self.app.sound_volume());
+
+            if self.files.has_error() {
+                self.sound.play_alert();
+            } else {
+                self.sound.play_completed();
+            }
+        }
+
     }
 
     /// 待機中のアクションを処理

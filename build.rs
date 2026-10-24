@@ -27,4 +27,9 @@ fn main() {
     // バンドル用アイコンと Windows の実行ファイルアイコンを生成する
     println!("cargo:rerun-if-changed={}", manifest_path.display());
     build::appicon::generate_icons(manifest_path, &out_dir);
+
+    // サウンドのディレクトリを取得
+    let sounds_dir = manifest_path.join("assets/sounds");
+    println!("cargo:rerun-if-changed={}", sounds_dir.display());
+    build::sounds::generate_sounds_generated(&sounds_dir, &out_dir);
 }

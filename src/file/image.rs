@@ -67,6 +67,12 @@ impl Image {
         matches!(self.status, file::Status::Resized)
     }
 
+    /// ファイルがエラーかどうか
+    /// * `return` - ファイルがエラーかどうか
+    pub fn is_error(&self) -> bool {
+        matches!(self.status, file::Status::Error(_))
+    }
+
     /// ファイルが待機中かリサイズ中かどうか
     /// * `return` - ファイルが待機中かリサイズ中かどうか
     pub fn is_standby_or_resizing(&self) -> bool {

@@ -3,6 +3,7 @@ pub(crate) mod font;
 pub(crate) mod icon;
 pub(crate) mod svg;
 pub(crate) mod label;
+pub(crate) mod sounds;
 
 use crate::file;
 
