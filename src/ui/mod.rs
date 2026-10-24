@@ -39,7 +39,6 @@ pub(crate) struct ErrorToken {
     pub value: Option<error::SungaError>,
     pub dismissed: bool,
 }
-
 impl ErrorToken {
     pub fn new() -> Self {
         Self {
