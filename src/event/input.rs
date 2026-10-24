@@ -51,6 +51,38 @@ pub(crate) fn command_w(
     }
 }
 
+/// 上矢印キーが押されたら選択された行を上に移動する
+/// * `ui` - ウィジェットのUI
+/// * `files` - 開いているファイル
+/// * `pending_actions` - 処理予約
+pub fn up(
+    ui: &mut egui::Ui,
+    files: &mut file::OpenFiles,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    if ui.input(|input| input.key_pressed(egui::Key::ArrowUp)) {
+        if let Some(id) = files.selected_id() {
+            pending_actions.push(event::EventAction::Up { id: *id });
+        }
+    }
+}
+
+/// 下矢印キーが押されたら選択された行を下に移動する
+/// * `ui` - ウィジェットのUI
+/// * `files` - 開いているファイル
+/// * `pending_actions` - 処理予約
+pub fn down(
+    ui: &mut egui::Ui,
+    files: &mut file::OpenFiles,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    if ui.input(|input| input.key_pressed(egui::Key::ArrowDown)) {
+        if let Some(id) = files.selected_id() {
+            pending_actions.push(event::EventAction::Down { id: *id });
+        }
+    }
+}
+
 /// エンターキーが押されたら選択された行を開く
 /// * `ui` - ウィジェットのUI
 /// * `files` - 開いているファイル

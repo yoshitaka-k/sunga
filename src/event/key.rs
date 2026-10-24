@@ -1,10 +1,34 @@
 use std::path::Path;
 use crate::{error, file, resize};
 
+pub(crate) fn up(
+    id: u64,
+    files: &mut file::OpenFiles
+) -> error::Result<()> {
+    let mut min = files.images().iter().map(|image| *image.id()).min().unwrap_or(1);
+    if id > min { min = id - 1; }
+
+    files.set_selected_id(Some(min));
+
+    Ok(())
+}
+
+pub(crate) fn down(
+    id: u64,
+    files: &mut file::OpenFiles
+) -> error::Result<()> {
+    let mut max = files.images().iter().map(|image| *image.id()).max().unwrap_or(1);
+    if id < max { max = id + 1; }
+
+    files.set_selected_id(Some(max));
+
+    Ok(())
+}
+
 /// バックスペースキーが押されたらファイルをキャンセルする
 /// * `files` - ファイル一覧
 /// * `resize_job` - リサイズジョブ
-pub fn backspace(
+pub(crate) fn backspace(
     files: &mut file::OpenFiles,
     resize_job: &mut resize::ResizeJob
 ) -> error::Result<()> {
@@ -27,7 +51,7 @@ pub fn backspace(
 
 /// スペースキーが押されたらファイルを選択表示する
 /// * `path` - ファイルのパス
-pub fn space(path: &Path) -> error::Result<()> {
+pub(crate) fn space(path: &Path) -> error::Result<()> {
     if !path.exists() {
         return Err(error::SungaError::file_not_found("File does not exist", path.to_path_buf()));
     }

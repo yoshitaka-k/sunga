@@ -142,6 +142,12 @@ impl Render {
         // Command + Comma キーが押されたら設定ウィンドウを開く
         input::command_comma(ui, &mut self.setting_token);
 
+        // 上矢印キーが押されたら選択された行を上に移動する
+        input::up(ui, &mut self.files, &mut self.pending_actions);
+
+        // 下矢印キーが押されたら選択された行を下に移動する
+        input::down(ui, &mut self.files, &mut self.pending_actions);
+
         // エンターキーが押されたら選択された行を開く
         input::enter(ui, &self.files, &mut self.pending_actions);
 
@@ -255,6 +261,14 @@ impl Render {
                 // バックスペースキーが押されたら選択された行をキャンセル
                 event::EventAction::Backspace => {
                     key::backspace(&mut self.files, &mut self.resize_job)
+                }
+                // 上矢印キーが押されたら選択された行を上に移動する
+                event::EventAction::Up { id } => {
+                    key::up(id, &mut self.files)
+                }
+                // 下矢印キーが押されたら選択された行を下に移動する
+                event::EventAction::Down { id } => {
+                    key::down(id, &mut self.files)
                 }
             };
 

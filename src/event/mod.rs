@@ -18,4 +18,6 @@ pub(crate) enum EventAction {
     Enter(std::path::PathBuf),
     Space(std::path::PathBuf),
     Backspace,
+    Up { id: u64 },
+    Down { id: u64 },
 }
