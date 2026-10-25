@@ -40,7 +40,12 @@
       "skip_same_path": "同じパス:",
       "skip_same_path_option": "スキップする",
       "dont_skip_same_path_option": "スキップしない",
-      "skip_same_path_warning_note": "完了済みはスキップ。キャンセルとエラーはやり直します。"
+      "skip_same_path_warning_note": "完了済みはスキップ。キャンセルとエラーはやり直します。",
+      "header_sound": "サウンド",
+      "sound_effects": "効果音",
+      "play_sound": "再生",
+      "dont_play_sound": "再生しない",
+      "sound_volume": "音量"
     },
     "setting_resize": {
       "header_sized": "サイズ",

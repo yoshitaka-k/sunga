@@ -15,7 +15,7 @@ const SETTING_WINDOW_ID: &str = "setting_window";
 
 // ウィンドウのサイズ
 const WINDOW_WIDTH: f32 = 480.0;
-const WINDOW_HEIGHT: f32 = 260.0;
+const WINDOW_HEIGHT: f32 = 300.0;
 
 // トップパネルの名前
 const TOP_PANEL_NAME: &str = "tab_panel";
@@ -33,6 +33,10 @@ const RESIZE_INDENT_SPACING: f32 = 8.0;
 const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
 const GENERAL_LABEL_WIDTH: f32 = 94.0;
 const RESIZE_LABEL_WIDTH: f32 = 60.0;
+
+// 効果音の音量のスライダーの最小値と最大値
+pub(crate) const SOUND_VOLUME_MIN: u8 = 1;
+pub(crate) const SOUND_VOLUME_MAX: u8 = 10;
 
 /// 設定ウィンドウのヘッダーパネルを表示
 /// * `ui` - UI
@@ -99,4 +103,12 @@ pub(crate) fn warning_note(
             egui::RichText::new(text).weak(),
         ));
     });
+}
+
+/// ラベル後の残り幅に合わせてスライダーのレール幅を決める
+/// * `ui` - UI
+/// * `return` - スライダーのレール幅
+pub(crate) fn remaining_slider_width(ui: &egui::Ui) -> f32 {
+    let spacing = ui.spacing();
+    (ui.available_width() - spacing.item_spacing.x - spacing.interact_size.x).max(0.0)
 }

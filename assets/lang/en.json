@@ -40,7 +40,12 @@
       "skip_same_path": "Skip same path:",
       "skip_same_path_option": "Skip same path",
       "dont_skip_same_path_option": "Don't skip same path",
-      "skip_same_path_warning_note": "Skip if already completed. Retry canceled and errors."
+      "skip_same_path_warning_note": "Skip if already completed. Retry canceled and errors.",
+      "header_sound": "Sound",
+      "sound_effects": "Sound effects",
+      "play_sound": "Play sound",
+      "dont_play_sound": "Don't play sound",
+      "sound_volume": "Volume"
     },
     "setting_resize": {
       "header_sized": "Sized",

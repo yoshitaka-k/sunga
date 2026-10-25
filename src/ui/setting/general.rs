@@ -51,4 +51,31 @@ pub(crate) fn view(
         // 同じパスはスキップの注意書きを表示
         setting::warning_note(ui, label::current().setting_general.skip_same_path_warning_note);
     });
+
+    ui.add_space(setting::ADD_SPACING);
+
+    // グループヘッダーパネルを表示
+    setting::group_header_panel(ui, label::current().setting_general.header_sound);
+
+    // フレームを表示
+    egui::Frame::group(ui.style()).show(ui, |ui| {
+        ui.take_available_width();
+
+        // 効果音を再生選択
+        ui.horizontal(|ui| {
+            ui::add_label(ui, label::current().setting_general.sound_effects, setting::GENERAL_LABEL_WIDTH);
+            ui.radio_value(app.play_sound_mut(), true, label::current().setting_general.play_sound);
+            ui.radio_value(app.play_sound_mut(), false, label::current().setting_general.dont_play_sound);
+        });
+
+        // 効果音の音量の選択
+        ui.horizontal(|ui| {
+            ui::add_label(ui, label::current().setting_general.sound_volume, setting::GENERAL_LABEL_WIDTH);
+            ui.scope(|ui| {
+                ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
+                ui.add(egui::Slider::new(app.sound_volume_mut(), setting::SOUND_VOLUME_MIN..=setting::SOUND_VOLUME_MAX));
+            });
+        });
+    });
+
 }
