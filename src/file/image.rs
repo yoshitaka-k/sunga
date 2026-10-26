@@ -90,6 +90,15 @@ impl Image {
         self.path.file_name().unwrap_or_default().to_string_lossy().to_string()
     }
 
+    /// エラーメッセージを取得
+    /// * `return` - エラーメッセージ
+    pub fn error_message(&self) -> String {
+        match self.status {
+            file::Status::Error(ref e) => e.to_string(),
+            _ => String::new(),
+        }
+    }
+
     /// 出力ファイルのパスを取得
     /// * `return` - 出力ファイルのパス
     pub fn reveal_path(&self) -> &PathBuf {

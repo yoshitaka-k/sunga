@@ -103,6 +103,9 @@ pub(crate) fn view(
                     |ui|
                 {
                     ui.horizontal(|ui| {
+                        // 折り返さないようにして、溢れた分は省略
+                        ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Truncate);
+
                         let spacing = ui.spacing().item_spacing.x;
 
                         // ステータスアイコンを表示
@@ -110,6 +113,7 @@ pub(crate) fn view(
                         ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
                         main::status_icon(ui, image.status(), status_color, status_color.resized);
                         ui.spacing_mut().item_spacing.x = spacing;
+
                         ui.separator();
 
                         // ディレクトリか、ファイルかを表示
@@ -117,6 +121,11 @@ pub(crate) fn view(
 
                         // ファイル名を表示
                         ui.label(image.file_name());
+
+                        if image.is_error() {
+                            ui.separator();
+                            ui.label(assets::text_color(&image.error_message(), status_color.error, None));
+                        }
                     });
                 });
 
