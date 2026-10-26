@@ -273,7 +273,7 @@ impl OpenFiles {
         self.images.iter().any(|f| {
             f.path() == path
                 && f.output_path().as_deref() == Some(output_path)
-                && f.is_resized()
+                && (f.is_resized() || f.is_unchanged())
         })
     }
 
