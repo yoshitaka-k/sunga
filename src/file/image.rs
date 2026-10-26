@@ -160,7 +160,7 @@ impl Image {
             return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
 
-        // 最適化開始時間を取得
+        // 処理開始時間を取得
         let start_time = std::time::Instant::now();
 
         // 出力先
@@ -189,9 +189,9 @@ impl Image {
             Ok(status) => {
                 match status {
                     file::Status::Resized => {
-                        // 最適化終了時間を取得
+                        // 処理終了時間を取得
                         let end_time = std::time::Instant::now();
-                        // リサイズ時間を計算
+                        // 処理時間を計算
                         let duration = end_time.duration_since(start_time).as_millis();
                         self.duration = duration as u64;
 
