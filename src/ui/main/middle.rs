@@ -123,16 +123,34 @@ pub(crate) fn view(
                         // ファイル名を表示
                         ui.label(image.file_name().as_ref());
 
-                        // リサイズ済みの場合はリサイズ時間を表示
-                        if image.is_resized() {
+                        // 待機中やリサイズ中の場合は表示しない
+                        if !image.is_standby_or_resizing() {
                             ui.separator();
-                            ui.label(duration_format(*image.duration()));
-                        }
 
-                        // エラーの場合はエラーメッセージを表示
-                        if image.is_error() {
-                            ui.separator();
-                            ui.label(assets::text_color(&image.error_message(), status_color.error, None));
+                            // リサイズ済みの場合はリサイズ時間を表示
+                            if image.is_resized() {
+                                ui.label(duration_format(*image.duration()));
+                            }
+
+                            // スキップの場合はスキップを表示
+                            if image.is_skipped() {
+                                ui.label(assets::text_color(label::current().main_middle.skipped, status_color.skipped, None));
+                            }
+
+                            // 変更なしの場合は節約なしを表示
+                            if image.is_unchanged() {
+                                ui.label(assets::text_color(label::current().main_middle.no_saving, status_color.unchanged, None));
+                            }
+
+                            // キャンセルの場合はキャンセルを表示
+                            if image.is_canceled() {
+                                ui.label(assets::text_color(label::current().main_middle.canceled, status_color.canceled, None));
+                            }
+
+                            // エラーの場合はエラーメッセージを表示
+                            if image.is_error() {
+                                ui.label(assets::text_color(&image.error_message(), status_color.error, None));
+                            }
                         }
                     });
                 });

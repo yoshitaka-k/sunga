@@ -80,6 +80,24 @@ impl Image {
         matches!(self.status, file::Status::Resized)
     }
 
+    /// ファイルがスキップされた場合
+    /// * `return` - ファイルがスキップされた場合
+    pub fn is_skipped(&self) -> bool {
+        matches!(self.status, file::Status::Skipped)
+    }
+
+    /// ファイルが変更なしの場合
+    /// * `return` - ファイルが変更なしの場合
+    pub fn is_unchanged(&self) -> bool {
+        matches!(self.status, file::Status::Unchanged)
+    }
+
+    /// ファイルがキャンセルされた場合
+    /// * `return` - ファイルがキャンセルされた場合
+    pub fn is_canceled(&self) -> bool {
+        matches!(self.status, file::Status::Canceled)
+    }
+
     /// ファイルがエラーかどうか
     /// * `return` - ファイルがエラーかどうか
     pub fn is_error(&self) -> bool {

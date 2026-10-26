@@ -20,10 +20,15 @@
       "skipped": "skipped",
       "completed": "completed",
       "canceled": "canceled",
-      "error": "error"
+      "error": "error",
+      "average_duration": "Average duration"
     },
     "main_middle": {
-      "upload_note": "Files or Folders to Resize Drag & Drop."
+      "upload_note": "Files or Folders to Resize Drag & Drop.",
+      "skipped": "Skipped",
+      "no_saving": "No saving",
+      "canceled": "Canceled",
+      "error": "Error"
     },
     "setting": {
       "heading": "Settings",

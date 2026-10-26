@@ -20,10 +20,15 @@
       "skipped": "スキップ",
       "completed": "完了",
       "canceled": "キャンセル",
-      "error": "エラー"
+      "error": "エラー",
+      "average_duration": "平均処理時間"
     },
     "main_middle": {
-      "upload_note": "リサイズするファイルまたはフォルダをドラッグ&ドロップしてください。"
+      "upload_note": "リサイズするファイルまたはフォルダをドラッグ&ドロップしてください。",
+      "skipped": "スキップ",
+      "no_saving": "節約なし",
+      "canceled": "キャンセル",
+      "error": "エラー"
     },
     "setting": {
       "heading": "設定",
