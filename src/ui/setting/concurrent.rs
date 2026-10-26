@@ -23,5 +23,7 @@ pub(crate) fn view(
                 ui.add(egui::Slider::new(app.concurrent_num_mut(), setting::CONCURRENT_NUM_MIN..=setting::CONCURRENT_NUM_MAX));
             });
         });
+
+        setting::warning_note(ui, label::current().setting_concurrent.concurrent_warning_note);
     });
 }
