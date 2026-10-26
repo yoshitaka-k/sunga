@@ -120,7 +120,7 @@ pub(crate) fn view(
                         main::opentype_icon(ui, image);
 
                         // ファイル名を表示
-                        ui.label(image.file_name());
+                        ui.label(image.file_name().as_ref());
 
                         if image.is_error() {
                             ui.separator();

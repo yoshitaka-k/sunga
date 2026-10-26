@@ -86,8 +86,8 @@ impl Image {
 
     /// ファイル名を取得
     /// * `return` - ファイル名
-    pub fn file_name(&self) -> String {
-        self.path.file_name().unwrap_or_default().to_string_lossy().to_string()
+    pub fn file_name(&self) -> std::borrow::Cow<'_, str> {
+        self.path.file_name().map(|f| f.to_string_lossy()).unwrap_or_default()
     }
 
     /// エラーメッセージを取得
