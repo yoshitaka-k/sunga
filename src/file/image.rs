@@ -9,6 +9,9 @@ use crate::{app, error, file, resize};
 const COUNT_UP: u64 = 1;
 static NEXT_ID: AtomicU64 = AtomicU64::new(COUNT_UP);
 
+/// リサイズ時間（ミリ秒）
+const DEFAULT_DURATION: u64 = 0;
+
 /// 画像ファイル
 #[derive(Clone, Getters, Setters)]
 #[getset(get = "pub")]
@@ -31,6 +34,10 @@ pub(crate) struct Image {
 
     /// フォルダ経由で追加されたファイルかどうか
     is_in_folder: bool,
+
+    /// リサイズ時間（ミリ秒）
+    #[getset(set = "pub")]
+    duration: u64,
 }
 
 /// public methods
@@ -51,6 +58,7 @@ impl Image {
             status: file::Status::Standby,
             output_path: None,
             is_in_folder,
+            duration: DEFAULT_DURATION,
         }
     }
 
@@ -151,6 +159,9 @@ impl Image {
             return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
 
+        // 最適化開始時間を取得
+        let start_time = std::time::Instant::now();
+
         // 出力先
         let output_path = self.make_output_path(app);
         self.output_path = Some(output_path.clone());
@@ -177,6 +188,13 @@ impl Image {
             Ok(status) => {
                 match status {
                     file::Status::Resized => {
+                        // 最適化終了時間を取得
+                        let end_time = std::time::Instant::now();
+                        // リサイズ時間を計算
+                        let duration = end_time.duration_since(start_time).as_millis();
+                        self.duration = duration as u64;
+
+                        // ステータスをリサイズ済みに設定
                         self.status = file::Status::Resized;
                         Ok(self.status.clone())
                     }

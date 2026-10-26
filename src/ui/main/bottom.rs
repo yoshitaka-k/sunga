@@ -1,4 +1,4 @@
-use crate::{event, file, ui};
+use crate::{event, file, ui, duration_format};
 use crate::ui::main;
 use crate::ui::assets::{self, icon, label, svg};
 
@@ -39,7 +39,12 @@ pub(crate) fn view(
                 };
 
                 // ジョブ状態のアイコン
-                main::status_icon(ui, &status, status_color, completed_color);
+                main::status_icon(ui, &status, status_color, completed_color).on_hover_ui(|ui| {
+                    ui.label(format!(
+                        "Average duration: {}",
+                        duration_format(files.average_duration()),
+                    ));
+                });
 
                 ui.separator();
 

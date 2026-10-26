@@ -57,7 +57,7 @@ fn status_icon(
        },
    };
 
-   ui.add(widget).on_hover_text(status.to_string())
+   ui.add(widget)
 }
 
 /// ディレクトリか、ファイルかを表示

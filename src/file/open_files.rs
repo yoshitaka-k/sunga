@@ -13,7 +13,9 @@ struct FileInfo {
     skipped_len: u32,
     canceled_len: u32,
     error_len: u32,
-    completed_len: u32
+    completed_len: u32,
+    total_duration: u64,
+    average_duration: u64,
 }
 impl FileInfo {
     pub fn new() -> Self {
@@ -26,6 +28,8 @@ impl FileInfo {
             canceled_len: 0,
             error_len: 0,
             completed_len: 0,
+            total_duration: 0,
+            average_duration: 0,
         }
     }
 }
@@ -76,13 +80,17 @@ impl OpenFiles {
         let mut skipped_len = 0;
         let mut canceled_len = 0;
         let mut error_len = 0;
+        let mut total_duration = 0;
 
         // 各ファイルの情報を集計
         for file in &self.images {
             match file.status() {
                 file::Status::Standby => standby_len += 1,
                 file::Status::Resizing => resizing_len += 1,
-                file::Status::Resized => resized_len += 1,
+                file::Status::Resized => {
+                    resized_len += 1;
+                    total_duration += *file.duration();
+                }
                 file::Status::Unchanged => unchanged_len += 1,
                 file::Status::Skipped => skipped_len += 1,
                 file::Status::Canceled => canceled_len += 1,
@@ -99,6 +107,10 @@ impl OpenFiles {
         self.file_info.canceled_len = canceled_len;
         self.file_info.error_len = error_len;
         self.file_info.completed_len = resized_len + unchanged_len + skipped_len;
+        self.file_info.total_duration = total_duration;
+        self.file_info.average_duration = if resized_len > 0 {
+            total_duration / resized_len as u64
+        } else { 0 };
     }
 
     /// ファイルの件数を取得
@@ -147,6 +159,12 @@ impl OpenFiles {
     /// * `return` - 完了したファイルの数
     pub fn completed_len(&self) -> u32 {
         self.file_info.completed_len
+    }
+
+    /// リサイズ時間の平均を取得
+    /// * `return` - リサイズ時間の平均
+    pub fn average_duration(&self) -> u64 {
+        self.file_info.average_duration
     }
 
     /// ジョブの状態を取得

@@ -1,4 +1,4 @@
-use crate::{event, file};
+use crate::{event, file, duration_format};
 use crate::ui::{self, main};
 use crate::ui::assets::{self, icon, svg, label};
 
@@ -111,7 +111,8 @@ pub(crate) fn view(
                         // ステータスアイコンを表示
                         ui.add_space(main::LIST_ICON_INDENT);
                         ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
-                        main::status_icon(ui, image.status(), status_color, status_color.resized);
+                        main::status_icon(ui, image.status(), status_color, status_color.resized)
+                            .on_hover_text(image.status().to_string());
                         ui.spacing_mut().item_spacing.x = spacing;
 
                         ui.separator();
@@ -122,7 +123,13 @@ pub(crate) fn view(
                         // ファイル名を表示
                         ui.label(image.file_name().as_ref());
 
-                        // エラーが発生した場合はエラーメッセージを表示
+                        // リサイズ済みの場合はリサイズ時間を表示
+                        if image.is_resized() {
+                            ui.separator();
+                            ui.label(duration_format(*image.duration()));
+                        }
+
+                        // エラーの場合はエラーメッセージを表示
                         if image.is_error() {
                             ui.separator();
                             ui.label(assets::text_color(&image.error_message(), status_color.error, None));
