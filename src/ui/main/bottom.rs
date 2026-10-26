@@ -41,7 +41,8 @@ pub(crate) fn view(
                 // ジョブ状態のアイコン
                 main::status_icon(ui, &status, status_color, completed_color).on_hover_ui(|ui| {
                     ui.label(format!(
-                        "Average duration: {}",
+                        "{}: {}",
+                        label::current().main_bottom.average_duration,
                         duration_format(files.average_duration()),
                     ));
                 });
@@ -52,27 +53,27 @@ pub(crate) fn view(
                 ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                 ui::rich_label(ui, &files.standby_len().to_string(), status_color.standby);
                 ui.spacing_mut().item_spacing.x = spacing;
-                ui.label(format!("{},", label::current().main_bottom.standby));
+                ui.label(format!("{},", label::current().resize_status.standby));
 
                 // 処理中
                 ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                 ui::rich_label(ui, &files.resizing_len().to_string(), status_color.resizing);
                 ui.spacing_mut().item_spacing.x = spacing;
-                ui.label(format!("{},", label::current().main_bottom.resizing));
+                ui.label(format!("{},", label::current().resize_status.resizing));
 
                 // 完了
                 ui.scope(|ui| {
                     ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                     ui::rich_label(ui, &files.completed_len().to_string(), completed_color);
                     ui.spacing_mut().item_spacing.x = spacing;
-                    ui.label(format!("{},", label::current().main_bottom.completed));
+                    ui.label(format!("{},", label::current().resize_status.completed));
                 }).response.on_hover_ui(|ui| {
                     // リサイズ済み
                     ui.horizontal(|ui| {
                         ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                         ui::rich_label(ui, &files.resized_len().to_string(), status_color.resized);
                         ui.spacing_mut().item_spacing.x = spacing;
-                        ui.label(label::current().main_bottom.resized);
+                        ui.label(label::current().resize_status.resized);
                     });
 
                     // 変更なし
@@ -80,7 +81,7 @@ pub(crate) fn view(
                         ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                         ui::rich_label(ui, &files.unchanged_len().to_string(), status_color.unchanged);
                         ui.spacing_mut().item_spacing.x = spacing;
-                        ui.label(label::current().main_bottom.unchanged);
+                        ui.label(label::current().resize_status.unchanged);
                     });
 
                     // スキップ
@@ -88,7 +89,7 @@ pub(crate) fn view(
                         ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                         ui::rich_label(ui, &files.skipped_len().to_string(), status_color.skipped);
                         ui.spacing_mut().item_spacing.x = spacing;
-                        ui.label(label::current().main_bottom.skipped);
+                        ui.label(label::current().resize_status.skipped);
                     });
                 });
 
@@ -96,7 +97,7 @@ pub(crate) fn view(
                 ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
                 ui::rich_label(ui, &files.error_len().to_string(), status_color.error);
                 ui.spacing_mut().item_spacing.x = spacing;
-                ui.label(label::current().main_bottom.error);
+                ui.label(label::current().resize_status.error);
             },
             |ui| {
                 let hover_text = label::current().main_bottom.clear;

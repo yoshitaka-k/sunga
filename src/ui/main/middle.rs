@@ -127,9 +127,9 @@ pub(crate) fn view(
                         let note = match image.status() {
                             file::Status::Standby | file::Status::Resizing => None,
                             file::Status::Resized => Some(egui::RichText::new(duration_format(*image.duration()))),
-                            file::Status::Skipped => Some(assets::text_color(label::current().main_middle.skipped, status_color.skipped, None)),
-                            file::Status::Unchanged => Some(assets::text_color(label::current().main_middle.no_saving, status_color.unchanged, None)),
-                            file::Status::Canceled => Some(assets::text_color(label::current().main_middle.canceled, status_color.canceled, None)),
+                            file::Status::Skipped => Some(assets::text_color(label::current().resize_status.skipped, status_color.skipped, None)),
+                            file::Status::Unchanged => Some(assets::text_color(label::current().resize_status.unchanged, status_color.unchanged, None)),
+                            file::Status::Canceled => Some(assets::text_color(label::current().resize_status.canceled, status_color.canceled, None)),
                             file::Status::Error(e) => Some(assets::text_color(e, status_color.error, None)),
                         };
 

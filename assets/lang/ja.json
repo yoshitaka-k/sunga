@@ -13,20 +13,18 @@
     },
     "main_bottom": {
       "clear": "キャンセルしてクリア",
+      "average_duration": "平均処理時間"
+    },
+    "main_middle": {
+      "upload_note": "リサイズするファイルまたはフォルダをドラッグ&ドロップしてください。"
+    },
+    "resize_status": {
       "standby": "未処理",
       "resizing": "処理中",
       "resized": "リサイズ済み",
       "unchanged": "変更なし",
       "skipped": "スキップ",
       "completed": "完了",
-      "canceled": "キャンセル",
-      "error": "エラー",
-      "average_duration": "平均処理時間"
-    },
-    "main_middle": {
-      "upload_note": "リサイズするファイルまたはフォルダをドラッグ&ドロップしてください。",
-      "skipped": "スキップ",
-      "no_saving": "節約なし",
       "canceled": "キャンセル",
       "error": "エラー"
     },

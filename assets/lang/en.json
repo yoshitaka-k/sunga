@@ -13,20 +13,18 @@
     },
     "main_bottom": {
       "clear": "Cancel and Clear",
-      "standby": "standby",
-      "resizing": "resizing",
-      "resized": "resized",
-      "unchanged": "unchanged",
-      "skipped": "skipped",
-      "completed": "completed",
-      "canceled": "canceled",
-      "error": "error",
       "average_duration": "Average duration"
     },
     "main_middle": {
-      "upload_note": "Files or Folders to Resize Drag & Drop.",
+      "upload_note": "Files or Folders to Resize Drag & Drop."
+    },
+    "resize_status": {
+      "standby": "Standby",
+      "resizing": "Resizing",
+      "resized": "Resized",
+      "unchanged": "Unchanged",
       "skipped": "Skipped",
-      "no_saving": "No saving",
+      "completed": "Completed",
       "canceled": "Canceled",
       "error": "Error"
     },
