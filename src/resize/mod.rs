@@ -63,20 +63,25 @@ impl Sunga {
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
         // 画像を読み込む
-        let image = image::ImageReader::open(&path).map_err(|e| {
-            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
-        })?.decode().map_err(|e| {
-            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        let reader = image::ImageReader::open(&path)
+            .and_then(|r| r.with_guessed_format())
+            .map_err(|e| error::SungaError::resize_error(e.to_string(), path.to_path_buf()))?;
+
+        // 画像のフォーマットを取得
+        let format = reader.format().ok_or_else(|| {
+            error::SungaError::resize_error("Unknown image format".to_string(), path.to_path_buf())
         })?;
+
+        // フォーマットの拡張子を取得
+        let extension = format.extensions_str()[0].to_string();
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
-        // ファイルの拡張子
-        let format = image::ImageFormat::from_path(path).map_err(|e| {
+        // 画像をデコード
+        let image = reader.decode().map_err(|e| {
             error::SungaError::resize_error(e.to_string(), path.to_path_buf())
         })?;
-        let extension = format.extensions_str()[0].to_string();
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
