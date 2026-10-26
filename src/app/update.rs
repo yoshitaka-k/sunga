@@ -174,3 +174,9 @@ fn compare_version(new: &str, old: &str) -> error::Result<bool> {
         Ok(new_patch > old_patch)
     }
 }
+
+// tests ディレクトリ直下は別クレートになって、非公開関数が呼べないので、
+// 子モジュールとして読むためのパスを指定する
+#[cfg(test)]
+#[path = "../../tests/unit/update.rs"]
+mod tests;
