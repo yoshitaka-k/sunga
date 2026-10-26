@@ -274,13 +274,17 @@ impl OpenFiles {
 
         if metadata.is_file() {
             if file::is_allowed_extension(&path) {
-                // base_dir からの相対パスを求め、所有権のある PathBuf にする
-                let relative_path = path.strip_prefix(base_dir)
-                    .unwrap_or(path)
-                    .to_path_buf();
+                // base_dir からの相対パスを求める
+                let relative_path = path.strip_prefix(base_dir);
+
+                // フォルダ経由で追加されたファイルかどうか
+                let is_in_folder = relative_path.as_ref().is_ok_and(|p| p.components().count() > 1);
+
+                // 所有権のある PathBuf にする
+                let relative_path = relative_path.unwrap_or(path).to_path_buf();
 
                 // 画像ファイル構造体を作成
-                let mut image = file::Image::new(path.to_path_buf(), relative_path);
+                let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
 
                 // 出力パスを作成
                 let output_path = image.make_output_path(app);

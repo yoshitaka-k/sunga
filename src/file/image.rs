@@ -28,6 +28,9 @@ pub(crate) struct Image {
 
     /// 出力先
     output_path: Option<PathBuf>,
+
+    /// フォルダ経由で追加されたファイルかどうか
+    is_in_folder: bool,
 }
 
 /// public methods
@@ -35,8 +38,9 @@ impl Image {
     /// 新しい Image を作成
     /// * `path` - 画像ファイルのパス
     /// * `relative_path` - 画像ファイルの相対パス
+    /// * `is_in_folder` - フォルダ経由で追加されたファイルかどうか
     /// * `return` - Image のインスタンス
-    pub fn new(path: PathBuf, relative_path: PathBuf) -> Self {
+    pub fn new(path: PathBuf, relative_path: PathBuf, is_in_folder: bool) -> Self {
         // 一意 ID を発行
         let id = NEXT_ID.fetch_add(COUNT_UP, Ordering::Relaxed);
 
@@ -46,6 +50,7 @@ impl Image {
             relative_path,
             status: file::Status::Standby,
             output_path: None,
+            is_in_folder,
         }
     }
 

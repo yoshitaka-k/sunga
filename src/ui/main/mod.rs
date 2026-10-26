@@ -59,3 +59,21 @@ fn status_icon(
 
    ui.add(widget).on_hover_text(status.to_string())
 }
+
+/// ディレクトリか、ファイルかを表示
+/// * `ui` - UI
+/// * `pad` - パディング
+/// * `path` - パス
+/// * `return` - OpenTypeアイコンのレスポンス
+pub(crate) fn opentype_icon(
+    ui: &mut egui::Ui,
+    path: &file::Image,
+) -> egui::Response {
+    let icon_color = ui::icon_color(ui);
+    if *path.is_in_folder() {
+        let hover_text = path.relative_path().display().to_string();
+        ui.add(icon_widget(svg::FOLDER, icon::LIST_ICON_SIZE, icon_color)).on_hover_text(hover_text)
+    } else {
+        ui.add(icon_widget(svg::PHOTO, icon::LIST_ICON_SIZE, icon_color))
+    }
+}

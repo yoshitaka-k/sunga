@@ -105,11 +105,17 @@ pub(crate) fn view(
                     ui.horizontal(|ui| {
                         let spacing = ui.spacing().item_spacing.x;
 
+                        // ステータスアイコンを表示
                         ui.add_space(main::LIST_ICON_INDENT);
                         ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
                         main::status_icon(ui, image.status(), status_color, status_color.resized);
                         ui.spacing_mut().item_spacing.x = spacing;
                         ui.separator();
+
+                        // ディレクトリか、ファイルかを表示
+                        main::opentype_icon(ui, image);
+
+                        // ファイル名を表示
                         ui.label(image.file_name());
                     });
                 });
