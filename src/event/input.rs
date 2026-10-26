@@ -1,6 +1,46 @@
 use crate::{app, error, event, file, ui};
 use crate::event::{button, drop};
 
+/// Command + O キーが押されたらファイルを開く
+/// * `ui` - ウィジェットのUI
+/// * `pending_actions` - 処理予約
+pub(crate) fn command_open(
+    ui: &mut egui::Ui,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    // macOS では Command + O キーが押されたらフォルダを開く
+    #[cfg(target_os = "macos")]
+    {
+        if ui.input(|input| {
+            input.modifiers.matches_exact(egui::Modifiers::COMMAND)
+            && input.key_pressed(egui::Key::O)
+        }) {
+            pending_actions.push(event::EventAction::FolderOpen);
+        }
+    }
+
+    // Windows や Linux では Command + O キーが押されたらファイルを開く
+    // また、Command + Shift + O キーが押されたらフォルダを開く
+    #[cfg(not(target_os = "macos"))]
+    {
+        // Command + O キーが押されたらファイルを開く
+        if ui.input(|input| {
+            input.modifiers.matches_exact(egui::Modifiers::COMMAND)
+            && input.key_pressed(egui::Key::O)
+        }) {
+            pending_actions.push(event::EventAction::FilesOpen);
+        }
+
+        // Command + Shift + O キーが押されたらフォルダを開く
+        if ui.input(|input| {
+            input.modifiers.matches_exact(egui::Modifiers::COMMAND | egui::Modifiers::SHIFT)
+            && input.key_pressed(egui::Key::O)
+        }) {
+            pending_actions.push(event::EventAction::FolderOpen);
+        }
+    }
+}
+
 /// Command + Comma キーが押されたら設定ウィンドウを開く
 /// * `ui` - ウィジェットのUI
 /// * `setting_token` - 設定ウィンドウトークン

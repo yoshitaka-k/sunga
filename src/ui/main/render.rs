@@ -138,6 +138,9 @@ impl Render {
     /// 入力イベントを処理
     /// * `ui` - UI
     fn input_events(&mut self, ui: &mut egui::Ui) {
+        // Command + O キーが押されたらファイルを開く
+        input::command_open(ui, &mut self.pending_actions);
+
         // Command + Comma キーが押されたら設定ウィンドウを開く
         input::command_comma(ui, &mut self.setting_token);
 
