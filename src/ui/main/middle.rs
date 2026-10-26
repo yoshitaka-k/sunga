@@ -122,6 +122,7 @@ pub(crate) fn view(
                         // ファイル名を表示
                         ui.label(image.file_name().as_ref());
 
+                        // エラーが発生した場合はエラーメッセージを表示
                         if image.is_error() {
                             ui.separator();
                             ui.label(assets::text_color(&image.error_message(), status_color.error, None));
