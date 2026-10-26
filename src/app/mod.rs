@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 const DEFAULT_WIDTH: u32 = 2560;
 const DEFAULT_HEIGHT: u32 = 1440;
 const DEFAULT_SCALE: u16 = 100;
-const DEFAULT_RESIZE_NUM: u8 = 4;
+const DEFAULT_CONCURRENT_NUM: u8 = 4;
 const DEFAULT_SOUND_VOLUME: u8 = 5;
 
 /// 状態管理アプリケーション
@@ -25,8 +25,8 @@ pub struct App {
     /// 倍率を使用するかどうか
     is_scale: bool,
 
-    /// リサイズできるファイル数
-    resize_num: u8,
+    /// 並行処理できる最大数
+    concurrent_num: u8,
 
     /// 出力パス
     output_path: String,
@@ -50,7 +50,7 @@ impl Default for App {
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
             is_scale: false,
-            resize_num: DEFAULT_RESIZE_NUM,
+            concurrent_num: DEFAULT_CONCURRENT_NUM,
             output_path: "".to_string(),
             skip_same_path: true,
             play_sound: true,

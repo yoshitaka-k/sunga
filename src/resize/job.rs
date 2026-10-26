@@ -127,7 +127,7 @@ impl ResizeJob {
     /// * `app` - アプリケーション
     /// * `return` - リサイズ実行可能かどうか
     fn is_runnable(&self, app: &app::App) -> bool {
-        self.running_count.load(Ordering::Relaxed) < *app.resize_num() as usize
+        self.running_count.load(Ordering::Relaxed) < *app.concurrent_num() as usize
     }
 
     /// リサイズ実行中のカウントをクローン
