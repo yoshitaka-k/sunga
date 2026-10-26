@@ -1,33 +1,30 @@
 use crate::{app, error, file, resize, ui};
+use crate::event::open;
 
 /// ファイルダイアログを開く
-/// * `ui` - UI
-/// * `dialog_token` - ファイルダイアログを開くトークン
+/// * `app` - アプリケーション
+/// * `files` - 開いているファイル
+/// * `label` - ラベル
+/// * `return` - ファイルが開かれたかどうか
 pub(crate) fn files_open(
-    ui: &egui::Ui,
-    dialog_token: &mut ui::DialogToken,
-) -> error::Result<()> {
-    dialog_token.file = true;
-
-    // 再描画を要求
-    ui.ctx().request_repaint();
-
-    Ok(())
+    app: &app::App,
+    files: &mut file::OpenFiles,
+    label: &str,
+) -> error::Result<bool> {
+    open::file(app, label, files)
 }
 
 /// フォルダダイアログを開く
-/// * `ui` - UI
-/// * `dialog_token` - フォルダダイアログを開くトークン
+/// * `app` - アプリケーション
+/// * `files` - 開いているファイル
+/// * `label` - ラベル
+/// * `return` - フォルダが開かれたかどうか
 pub(crate) fn folders_open(
-    ui: &egui::Ui,
-    dialog_token: &mut ui::DialogToken,
-) -> error::Result<()> {
-    dialog_token.folder = true;
-
-    // 再描画を要求
-    ui.ctx().request_repaint();
-
-    Ok(())
+    app: &app::App,
+    files: &mut file::OpenFiles,
+    label: &str,
+) -> error::Result<bool> {
+    open::folder(app, label, files)
 }
 
 /// 開いているファイルをクリア
@@ -37,7 +34,7 @@ pub(crate) fn cancel_and_clear_files(
     ui: &egui::Ui,
     files: &mut file::OpenFiles,
     resize_job: &mut resize::ResizeJob,
-) -> error::Result<()> {
+) -> error::Result<bool> {
     // リサイズをキャンセル
     resize_job.stop_running();
 
@@ -66,7 +63,7 @@ pub(crate) fn cancel_and_clear_files(
         return Err(e);
     }
 
-    Ok(())
+    Ok(true)
 }
 
 /// 設定ダイアログを開く
@@ -75,7 +72,7 @@ pub(crate) fn cancel_and_clear_files(
 pub(crate) fn setting_open(
     ui: &egui::Ui,
     setting_token: &mut ui::SettingToken,
-) -> error::Result<()> {
+) -> error::Result<bool> {
     // 設定ダイアログを開く
     setting_token.open = true;
 
@@ -87,7 +84,7 @@ pub(crate) fn setting_open(
     // 再描画を要求
     ui.ctx().request_repaint();
 
-    Ok(())
+    Ok(true)
 }
 
 /// アップデートを確認する

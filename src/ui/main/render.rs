@@ -1,5 +1,5 @@
 use crate::{app, error, event, file, resize};
-use crate::event::{button, click, input, open, key};
+use crate::event::{button, click, input, key};
 use crate::ui::{self, modal, setting};
 use crate::ui::assets::{label, font, svg, icon, sounds};
 use crate::ui::main::{self, top, bottom, middle};
@@ -9,7 +9,6 @@ pub struct Render {
     app: app::App,
     files: file::OpenFiles,
     pending_actions: Vec<event::EventAction>,
-    dialog_token: ui::DialogToken,
     setting_token: ui::SettingToken,
     updated_token: app::UpdatedToken,
     error_token: ui::ErrorToken,
@@ -45,7 +44,6 @@ impl Render {
             app,
             files: file::OpenFiles::new(),
             pending_actions: Vec::new(),
-            dialog_token: ui::DialogToken::new(),
             setting_token: ui::SettingToken::new(),
             updated_token: app::UpdatedToken::new(),
             error_token: ui::ErrorToken::new(),
@@ -75,10 +73,6 @@ impl eframe::App for Render {
 
         // リサイズ結果を受信
         self.resize_result();
-
-        // ファイルを開く
-        self.open_dialog();
-        self.drop_files(ui);
 
         // 待機中のアクションを処理
         self.process_pending_actions(ui);
@@ -161,6 +155,9 @@ impl Render {
 
         // バックスペースキーが押されたら選択された行をキャンセル
         input::backspace(ui, &mut self.pending_actions);
+
+        // ドラッグドロップでファイルを開く
+        self.drop_files(ui);
     }
 
     /// ドロップされたファイルを処理
@@ -175,23 +172,6 @@ impl Render {
             egui::ViewportId::ROOT,
             egui::ViewportCommand::Focus,
         );
-    }
-
-    /// ファイルダイアログを表示
-    fn open_dialog(&mut self) {
-        // ファイルダイアログを表示
-        if self.dialog_token.file {
-            self.dialog_token.file = false;
-            let result = open::file(&self.app, label::current().file_dialog.image_files, &mut self.files);
-            self.open_result(result);
-        }
-
-        // フォルダダイアログを表示
-        if self.dialog_token.folder {
-            self.dialog_token.folder = false;
-            let result = open::folder(&self.app, label::current().file_dialog.image_files, &mut self.files);
-            self.open_result(result);
-        }
     }
 
     /// ファイルを開く結果を処理
@@ -252,11 +232,11 @@ impl Render {
             let result = match action {
                 // ファイルダイアログを表示
                 event::EventAction::FilesOpen => {
-                    button::files_open(ui, &mut self.dialog_token)
+                    button::files_open(&self.app, &mut self.files, label::current().file_dialog.image_files)
                 },
                 // フォルダダイアログを表示
                 event::EventAction::FolderOpen => {
-                    button::folders_open(ui, &mut self.dialog_token)
+                    button::folders_open(&self.app, &mut self.files, label::current().file_dialog.image_files)
                 },
                 // ファイルをクリア
                 event::EventAction::Clear => {

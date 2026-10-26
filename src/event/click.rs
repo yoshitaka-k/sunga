@@ -8,15 +8,15 @@ use crate::{error, file};
 pub(crate) fn click(
     id: u64,
     files: &mut file::OpenFiles
-) -> error::Result<()> {
+) -> error::Result<bool> {
     files.set_selected_id(Some(id));
-    Ok(())
+    Ok(true)
 }
 
 /// ダブルクリックで Finder でファイルを選択表示する
 /// * `path` - ファイルのパス
 /// * `return` - エラーが発生したかどうか
-pub(crate) fn double_click(path: &Path) -> error::Result<()> {
+pub(crate) fn double_click(path: &Path) -> error::Result<bool> {
     if !path.exists() {
         return Err(error::SungaError::file_not_found("File does not exist", path.to_path_buf()));
     }
@@ -29,25 +29,25 @@ pub(crate) fn double_click(path: &Path) -> error::Result<()> {
 /// * `path` - ファイルのパス
 /// * `return` - エラーが発生したかどうか
 #[cfg(target_os = "macos")]
-fn reveal_file_command(path: &Path) -> error::Result<()> {
+fn reveal_file_command(path: &Path) -> error::Result<bool> {
     std::process::Command::new("open").arg("-R").arg(path).status()?;
-    Ok(())
+    Ok(true)
 }
 
 /// Explorer でファイルを選択表示する
 /// * `path` - ファイルのパス
 /// * `return` - エラーが発生したかどうか
 #[cfg(target_os = "windows")]
-fn reveal_file_command(path: &Path) -> error::Result<()> {
+fn reveal_file_command(path: &Path) -> error::Result<bool> {
     std::process::Command::new("explorer").arg(format!("/select,{}", path.display())).status()?;
-    Ok(())
+    Ok(true)
 }
 
 /// XDG でファイルを選択表示する
 /// * `path` - ファイルのパス
 /// * `return` - エラーが発生したかどうか
 #[cfg(target_os = "linux")]
-fn reveal_file_command(path: &Path) -> error::Result<()> {
+fn reveal_file_command(path: &Path) -> error::Result<bool> {
     std::process::Command::new("xdg-open").arg("--reveal").arg(path).status()?;
-    Ok(())
+    Ok(true)
 }

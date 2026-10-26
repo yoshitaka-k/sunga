@@ -31,20 +31,6 @@ impl ScrollToken {
     }
 }
 
-/// ファイルダイアログを表示するためのトークン
-pub(crate) struct DialogToken {
-    pub file: bool,
-    pub folder: bool,
-}
-impl DialogToken {
-    pub fn new() -> Self {
-        Self {
-            file: false,
-            folder: false,
-        }
-    }
-}
-
 /// エラーモーダルを表示するためのトークン
 pub(crate) struct ErrorToken {
     pub open: bool,
