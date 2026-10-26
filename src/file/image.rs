@@ -140,19 +140,23 @@ impl Image {
             return Ok(self.status.clone());
         }
 
-        // 幅が範囲外の場合は実行しない
-        if *app.width() < resize::SIZED_RANGE_MIN ||  *app.width() > resize::SIZED_RANGE_MAX {
-            let msg = format!("Width is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
-            return Err(error::SungaError::resize_error(msg, self.path.clone()));
-        }
-        // 高さが範囲外の場合は実行しない
-        if *app.height() < resize::SIZED_RANGE_MIN || *app.height() > resize::SIZED_RANGE_MAX {
-            let msg = format!("Height is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
-            return Err(error::SungaError::resize_error(msg, self.path.clone()));
-        }
-        // 倍率が範囲外の場合は実行しない
-        if *app.scale() < resize::SCALE_RANGE_MIN || *app.scale() > resize::SCALE_RANGE_MAX {
-            let msg = format!("Scale is out of range ({}..{})", resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX);
+        // 範囲外の場合はエラーメッセージを設定
+        let out_of_range = if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(app.width()) {
+            // 幅が範囲外の場合は実行しない
+            Some(format!("Width is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX))
+        } else  if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(app.height()) {
+            // 高さが範囲外の場合は実行しない
+            Some(format!("Height is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX))
+        } else  if !(resize::SCALE_RANGE_MIN..=resize::SCALE_RANGE_MAX).contains(app.scale()) {
+            // 倍率が範囲外の場合は実行しない
+            Some(format!("Scale is out of range ({}..{})", resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX))
+        } else {
+            None
+        };
+
+        // 範囲外の場合はエラーメッセージを設定
+        if let Some(msg) = out_of_range {
+            self.status = file::Status::Error(msg.clone());
             return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
 

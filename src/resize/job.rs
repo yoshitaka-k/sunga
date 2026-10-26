@@ -81,7 +81,7 @@ impl ResizeJob {
                 let _ = file.resize(&app, Arc::clone(&running), Arc::clone(&canceled));
 
                 // リサイズ結果を送信
-                let _ = result_tx.send(file.clone());
+                let _ = result_tx.send(file);
 
                 // リサイズ実行中のカウントを減少
                 running_count.fetch_sub(RUNNING_COUNT_NUM, Ordering::Relaxed);
