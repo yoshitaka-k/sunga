@@ -28,6 +28,7 @@
     "setting": {
       "heading": "設定",
       "general": "一般",
+      "concurrent": "並行処理",
       "resize": "リサイズ",
       "about": "About"
     },
@@ -46,6 +47,11 @@
       "play_sound": "再生",
       "dont_play_sound": "再生しない",
       "sound_volume": "音量"
+    },
+    "setting_concurrent": {
+      "header_concurrent": "並行処理",
+      "concurrent": "処理数",
+      "concurrent_warning_note": "ファイルの並行処理を行います。"
     },
     "setting_resize": {
       "header_sized": "サイズ",

@@ -82,6 +82,7 @@ impl ErrorToken {
 #[derive(PartialEq)]
 pub enum SettingTab {
     General,
+    Concurrent,
     Resize,
     About,
 }

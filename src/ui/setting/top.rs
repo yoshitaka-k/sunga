@@ -15,6 +15,7 @@ pub(crate) fn view(
             ui::add_icon(ui, svg::SETTINGS, icon::SETTINGS_TOP_ICON_SIZE, color);
 
             ui.selectable_value(&mut setting_token.tab, ui::SettingTab::General, label::current().setting.general);
+            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::Concurrent, label::current().setting.concurrent);
             ui.selectable_value(&mut setting_token.tab, ui::SettingTab::Resize, label::current().setting.resize);
             ui.selectable_value(&mut setting_token.tab, ui::SettingTab::About, label::current().setting.about);
         });

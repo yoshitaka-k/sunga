@@ -28,6 +28,7 @@
     "setting": {
       "heading": "Settings",
       "general": "General",
+      "concurrent": "Concurrent",
       "resize": "Resize",
       "about": "About"
     },
@@ -46,6 +47,11 @@
       "play_sound": "Play sound",
       "dont_play_sound": "Don't play sound",
       "sound_volume": "Volume"
+    },
+    "setting_concurrent": {
+      "header_concurrent": "Concurrent",
+      "concurrent": "Processing",
+      "concurrent_warning_note": "Concurrent processing of files."
     },
     "setting_resize": {
       "header_sized": "Sized",

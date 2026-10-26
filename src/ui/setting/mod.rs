@@ -1,6 +1,7 @@
 mod view;
 mod top;
 mod general;
+mod concurrent;
 mod resize;
 mod about;
 
@@ -33,6 +34,11 @@ const RESIZE_INDENT_SPACING: f32 = 8.0;
 const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
 const GENERAL_LABEL_WIDTH: f32 = 94.0;
 const RESIZE_LABEL_WIDTH: f32 = 60.0;
+const CONCURRENT_LABEL_WIDTH: f32 = 80.0;
+
+// 並行処理数のスライダーの最小値と最大値
+pub(crate) const CONCURRENT_NUM_MIN: u8 = 1;
+pub(crate) const CONCURRENT_NUM_MAX: u8 = 8;
 
 // 効果音の音量のスライダーの最小値と最大値
 pub(crate) const SOUND_VOLUME_MIN: u8 = 1;
