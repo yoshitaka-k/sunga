@@ -108,8 +108,8 @@ pub(crate) struct StatusColor {
     standby: egui::Color32,
     resizing: egui::Color32,
     resized: egui::Color32,
-    unchanged: egui::Color32,
     skipped: egui::Color32,
+    unchanged: egui::Color32,
     canceled: egui::Color32,
     error: egui::Color32,
 }
@@ -119,8 +119,8 @@ impl StatusColor {
             standby: assets::status_color(ctx, file::Status::Standby),
             resizing: assets::status_color(ctx, file::Status::Resizing),
             resized: assets::status_color(ctx, file::Status::Resized),
-            unchanged: assets::status_color(ctx, file::Status::Unchanged),
             skipped: assets::status_color(ctx, file::Status::Skipped),
+            unchanged: assets::status_color(ctx, file::Status::Unchanged),
             canceled: assets::status_color(ctx, file::Status::Canceled),
             error: assets::status_color(ctx, file::Status::Error(String::new())),
         }
