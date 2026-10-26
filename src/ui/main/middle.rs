@@ -123,34 +123,19 @@ pub(crate) fn view(
                         // ファイル名を表示
                         ui.label(image.file_name().as_ref());
 
-                        // 待機中やリサイズ中の場合は表示しない
-                        if !image.is_standby_or_resizing() {
+                        // ステータスに応じてノートを表示
+                        let note = match image.status() {
+                            file::Status::Standby | file::Status::Resizing => None,
+                            file::Status::Resized => Some(egui::RichText::new(duration_format(*image.duration()))),
+                            file::Status::Skipped => Some(assets::text_color(label::current().main_middle.skipped, status_color.skipped, None)),
+                            file::Status::Unchanged => Some(assets::text_color(label::current().main_middle.no_saving, status_color.unchanged, None)),
+                            file::Status::Canceled => Some(assets::text_color(label::current().main_middle.canceled, status_color.canceled, None)),
+                            file::Status::Error(e) => Some(assets::text_color(e, status_color.error, None)),
+                        };
+
+                        if let Some(note) = note {
                             ui.separator();
-
-                            // リサイズ済みの場合はリサイズ時間を表示
-                            if image.is_resized() {
-                                ui.label(duration_format(*image.duration()));
-                            }
-
-                            // スキップの場合はスキップを表示
-                            if image.is_skipped() {
-                                ui.label(assets::text_color(label::current().main_middle.skipped, status_color.skipped, None));
-                            }
-
-                            // 変更なしの場合は節約なしを表示
-                            if image.is_unchanged() {
-                                ui.label(assets::text_color(label::current().main_middle.no_saving, status_color.unchanged, None));
-                            }
-
-                            // キャンセルの場合はキャンセルを表示
-                            if image.is_canceled() {
-                                ui.label(assets::text_color(label::current().main_middle.canceled, status_color.canceled, None));
-                            }
-
-                            // エラーの場合はエラーメッセージを表示
-                            if image.is_error() {
-                                ui.label(assets::text_color(&image.error_message(), status_color.error, None));
-                            }
+                            ui.label(note);
                         }
                     });
                 });

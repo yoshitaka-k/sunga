@@ -80,22 +80,10 @@ impl Image {
         matches!(self.status, file::Status::Resized)
     }
 
-    /// ファイルがスキップされた場合
-    /// * `return` - ファイルがスキップされた場合
-    pub fn is_skipped(&self) -> bool {
-        matches!(self.status, file::Status::Skipped)
-    }
-
     /// ファイルが変更なしの場合
     /// * `return` - ファイルが変更なしの場合
     pub fn is_unchanged(&self) -> bool {
         matches!(self.status, file::Status::Unchanged)
-    }
-
-    /// ファイルがキャンセルされた場合
-    /// * `return` - ファイルがキャンセルされた場合
-    pub fn is_canceled(&self) -> bool {
-        matches!(self.status, file::Status::Canceled)
     }
 
     /// ファイルがエラーかどうか
@@ -114,15 +102,6 @@ impl Image {
     /// * `return` - ファイル名
     pub fn file_name(&self) -> std::borrow::Cow<'_, str> {
         self.path.file_name().map(|f| f.to_string_lossy()).unwrap_or_default()
-    }
-
-    /// エラーメッセージを取得
-    /// * `return` - エラーメッセージ
-    pub fn error_message(&self) -> String {
-        match self.status {
-            file::Status::Error(ref e) => e.to_string(),
-            _ => String::new(),
-        }
     }
 
     /// 出力ファイルのパスを取得
