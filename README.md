@@ -20,6 +20,10 @@ Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（�
 
 フォルダや画像をドロップすると、設定したサイズまたは倍率でその場でリサイズします。出力先が空なら元ファイルを上書きし、指定していれば相対パスを保ったままそちらへ書き出します。
 
+<p align="center">
+  <img src="assets/readme/preview.png" alt="Sunga screenshot" width="640">
+</p>
+
 ## Supported formats
 
 読み込めるのは次の拡張子です。それ以外のファイルは一覧に追加されません。
