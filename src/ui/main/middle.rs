@@ -121,7 +121,12 @@ pub(crate) fn view(
                         main::opentype_icon(ui, image);
 
                         // ファイル名を表示
-                        ui.label(image.file_name().as_ref());
+                        ui.scope(|ui| {
+                            if !image.is_standby_or_resizing() {
+                                ui.set_max_width((ui.available_width() / main::LIST_MAX_WIDTH_DIVIDER).max(0.0));
+                            }
+                            ui.label(image.file_name().as_ref());
+                        });
 
                         // ステータスに応じてノートを表示
                         let note = match image.status() {
