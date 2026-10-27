@@ -35,28 +35,28 @@ fn status_icon(
     completed_color: egui::Color32
 ) -> egui::Response {
     let widget = match status {
-       file::Status::Standby => {
-           icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby)
-       },
-       file::Status::Resizing => {
-           icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing)
-       },
-       file::Status::Resized => {
-           icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, completed_color)
-       },
-       file::Status::Unchanged => {
-           icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged)
-       },
-       file::Status::Skipped => {
-           icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped)
-       },
-       file::Status::Canceled => {
-           icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled)
-       },
-       file::Status::Error(_) => {
-           icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error)
-       },
-   };
+        file::Status::Standby => {
+            icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby)
+        },
+        file::Status::Resizing => {
+            icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing)
+        },
+        file::Status::Resized => {
+            icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, completed_color)
+        },
+        file::Status::Unchanged => {
+            icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged)
+        },
+        file::Status::Skipped => {
+            icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped)
+        },
+        file::Status::Canceled => {
+            icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled)
+        },
+        file::Status::Error(_) => {
+            icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error)
+        },
+    };
 
    ui.add(widget)
 }
