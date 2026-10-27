@@ -1,5 +1,5 @@
 use crate::ui::{self, modal, ErrorToken};
-use crate::ui::assets::{icon, label, svg};
+use crate::ui::assets::{icon, lang, svg};
 
 /// エラーモーダルを表示
 /// * `show_modal` - モーダルを表示するかどうか
@@ -17,7 +17,7 @@ pub(crate) fn error(ctx: &egui::Context, error_token: &mut ErrorToken) {
         // 見出し部分
         ui.horizontal(|ui| {
             ui.add(modal::heading_icon(svg::ERROR, icon::MODAL_ICON_SIZE, egui::Color32::RED));
-            ui.heading(label::current().modal_error.heading);
+            ui.heading(lang::current().modal_error.heading);
         });
 
         ui.separator();

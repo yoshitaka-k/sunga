@@ -1,6 +1,6 @@
 use crate::app;
 use crate::ui::{self, setting};
-use crate::ui::assets::label;
+use crate::ui::assets::lang;
 
 /// 設定の一般設定を表示する
 pub(crate) fn view(
@@ -8,14 +8,14 @@ pub(crate) fn view(
     app: &mut app::App,
 ) {
     // グループヘッダーパネルを表示
-    setting::group_header_panel(ui, label::current().setting_general.header_output);
+    setting::group_header_panel(ui, lang::current().setting_general.header_output);
 
     // フレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, label::current().setting_general.path, setting::GENERAL_PATH_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_general.path, setting::GENERAL_PATH_LABEL_WIDTH);
             ui.add(
                 egui::TextEdit::singleline(app.output_path_mut())
                     .desired_width(ui.available_width())
@@ -24,18 +24,18 @@ pub(crate) fn view(
         });
         ui.horizontal(|ui| {
             ui.add_space(setting::GENERAL_PATH_LABEL_WIDTH + ui.spacing().item_spacing.x);
-            if ui.button(label::current().setting_general.browse).clicked() {
+            if ui.button(lang::current().setting_general.browse).clicked() {
                 if let Some(path) = rfd::FileDialog::new().pick_folder() {
                     *app.output_path_mut() = path.to_string_lossy().into_owned();
                 }
             }
-            if ui.button(label::current().setting_general.clear).clicked() {
+            if ui.button(lang::current().setting_general.clear).clicked() {
                 app.output_path_mut().clear();
             }
         });
 
         // 出力パスの注意書きを表示
-        setting::warning_note(ui, label::current().setting_general.output_warning_note);
+        setting::warning_note(ui, lang::current().setting_general.output_warning_note);
 
         ui.add_space(setting::ADD_SPACING);
         ui.separator();
@@ -43,19 +43,19 @@ pub(crate) fn view(
 
         // 同じパスはスキップ
         ui.horizontal(|ui| {
-            ui::add_label(ui, label::current().setting_general.skip_same_path, setting::GENERAL_LABEL_WIDTH);
-            ui.radio_value(app.skip_same_path_mut(), true, label::current().setting_general.skip_same_path_option);
-            ui.radio_value(app.skip_same_path_mut(), false, label::current().setting_general.dont_skip_same_path_option);
+            ui::add_label(ui, lang::current().setting_general.skip_same_path, setting::GENERAL_LABEL_WIDTH);
+            ui.radio_value(app.skip_same_path_mut(), true, lang::current().setting_general.skip_same_path_option);
+            ui.radio_value(app.skip_same_path_mut(), false, lang::current().setting_general.dont_skip_same_path_option);
         });
 
         // 同じパスはスキップの注意書きを表示
-        setting::warning_note(ui, label::current().setting_general.skip_same_path_warning_note);
+        setting::warning_note(ui, lang::current().setting_general.skip_same_path_warning_note);
     });
 
     ui.add_space(setting::ADD_SPACING);
 
     // グループヘッダーパネルを表示
-    setting::group_header_panel(ui, label::current().setting_general.header_sound);
+    setting::group_header_panel(ui, lang::current().setting_general.header_sound);
 
     // フレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
@@ -63,14 +63,14 @@ pub(crate) fn view(
 
         // 効果音を再生選択
         ui.horizontal(|ui| {
-            ui::add_label(ui, label::current().setting_general.sound_effects, setting::GENERAL_LABEL_WIDTH);
-            ui.radio_value(app.play_sound_mut(), true, label::current().setting_general.play_sound);
-            ui.radio_value(app.play_sound_mut(), false, label::current().setting_general.dont_play_sound);
+            ui::add_label(ui, lang::current().setting_general.sound_effects, setting::GENERAL_LABEL_WIDTH);
+            ui.radio_value(app.play_sound_mut(), true, lang::current().setting_general.play_sound);
+            ui.radio_value(app.play_sound_mut(), false, lang::current().setting_general.dont_play_sound);
         });
 
         // 効果音の音量の選択
         ui.horizontal(|ui| {
-            ui::add_label(ui, label::current().setting_general.sound_volume, setting::GENERAL_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_general.sound_volume, setting::GENERAL_LABEL_WIDTH);
             ui.scope(|ui| {
                 ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
                 ui.add(egui::Slider::new(app.sound_volume_mut(), setting::SOUND_VOLUME_MIN..=setting::SOUND_VOLUME_MAX));

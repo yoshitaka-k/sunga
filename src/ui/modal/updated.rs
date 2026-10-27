@@ -1,6 +1,6 @@
 use crate::app::{UpdateCheck, UpdatedToken};
 use crate::ui::{self, modal};
-use crate::ui::assets::{icon, label, svg};
+use crate::ui::assets::{icon, lang, svg};
 
 /// 更新モーダルを表示
 /// * `ctx` - コンテキスト
@@ -20,17 +20,17 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
                 // アップデートがある場合
                 UpdateCheck::Available { .. } => {
                     ui.add(modal::heading_icon(svg::UPDATE, icon::MODAL_ICON_SIZE, egui::Color32::GREEN));
-                    ui.heading(label::current().modal_updated.available);
+                    ui.heading(lang::current().modal_updated.available);
                 }
                 // アップデートが最新の場合
                 UpdateCheck::Latest => {
                     ui.add(modal::heading_icon(svg::UPDATE, icon::MODAL_ICON_SIZE, ui.visuals().text_color()));
-                    ui.heading(label::current().modal_updated.latest);
+                    ui.heading(lang::current().modal_updated.latest);
                 }
                 // アップデートが取得できなかった場合
                 UpdateCheck::Failed(_) => {
                     ui.add(modal::heading_icon(svg::ERROR, icon::MODAL_ICON_SIZE, egui::Color32::RED));
-                    ui.heading(label::current().modal_updated.failed);
+                    ui.heading(lang::current().modal_updated.failed);
                 }
             }
         });
@@ -44,9 +44,9 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
             // アップデートがある場合
             UpdateCheck::Available { version, url } => {
                 egui::Frame::default().inner_margin(ui::PANEL_INNER_MARGIN).show(ui, |ui| {
-                    ui::add_label(ui, &format!("{}{}", label::current().modal_updated.new_version, version), modal::MODAL_LABEL_WIDTH);
+                    ui::add_label(ui, &format!("{}{}", lang::current().modal_updated.new_version, version), modal::MODAL_LABEL_WIDTH);
                     ui.add(egui::Label::new(
-                        egui::RichText::new(format!("{}{}", label::current().modal_updated.current_version, env!("CARGO_PKG_VERSION"))).weak(),
+                        egui::RichText::new(format!("{}{}", lang::current().modal_updated.current_version, env!("CARGO_PKG_VERSION"))).weak(),
                     ));
                     ui.add_space(modal::MODAL_WINDOW_SPACING);
                 });
@@ -54,7 +54,7 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
                 ui.separator();
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui.button(label::current().modal_updated.download).clicked() {
+                    if ui.button(lang::current().modal_updated.download).clicked() {
                         ui.ctx().open_url(egui::OpenUrl::new_tab(url));
                     }
                 });
@@ -62,7 +62,7 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
             // アップデートが最新の場合
             UpdateCheck::Latest => {
                 egui::Frame::default().inner_margin(ui::PANEL_INNER_MARGIN).show(ui, |ui| {
-                    ui.label(format!("{}{}", label::current().modal_updated.current_version, env!("CARGO_PKG_VERSION")));
+                    ui.label(format!("{}{}", lang::current().modal_updated.current_version, env!("CARGO_PKG_VERSION")));
                     ui.add_space(modal::MODAL_WINDOW_SPACING);
                 });
             }

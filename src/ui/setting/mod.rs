@@ -9,7 +9,7 @@ pub(crate) use view::view;
 
 use crate::{app, ui};
 use crate::event::button;
-use crate::ui::assets::{self, label, icon, svg};
+use crate::ui::assets::{self, lang, icon, svg};
 
 // ウィンドウのID
 const SETTING_WINDOW_ID: &str = "setting_window";
@@ -69,7 +69,7 @@ pub(crate) fn header_panel(
         // アップデート確認ボタン
         if let Some(update_job) = update_job {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.button(label::current().setting_about.update_check).clicked() {
+                if ui.button(lang::current().setting_about.update_check).clicked() {
                     let _ =button::check_for_update(update_job);
                 }
             });

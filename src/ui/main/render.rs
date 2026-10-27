@@ -1,7 +1,7 @@
 use crate::{app, error, event, file, resize};
 use crate::event::{button, click, input, key};
 use crate::ui::{self, modal, setting};
-use crate::ui::assets::{label, font, svg, icon, sounds};
+use crate::ui::assets::{lang, font, svg, icon, sounds};
 use crate::ui::main::{self, top, bottom, middle};
 
 /// 描画用のウィジェット
@@ -235,11 +235,11 @@ impl Render {
             let result = match action {
                 // ファイルダイアログを表示
                 event::EventAction::FilesOpen => {
-                    button::files_open(&self.app, &mut self.files, label::current().file_dialog.image_files)
+                    button::files_open(&self.app, &mut self.files, lang::current().file_dialog.image_files)
                 },
                 // フォルダダイアログを表示
                 event::EventAction::FolderOpen => {
-                    button::folders_open(&self.app, &mut self.files, label::current().file_dialog.image_files)
+                    button::folders_open(&self.app, &mut self.files, lang::current().file_dialog.image_files)
                 },
                 // ファイルをクリア
                 event::EventAction::Clear => {

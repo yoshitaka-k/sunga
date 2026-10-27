@@ -1,6 +1,6 @@
 use crate::{app, event, ui};
 use crate::ui::main;
-use crate::ui::assets::{self, icon, label, svg};
+use crate::ui::assets::{self, icon, lang, svg};
 
 /// トップメニューバーを描画
 /// * `ui` - UI
@@ -17,17 +17,17 @@ pub(crate) fn view(
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
-                ui.label(format!("{}: ", label::current().main_top.header_resize));
+                ui.label(format!("{}: ", lang::current().main_top.header_resize));
 
                 if *app.is_scale() {
-                    ui.label(format!("{}: {}% ", label::current().main_top.header_scale, app.scale()));
+                    ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, app.scale()));
                 } else {
-                    ui.label(format!("{}: {}x{} pixels", label::current().main_top.header_sized, app.width(), app.height()));
+                    ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, app.width(), app.height()));
                 }
             },
             |ui| {
                 // 設定ボタン
-                let hover_text = label::current().main_top.settings;
+                let hover_text = lang::current().main_top.settings;
                 let settings_button_image = egui::Image::new(svg::SETTINGS).tint(button_icon_color);
                 if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(settings_button_image))
                     .on_hover_text(hover_text).clicked()
@@ -41,7 +41,7 @@ pub(crate) fn view(
                 {
                     let svg_image = egui::Image::new(svg::UPLOAD).tint(button_icon_color);
                     if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
-                        .on_hover_text(label::current().main_top.file_or_folder_open).clicked()
+                        .on_hover_text(lang::current().main_top.file_or_folder_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FolderOpen);
                         ui.ctx().request_repaint();
@@ -51,7 +51,7 @@ pub(crate) fn view(
                 {
                     let svg_image = egui::Image::new(svg::FOLDER_OPEN).tint(button_icon_color);
                     if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
-                        .on_hover_text(label::current().main_top.folder_open).clicked()
+                        .on_hover_text(lang::current().main_top.folder_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FolderOpen);
                         ui.ctx().request_repaint();
@@ -64,7 +64,7 @@ pub(crate) fn view(
                 {
                     let file_open_button_image = egui::Image::new(svg::FILE_OPEN).tint(button_icon_color);
                     if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(file_open_button_image))
-                        .on_hover_text(label::current().main_top.files_open).clicked()
+                        .on_hover_text(lang::current().main_top.files_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FilesOpen);
                         ui.ctx().request_repaint();

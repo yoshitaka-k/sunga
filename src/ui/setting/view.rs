@@ -1,6 +1,6 @@
 use crate::app;
 use crate::event::input;
-use crate::ui::assets::label;
+use crate::ui::assets::lang;
 use crate::ui::{self, setting, modal};
 
 /// 設定ウィンドウを描画
@@ -16,7 +16,7 @@ pub(crate) fn view(
 
     // 設定ウィンドウのオプションを設定
     let mut options = egui::ViewportBuilder::default()
-        .with_title(label::current().setting.heading)
+        .with_title(lang::current().setting.heading)
         .with_inner_size([setting::WINDOW_WIDTH, setting::WINDOW_HEIGHT])
         .with_maximize_button(false)
         .with_resizable(false);

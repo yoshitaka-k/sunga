@@ -1,6 +1,6 @@
 use crate::{event, file, duration_format};
 use crate::ui::{self, main};
-use crate::ui::assets::{self, icon, svg, label};
+use crate::ui::assets::{self, icon, svg, lang};
 
 /// ミドルパネルを描画
 /// * `ui` - UI
@@ -73,7 +73,7 @@ pub(crate) fn view(
             if visibles.len() == 0 {
                 ui.horizontal(|ui| {
                     ui.add(main::icon_widget(svg::UPLOAD_FILE, icon::MIDDLE_LIST_ICON_SIZE, assets::list_empty_color(ui)));
-                    ui.label(assets::text_color(label::current().main_middle.upload_note, assets::list_empty_color(ui), None));
+                    ui.label(assets::text_color(lang::current().main_middle.upload_note, assets::list_empty_color(ui), None));
                 });
             }
 
@@ -127,9 +127,9 @@ pub(crate) fn view(
                         let note = match image.status() {
                             file::Status::Standby | file::Status::Resizing => None,
                             file::Status::Resized => Some(egui::RichText::new(duration_format(*image.duration()))),
-                            file::Status::Skipped => Some(assets::text_color(label::current().resize_status.skipped, status_color.skipped, None)),
-                            file::Status::Unchanged => Some(assets::text_color(label::current().resize_status.unchanged, status_color.unchanged, None)),
-                            file::Status::Canceled => Some(assets::text_color(label::current().resize_status.canceled, status_color.canceled, None)),
+                            file::Status::Skipped => Some(assets::text_color(lang::current().resize_status.skipped, status_color.skipped, None)),
+                            file::Status::Unchanged => Some(assets::text_color(lang::current().resize_status.unchanged, status_color.unchanged, None)),
+                            file::Status::Canceled => Some(assets::text_color(lang::current().resize_status.canceled, status_color.canceled, None)),
                             file::Status::Error(e) => Some(assets::text_color(e, status_color.error, None)),
                         };
 
