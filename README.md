@@ -1,10 +1,132 @@
-# Sunga
+<p align="center">
+  <img src="assets/icon.png" alt="Sunga" width="96">
+</p>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/yoshitaka-k/sunga)
+<h1 align="center">Sunga</h1>
 
-![GitHub top language](https://img.shields.io/github/languages/top/yoshitaka-k/sunga)
-![Lines of code](https://www.aschey.tech/tokei/github/yoshitaka-k/sunga)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/yoshitaka-k/sunga)
-[![License](https://img.shields.io/github/license/yoshitaka-k/sunga)](https://github.com/yoshitaka-k/sunga/blob/main/LICENSE)
+<p align="center">
+  Lightweight image resizer
+</p>
 
-Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（寸画）でも作ってみようと思って作成なぅ
+<p align="center">
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/yoshitaka-k/sunga">
+  <a href="https://github.com/yoshitaka-k/sunga/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yoshitaka-k/sunga"></a>
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/yoshitaka-k/sunga">
+  <img alt="Lines of code" src="https://www.aschey.tech/tokei/github/yoshitaka-k/sunga">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/yoshitaka-k/sunga">
+</p>
+
+Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（寸画）でも作ってみようと思って作成なぅ。
+
+フォルダや画像をドロップすると、設定したサイズまたは倍率でその場でリサイズします。出力先が空なら元ファイルを上書きし、指定していれば相対パスを保ったままそちらへ書き出します。
+
+## Supported formats
+
+読み込めるのは次の拡張子です。それ以外のファイルは一覧に追加されません。
+
+| Extension | Format |
+| --- | --- |
+| `.jpg` / `.jpeg` / `.png` | JPEG / PNG |
+| `.gif` / `.webp` / `.avif` / `.bmp` / `.ico` | GIF / WebP / AVIF / BMP / ICO |
+| `.tiff` / `.tif` / `.tga` / `.qoi` | TIFF / TGA / QOI |
+| `.exr` / `.hdr` | OpenEXR / Radiance HDR |
+| `.pbm` / `.pgm` / `.ppm` / `.pam` | PNM |
+| `.dds` / `.ff` | DDS / Farbfeld |
+
+読み書きは [image](https://github.com/image-rs/image) クレートで、形式は拡張子ではなく中身から判定します。保存は元と同じ形式で、書き出しに対応していない形式は `Error` になります。
+
+リサイズ後のサイズが元と変わらない場合は書き換えず、`Unchanged` になります。出力先が別パスなら、元ファイルをそのままコピーします。
+
+## Resize
+
+リサイズ方法は設定の Resize タブで、Sized と Scale のどちらかを選びます。フィルタは Lanczos3 です。
+
+| Mode | Behavior |
+| --- | --- |
+| Sized | 縦横比を保ったまま、幅 × 高さに収まるように拡大縮小（既定 2560 × 1440） |
+| Scale | 元のサイズに倍率をかける（既定 100%） |
+
+上部バーには、いまのリサイズ方法と値が出ます。
+
+## Usage
+
+- フォルダまたはファイルを **ドラッグ＆ドロップ**
+- 右上のボタンから開く（macOS はファイルとフォルダを同時選択可。それ以外はフォルダボタンとファイルボタンが別）
+
+追加されたファイルは待機（standby）から順に自動でリサイズされます。フォルダ経由で追加した行はフォルダアイコン（ホバーで相対パス）、単体ファイルは画像アイコンです。
+
+同じパスがすでに待機中・リサイズ中なら `Already in progress` になります。完了済みの同じ入出力は、設定の Skip same path に従ってスキップできます。
+
+## Status
+
+一覧と下部バーで使う状態です。
+
+| Status | Meaning |
+| --- | --- |
+| Standby | 待機中 |
+| Resizing | リサイズ中 |
+| Resized | リサイズ完了（所要時間を表示） |
+| Unchanged | サイズが変わらなかった |
+| Skipped | 同じ入出力が完了済みのためスキップ |
+| Canceled | キャンセル済み |
+| Error | 失敗（メッセージを表示） |
+
+下部バーは standby / resizing / completed / error の件数です。completed にホバーすると resized / unchanged / skipped の内訳、左のアイコンにホバーすると平均所要時間が出ます。
+
+## Mouse & keyboard
+
+一覧の行を対象にした操作です。ダブルクリック・Enter・Space は、出力先があればそちらを開きます。
+
+| Input | Behavior |
+| --- | --- |
+| Click | 行を選択 |
+| Click on empty area | 選択を解除 |
+| Double-click / <kbd>Enter</kbd> | Finder / Explorer でファイルの場所を表示 |
+| <kbd>↑</kbd> / <kbd>↓</kbd> | 選択行を移動 |
+| <kbd>Space</kbd> | [Quick Look](https://support.apple.com/guide/mac-help/mchlp1119/mac) でプレビュー（**macOS のみ**） |
+| <kbd>Backspace</kbd> | 選択中のリサイズをキャンセル（Standby / Resizing のみ） |
+
+アプリ全体のショートカットです。macOS は <kbd>⌘</kbd>、その他は <kbd>Ctrl</kbd> です。
+
+| Input | Behavior |
+| --- | --- |
+| <kbd>⌘O</kbd> / <kbd>Ctrl+O</kbd> | 開く（macOS はファイルとフォルダ。その他はファイル） |
+| <kbd>Ctrl+Shift+O</kbd> | フォルダを開く（**macOS 以外**） |
+| <kbd>⌘,</kbd> / <kbd>Ctrl+,</kbd> | 設定を開く |
+| <kbd>⌘W</kbd> / <kbd>Ctrl+W</kbd> | 設定ウィンドウを閉じる |
+
+右下のクリアボタンは、実行中のリサイズを止めて一覧を空にします。
+
+## Settings
+
+歯車アイコン、または <kbd>⌘,</kbd> / <kbd>Ctrl+,</kbd> から設定ウィンドウを開きます。閉じるのは <kbd>⌘W</kbd> / <kbd>Ctrl+W</kbd> です。値は次回起動時に復元されます。
+
+### General
+
+| Setting | Behavior |
+| --- | --- |
+| Output path | 書き出し先。空なら元ファイルを上書き |
+| Skip same path | 完了済みの同じ入出力はスキップ。キャンセルとエラーは再実行できる（既定 Skip） |
+| Sound effects | リサイズ完了時に再生。エラーがあればアラート（既定 Play sound） |
+| Volume | 1–10（既定 5） |
+
+### Concurrent
+
+| Setting | Range | Notes |
+| --- | --- | --- |
+| Processing | 1–8 | 同時に処理するファイル数（既定 4） |
+
+### Resize
+
+| Setting | Range | Notes |
+| --- | --- | --- |
+| Sized: Width / Height | 10–10000 px | 縦横比を保って収める（既定 2560 × 1440） |
+| Scale | 10–500% | 元のサイズに対する倍率（既定 100%） |
+
+### About
+
+バージョン・ライセンス・リポジトリと、GitHub Releases へのアップデート確認があります。
+
+## License
+
+[Apache-2.0](https://github.com/yoshitaka-k/sunga/blob/main/LICENSE)
