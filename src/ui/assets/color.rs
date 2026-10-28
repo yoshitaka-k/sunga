@@ -58,3 +58,9 @@ pub(crate) const LIGHT_MODE_BUTTON_ICON_COLOR: egui::Color32 = egui::Color32::fr
 /// * `LIGHT_MODE_WARNING_COLOR` - ライトモードの警告アイコンの色
 pub(crate) const DARK_MODE_WARNING_COLOR: egui::Color32 = egui::Color32::from_rgb(160, 160, 0);
 pub(crate) const LIGHT_MODE_WARNING_COLOR: egui::Color32 = egui::Color32::from_rgb(170, 170, 80);
+
+// タブの選択時の背景色
+/// * `DARK_TAB_SELECTED_COLOR` - ダークモードのタブの選択時の背景色
+/// * `LIGHT_MODE_TAB_SELECTED_COLOR` - ライトモードのタブの選択時の背景色
+pub(crate) const DARK_TAB_SELECTED_COLOR: egui::Color32 = egui::Color32::from_rgb(80, 70, 180);
+pub(crate) const LIGHT_TAB_SELECTED_COLOR: egui::Color32 = egui::Color32::from_rgb(180, 180, 255);

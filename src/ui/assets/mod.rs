@@ -97,6 +97,17 @@ pub(crate) fn button_icon_color(ui: &egui::Ui) -> egui::Color32 {
     }
 }
 
+/// タブの選択時の背景色を取得
+/// * `ui` - UI
+/// * `return` - タブの選択時の背景色
+pub(crate) fn tab_selected_color(ui: &egui::Ui) -> egui::Color32 {
+    if ui.ctx().global_style().visuals.dark_mode {
+        color::DARK_TAB_SELECTED_COLOR
+    } else {
+        color::LIGHT_TAB_SELECTED_COLOR
+    }
+}
+
 /// 警告アイコンの色
 /// * `ui` - UI
 /// * `return` - 警告アイコンの色
