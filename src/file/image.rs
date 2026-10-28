@@ -28,6 +28,12 @@ pub(crate) struct Image {
     /// 出力先
     output_path: Option<PathBuf>,
 
+    /// 画像の寸法
+    dimensions: Option<(u32, u32)>,
+
+    /// 新しい画像の寸法
+    resized_dimensions: Option<(u32, u32)>,
+
     /// フォルダ経由で追加されたファイルかどうか
     is_in_folder: bool,
 
@@ -48,15 +54,17 @@ impl Image {
     /// * `is_in_folder` - フォルダ経由で追加されたファイルかどうか
     /// * `return` - Image のインスタンス
     pub fn new(path: PathBuf, relative_path: PathBuf, is_in_folder: bool) -> Self {
-        // 一意 ID を発行
-        let id = NEXT_ID.fetch_add(COUNT_UP, Ordering::Relaxed);
+        // 画像の寸法を取得
+        let dimensions = dimensions(&path);
 
         Self {
-            id,
+            id: NEXT_ID.fetch_add(COUNT_UP, Ordering::Relaxed),
             path,
             relative_path,
             status: file::Status::Standby,
             output_path: None,
+            dimensions,
+            resized_dimensions: None,
             is_in_folder,
             duration: DEFAULT_DURATION,
         }
@@ -195,6 +203,9 @@ impl Image {
                         let duration = end_time.duration_since(start_time).as_millis();
                         self.duration = duration as u64;
 
+                        // 新しい画像の寸法を設定
+                        self.resized_dimensions = dimensions(&output_path);
+
                         // ステータスをリサイズ済みに設定
                         self.status = file::Status::Resized;
                         Ok(self.status.clone())
@@ -226,6 +237,11 @@ impl Image {
     }
 }
 
-/// private methods
-impl Image {
+/// 画像の寸法を取得
+/// * `path` - 画像ファイルのパス
+/// * `return` - 画像の寸法
+fn dimensions(path: &PathBuf) -> Option<(u32, u32)> {
+    image::ImageReader::open(&path).ok()
+        .and_then(|r| r.with_guessed_format().ok())
+        .and_then(|r| r.into_dimensions().ok())
 }

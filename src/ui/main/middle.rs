@@ -134,14 +134,26 @@ pub(crate) fn view(
 
                         // ファイル名とステータスノートを表示
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            // ステータスノートを表示
                             if let Some(note) = note {
                                 ui.add_space(main::LIST_RIGHT_INDENT);
                                 ui.label(note);
                                 ui.separator();
                             }
+                            // 新しい画像の寸法を表示
+                            if let Some((width, height)) = image.resized_dimensions() {
+                                ui.label(format!("{}x{}", width, height));
+                                ui.separator();
+                            }
+                            // ファイル名と元の画像の寸法を表示
                             ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| {
                                 ui.set_min_width(ui.available_width() * main::LIST_NAME_MIN_RATIO);
-                                ui.add(egui::Label::new(image.file_name().as_ref()).truncate());
+
+                                let mut label = image.file_name().as_ref().to_string();
+                                if let Some((width, height)) = image.dimensions() {
+                                    label = format!("{} ({}x{})", label, width, height);
+                                }
+                                ui.add(egui::Label::new(label).truncate());
                             });
                         });
                     });
