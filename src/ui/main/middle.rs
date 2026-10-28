@@ -96,6 +96,17 @@ pub(crate) fn view(
                     ui.painter().rect_filled(row_rect, main::LIST_CORNER_RADIUS, assets::selected_background_color(ui));
                 }
 
+                // ステータスに応じてノートを表示
+                let note = match image.status() {
+                    file::Status::Standby | file::Status::Resizing => None,
+                    file::Status::Resized => Some(egui::RichText::new(duration_format(*image.duration()))),
+                    file::Status::Skipped => Some(assets::text_color(lang::current().resize_status.skipped, status_color.skipped, None)),
+                    file::Status::Unchanged => Some(assets::text_color(lang::current().resize_status.unchanged, status_color.unchanged, None)),
+                    file::Status::Canceled => Some(assets::text_color(lang::current().resize_status.canceled, status_color.canceled, None)),
+                    file::Status::Error(e) => Some(assets::text_color(e, status_color.error, None)),
+                };
+
+                // アイテムの表示
                 ui.scope_builder(
                     egui::UiBuilder::new()
                         .max_rect(row_rect)
@@ -106,6 +117,7 @@ pub(crate) fn view(
                         // 折り返さないようにして、溢れた分は省略
                         ui.style_mut().wrap_mode = Some(egui::TextWrapMode::Truncate);
 
+                        // デフォルトのスペースを取得
                         let spacing = ui.spacing().item_spacing.x;
 
                         // ステータスアイコンを表示
@@ -129,15 +141,6 @@ pub(crate) fn view(
                         });
 
                         // ステータスに応じてノートを表示
-                        let note = match image.status() {
-                            file::Status::Standby | file::Status::Resizing => None,
-                            file::Status::Resized => Some(egui::RichText::new(duration_format(*image.duration()))),
-                            file::Status::Skipped => Some(assets::text_color(lang::current().resize_status.skipped, status_color.skipped, None)),
-                            file::Status::Unchanged => Some(assets::text_color(lang::current().resize_status.unchanged, status_color.unchanged, None)),
-                            file::Status::Canceled => Some(assets::text_color(lang::current().resize_status.canceled, status_color.canceled, None)),
-                            file::Status::Error(e) => Some(assets::text_color(e, status_color.error, None)),
-                        };
-
                         if let Some(note) = note {
                             ui.separator();
                             ui.label(note);
