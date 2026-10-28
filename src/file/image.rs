@@ -25,15 +25,15 @@ pub(crate) struct Image {
     /// ファイルの相対パス
     relative_path: PathBuf,
 
-    /// リサイズステータス
-    #[getset(set = "pub")]
-    status: file::Status,
-
     /// 出力先
     output_path: Option<PathBuf>,
 
     /// フォルダ経由で追加されたファイルかどうか
     is_in_folder: bool,
+
+    /// リサイズステータス
+    #[getset(set = "pub")]
+    status: file::Status,
 
     /// リサイズ時間（ミリ秒）
     #[getset(set = "pub")]
