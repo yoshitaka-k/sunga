@@ -63,7 +63,7 @@ impl Sunga {
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
         // 画像を読み込む
-        let reader = image::ImageReader::open(&path)
+        let reader = image::ImageReader::open(path)
             .and_then(|r| r.with_guessed_format())
             .map_err(|e| error::SungaError::resize_error(e.to_string(), path.to_path_buf()))?;
 
@@ -97,7 +97,7 @@ impl Sunga {
                 Self::make_output_path(output_path)?;
 
                 // ファイルをコピー
-                std::fs::copy(&path, &output_path).map_err(|e| {
+                std::fs::copy(path, output_path).map_err(|e| {
                     error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
                 })?;
             }

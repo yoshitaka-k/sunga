@@ -38,7 +38,7 @@ pub struct {name} {{\n"));
         }
         output.push_str("}\n");
     }
-    output.push_str("\n");
+    output.push('\n');
 
     // 言語ファイルを生成
     let lang_files = collect_asset_stems(lang_dir, "json");
@@ -63,7 +63,7 @@ pub const {const_name}: Labels = Labels {{\n"));
             for key in fields.as_object().unwrap().keys() {
                 let value = fields.as_object().unwrap().get(key).unwrap();
                 let s = value.as_str()
-                    .expect(&format!("{}: must be a string", key));
+                    .unwrap_or_else(|| panic!("{}: must be a string", key));
                 output.push_str(&format!(" {key}: {:?},", s));
             }
             output.push_str(" },\n");

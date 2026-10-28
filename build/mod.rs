@@ -30,10 +30,10 @@ pub(crate) fn load_json(path: &Path, file: &str) -> serde_json::Value {
     let json_file = path.join(file);
 
     let json_string = &fs::read_to_string(&json_file)
-        .expect(format!("failed to read {}", json_file.display()).as_str());
+        .unwrap_or_else(|_| panic!("failed to read {}", json_file.display()));
 
     serde_json::from_str(json_string)
-        .expect(format!("{}: must be a valid JSON", file).as_str())
+        .unwrap_or_else(|_| panic!("{}: must be a valid JSON", file))
 }
 
 /// assets 配下のパスを include_bytes! 用に展開する

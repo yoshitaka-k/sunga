@@ -166,7 +166,7 @@ impl Render {
     /// ドロップされたファイルを処理
     /// * `ui` - UI
     fn drop_files(&mut self, ui: &egui::Ui) {
-        let Some(result) = input::drop(ui, &mut self.app, &mut self.files) else { return; };
+        let Some(result) = input::drop(ui, &self.app, &mut self.files) else { return; };
 
         self.open_result(result);
 

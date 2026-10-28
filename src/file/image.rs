@@ -231,7 +231,7 @@ impl Image {
             }
             Err(e) => {
                 self.status = file::Status::Error(e.to_string());
-                return Err(error::SungaError::resize_error(e.to_string(), self.path.clone()));
+                Err(error::SungaError::resize_error(e.to_string(), self.path.clone()))
             }
         }
     }
@@ -241,7 +241,7 @@ impl Image {
 /// * `path` - 画像ファイルのパス
 /// * `return` - 画像の寸法
 fn dimensions(path: &PathBuf) -> Option<(u32, u32)> {
-    image::ImageReader::open(&path).ok()
+    image::ImageReader::open(path).ok()
         .and_then(|r| r.with_guessed_format().ok())
         .and_then(|r| r.into_dimensions().ok())
 }

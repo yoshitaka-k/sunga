@@ -62,7 +62,7 @@ impl OpenFiles {
     pub fn add(&mut self, app: &app::App, path: PathBuf) -> error::Result<bool> {
         let base_dir = path.parent().unwrap_or(&path);
 
-        Ok(self.find_file(app, &path, base_dir)?)
+        self.find_file(app, &path, base_dir)
     }
 
     /// 諸々クリア
@@ -236,10 +236,10 @@ impl OpenFiles {
     /// 待機中とリサイズ中のファイルはキャンセルできる
     /// * `id` - キャンセルされたファイルの ID
     pub fn set_status_canceled(&mut self, id: u64) {
-        if let Some(image) = self.images.iter_mut().find(|i| *i.id() == id) {
-            if image.is_standby_or_resizing() {
-                image.set_status(file::Status::Canceled);
-            }
+        if let Some(image) = self.images.iter_mut().find(|i| *i.id() == id)
+            && image.is_standby_or_resizing()
+        {
+            image.set_status(file::Status::Canceled);
         }
     }
 
@@ -291,7 +291,7 @@ impl OpenFiles {
         })?;
 
         if metadata.is_file() {
-            if file::is_allowed_extension(&path) {
+            if file::is_allowed_extension(path) {
                 // base_dir からの相対パスを求める
                 let relative_path = path.strip_prefix(base_dir);
 
@@ -308,14 +308,14 @@ impl OpenFiles {
                 let output_path = image.make_output_path(app);
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
-                if self.is_standby_or_resizing(&path) {
+                if self.is_standby_or_resizing(path) {
                     image.set_status(file::Status::Error("Already in progress".to_string()));
                     self.images.push(image);
                     return Ok(false);
                 }
 
                 // 同じパスはスキップ
-                if *app.skip_same_path() && self.is_input_and_output(&path, &output_path) {
+                if *app.skip_same_path() && self.is_input_and_output(path, &output_path) {
                     image.set_status(file::Status::Skipped);
                     self.images.push(image);
                     return Ok(false);
@@ -325,7 +325,7 @@ impl OpenFiles {
                 self.images.push(image);
             }
         } else if metadata.is_dir() {
-            for entry in fs::read_dir(&path).map_err(|e| {
+            for entry in fs::read_dir(path).map_err(|e| {
                 error::SungaError::file_error(e.to_string(), path.to_path_buf())
             })? {
                 let entry = entry.map_err(|e| {

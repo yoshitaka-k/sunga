@@ -100,10 +100,10 @@ pub(crate) fn up(
     files: &mut file::OpenFiles,
     pending_actions: &mut Vec<event::EventAction>
 ) {
-    if ui.input(|input| input.key_pressed(egui::Key::ArrowUp)) {
-        if let Some(id) = files.selected_id() {
-            pending_actions.push(event::EventAction::Up { id: *id });
-        }
+    if ui.input(|input| input.key_pressed(egui::Key::ArrowUp))
+        && let Some(id) = files.selected_id()
+    {
+        pending_actions.push(event::EventAction::Up { id: *id });
     }
 }
 
@@ -116,10 +116,10 @@ pub(crate) fn down(
     files: &mut file::OpenFiles,
     pending_actions: &mut Vec<event::EventAction>
 ) {
-    if ui.input(|input| input.key_pressed(egui::Key::ArrowDown)) {
-        if let Some(id) = files.selected_id() {
-            pending_actions.push(event::EventAction::Down { id: *id });
-        }
+    if ui.input(|input| input.key_pressed(egui::Key::ArrowDown))
+        && let Some(id) = files.selected_id()
+    {
+        pending_actions.push(event::EventAction::Down { id: *id });
     }
 }
 
@@ -132,10 +132,10 @@ pub(crate) fn enter(
     files: &file::OpenFiles,
     pending_actions: &mut Vec<event::EventAction>
 ) {
-    if ui.input(|input| input.key_pressed(egui::Key::Enter)) {
-        if let Some(image) = files.selected_image() {
-            pending_actions.push(event::EventAction::Enter(image.reveal_path().clone()));
-        }
+    if ui.input(|input| input.key_pressed(egui::Key::Enter))
+        && let Some(image) = files.selected_image()
+    {
+        pending_actions.push(event::EventAction::Enter(image.reveal_path().clone()));
     }
 }
 
@@ -160,9 +160,9 @@ pub(crate) fn space(
     files: &file::OpenFiles,
     pending_actions: &mut Vec<event::EventAction>
 ) {
-    if ui.input(|input| input.key_pressed(egui::Key::Space)) {
-        if let Some(image) = files.selected_image() {
-            pending_actions.push(event::EventAction::Space(image.reveal_path().clone()));
-        }
+    if ui.input(|input| input.key_pressed(egui::Key::Space))
+        && let Some(image) = files.selected_image()
+    {
+        pending_actions.push(event::EventAction::Space(image.reveal_path().clone()));
     }
 }

@@ -24,12 +24,11 @@ pub(crate) fn allowed_extensions() -> Vec<&'static str> {
 /// * `return` - 許可されているかどうか
 pub(crate) fn is_allowed_extension(path: &Path) -> bool {
     let extensions = allowed_extensions();
-    if let Some(ext) = path.extension() {
-        if let Some(ext) = ext.to_str() {
-            if extensions.iter().any(|e| e.eq_ignore_ascii_case(ext)) {
-                return true;
-            }
-        }
+    if let Some(ext) = path.extension()
+        && let Some(ext) = ext.to_str()
+        && extensions.iter().any(|e| e.eq_ignore_ascii_case(ext))
+    {
+        return true;
     }
     false
 }
