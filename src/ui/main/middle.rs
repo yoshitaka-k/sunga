@@ -132,19 +132,18 @@ pub(crate) fn view(
                         // ディレクトリか、ファイルかを表示
                         main::opentype_icon(ui, image);
 
-                        // ファイル名を表示
-                        ui.scope(|ui| {
-                            if !image.is_standby_or_resizing() {
-                                ui.set_max_width((ui.available_width() / main::LIST_MAX_WIDTH_DIVIDER).max(0.0));
+                        // ファイル名とステータスノートを表示
+                        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            if let Some(note) = note {
+                                ui.add_space(main::LIST_RIGHT_INDENT);
+                                ui.label(note);
+                                ui.separator();
                             }
-                            ui.label(image.file_name().as_ref());
+                            ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| {
+                                ui.set_min_width(ui.available_width() * main::LIST_NAME_MIN_RATIO);
+                                ui.add(egui::Label::new(image.file_name().as_ref()).truncate());
+                            });
                         });
-
-                        // ステータスに応じてノートを表示
-                        if let Some(note) = note {
-                            ui.separator();
-                            ui.label(note);
-                        }
                     });
                 });
 

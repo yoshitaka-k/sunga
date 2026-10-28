@@ -8,7 +8,8 @@ const BOTTOM_PANEL_NAME: &str = "bottom_menubar";
 const SEPARATOR_HEIGHT: f32 = 4.0;
 const LIST_ICON_INDENT: f32 = 2.0;
 const LIST_CORNER_RADIUS: f32 = 4.0;
-const LIST_MAX_WIDTH_DIVIDER: f32 = 1.3;
+const LIST_NAME_MIN_RATIO: f32 = 1.0 / 3.3;
+const LIST_RIGHT_INDENT: f32 = 10.0;
 
 use crate::{file, ui};
 use crate::ui::assets::{icon, svg};
