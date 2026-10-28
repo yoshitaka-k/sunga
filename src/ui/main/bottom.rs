@@ -39,7 +39,7 @@ pub(crate) fn view(
                 };
 
                 // ジョブ状態のアイコン
-                main::status_icon(ui, &status, status_color, completed_color).on_hover_ui(|ui| {
+                main::status_icon(ui, &status, status_color, completed_color, true).on_hover_ui(|ui| {
                     ui.label(format!(
                         "{}: {}",
                         lang::current().main_bottom.average_duration,

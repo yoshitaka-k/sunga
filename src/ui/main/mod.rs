@@ -22,6 +22,14 @@ fn icon_widget(icon: egui::ImageSource<'static>, size: f32, color: egui::Color32
     egui::Image::new(icon).max_height(size).tint(color)
 }
 
+/// スピナーウィジェットを作成
+/// * `size` - スピナーのサイズ
+/// * `color` - スピナーの色
+/// * `return` - スピナーウィジェット
+pub(crate) fn spinner_widget(size: f32, color: egui::Color32) -> impl egui::Widget {
+    egui::Spinner::new().size(size).color(color)
+}
+
 /// ステータスアイコンを描画
 /// * `ui` - UI
 /// * `status` - ステータス
@@ -32,33 +40,36 @@ fn status_icon(
     ui: &mut egui::Ui,
     status: &file::Status,
     status_color: &ui::StatusColor,
-    completed_color: egui::Color32
+    completed_color: egui::Color32,
+    is_spinner: bool,
 ) -> egui::Response {
-    let widget = match status {
+    match status {
         file::Status::Standby => {
-            icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby)
+            ui.add(icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby))
         },
         file::Status::Resizing => {
-            icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing)
+            if is_spinner {
+                ui.add(spinner_widget(icon::STATUS_ICON_SIZE, status_color.resizing))
+            } else {
+                ui.add(icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing))
+            }
         },
         file::Status::Resized => {
-            icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, completed_color)
+            ui.add(icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, completed_color))
         },
         file::Status::Unchanged => {
-            icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged)
+            ui.add(icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged))
         },
         file::Status::Skipped => {
-            icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped)
+            ui.add(icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped))
         },
         file::Status::Canceled => {
-            icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled)
+            ui.add(icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled))
         },
         file::Status::Error(_) => {
-            icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error)
+            ui.add(icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error))
         },
-    };
-
-   ui.add(widget)
+    }
 }
 
 /// ディレクトリか、ファイルかを表示

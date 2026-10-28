@@ -111,7 +111,7 @@ pub(crate) fn view(
                         // ステータスアイコンを表示
                         ui.add_space(main::LIST_ICON_INDENT);
                         ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
-                        main::status_icon(ui, image.status(), status_color, status_color.resized)
+                        main::status_icon(ui, image.status(), status_color, status_color.resized, false)
                             .on_hover_text(image.status().to_string());
                         ui.spacing_mut().item_spacing.x = spacing;
 
