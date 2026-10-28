@@ -4,6 +4,7 @@ mod setting;
 mod modal;
 
 pub use main::render::Render;
+pub(crate) use assets::lang;
 
 // パネルの内側のマージン
 pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {

@@ -1,3 +1,5 @@
+use crate::ui::lang;
+
 /// リサイズ状態
 #[derive(Clone)]
 pub enum Status {
@@ -22,12 +24,12 @@ impl Status {
     /// * `return` - リサイズステータスを文字列に変換
     pub fn to_string(&self) -> String {
         match self {
-            Status::Standby => "Standby".to_string(),
-            Status::Resizing => "Resizing".to_string(),
-            Status::Resized => "Resized".to_string(),
-            Status::Skipped => "Skipped".to_string(),
-            Status::Unchanged => "Unchanged".to_string(),
-            Status::Canceled => "Canceled".to_string(),
+            Status::Standby => lang::current().resize_status.standby.to_string(),
+            Status::Resizing => lang::current().resize_status.resizing.to_string(),
+            Status::Resized => lang::current().resize_status.resized.to_string(),
+            Status::Skipped => lang::current().resize_status.skipped.to_string(),
+            Status::Unchanged => lang::current().resize_status.unchanged.to_string(),
+            Status::Canceled => lang::current().resize_status.canceled.to_string(),
             Status::Error(message) => format!("Error: {}", message),
         }
     }
