@@ -1,3 +1,4 @@
+use std::fmt;
 use crate::ui::lang;
 
 /// リサイズ状態
@@ -19,18 +20,19 @@ pub enum Status {
     Error(String),
 }
 
-impl Status {
+impl fmt::Display for Status {
     /// リサイズステータスを文字列に変換
     /// * `return` - リサイズステータスを文字列に変換
-    pub fn to_string(&self) -> String {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let status = &lang::current().resize_status;
         match self {
-            Status::Standby => lang::current().resize_status.standby.to_string(),
-            Status::Resizing => lang::current().resize_status.resizing.to_string(),
-            Status::Resized => lang::current().resize_status.resized.to_string(),
-            Status::Skipped => lang::current().resize_status.skipped.to_string(),
-            Status::Unchanged => lang::current().resize_status.unchanged.to_string(),
-            Status::Canceled => lang::current().resize_status.canceled.to_string(),
-            Status::Error(message) => format!("Error: {}", message),
+            Status::Standby => write!(f, "{}", status.standby),
+            Status::Resizing => write!(f, "{}", status.resizing),
+            Status::Resized => write!(f, "{}", status.resized),
+            Status::Skipped => write!(f, "{}", status.skipped),
+            Status::Unchanged => write!(f, "{}", status.unchanged),
+            Status::Canceled => write!(f, "{}", status.canceled),
+            Status::Error(message) => write!(f, "Error: {}", message),
         }
     }
 }
