@@ -81,11 +81,13 @@ pub(crate) fn opentype_icon(
     ui: &mut egui::Ui,
     path: &file::Image,
 ) -> egui::Response {
-    let icon_color = ui::icon_color(ui);
-    if *path.is_in_folder() {
-        let hover_text = path.relative_path().display().to_string();
-        ui.add(icon_widget(svg::FOLDER, icon::LIST_ICON_SIZE, icon_color)).on_hover_text(hover_text)
+    let icon = if *path.is_in_folder() {
+        svg::FOLDER
     } else {
-        ui.add(icon_widget(svg::PHOTO, icon::LIST_ICON_SIZE, icon_color))
-    }
+        svg::PHOTO
+    };
+    let icon_color = ui::icon_color(ui);
+    let hover_text = path.relative_path().display().to_string();
+
+    ui.add(icon_widget(icon, icon::LIST_ICON_SIZE, icon_color)).on_hover_text(hover_text)
 }
