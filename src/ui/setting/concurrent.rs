@@ -1,6 +1,5 @@
-use crate::config;
+use crate::{config, lang};
 use crate::ui::{self, setting};
-use crate::ui::assets::lang;
 
 /// 並行処理数を表示
 /// * `ui` - UI

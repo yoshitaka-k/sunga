@@ -1,11 +1,12 @@
+use crate::{state, lang};
 use crate::ui::{self, setting};
-use crate::ui::assets::{self, icon, lang, svg};
+use crate::ui::assets::{self, icon, svg};
 
 /// 設定ウィンドウの上部パネルを描画
 /// * `ui` - UI
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    setting_token: &mut ui::SettingToken,
+    setting_token: &mut state::SettingToken,
 ) {
     let style = ui::panel_style(ui, ui::TOP_PANEL_INNER_MARGIN);
     let color = ui::icon_color(ui);
@@ -20,10 +21,10 @@ pub(crate) fn view(
         ui.horizontal(|ui| {
             ui::add_icon(ui, svg::SETTINGS, icon::SETTINGS_TOP_ICON_SIZE, color);
 
-            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::General, lang::current().setting.general);
-            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::Concurrent, lang::current().setting.concurrent);
-            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::Resize, lang::current().setting.resize);
-            ui.selectable_value(&mut setting_token.tab, ui::SettingTab::About, lang::current().setting.about);
+            ui.selectable_value(&mut setting_token.tab, state::SettingTab::General, lang::current().setting.general);
+            ui.selectable_value(&mut setting_token.tab, state::SettingTab::Concurrent, lang::current().setting.concurrent);
+            ui.selectable_value(&mut setting_token.tab, state::SettingTab::Resize, lang::current().setting.resize);
+            ui.selectable_value(&mut setting_token.tab, state::SettingTab::About, lang::current().setting.about);
         });
     });
 

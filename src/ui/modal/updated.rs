@@ -1,6 +1,7 @@
+use crate::lang;
 use crate::update::{UpdateCheck, UpdatedToken};
 use crate::ui::{self, modal};
-use crate::ui::assets::{icon, lang, svg};
+use crate::ui::assets::{icon, svg};
 
 /// 更新モーダルを表示
 /// * `ctx` - コンテキスト

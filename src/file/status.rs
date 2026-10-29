@@ -1,5 +1,5 @@
 use std::fmt;
-use crate::ui::lang;
+use crate::lang;
 
 /// リサイズ状態
 #[derive(Clone)]

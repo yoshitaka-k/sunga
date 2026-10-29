@@ -1,6 +1,6 @@
-use crate::{event, ui, duration_format};
+use crate::{event, state, ui, duration_format, lang};
 use crate::ui::main;
-use crate::ui::assets::{self, icon, lang, svg};
+use crate::ui::assets::{self, icon, svg};
 
 const LEN_SPACING_X: f32 = 4.0;
 
@@ -11,7 +11,7 @@ const LEN_SPACING_X: f32 = 4.0;
 /// * `status_color` - ステータスカラー
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    state: &ui::State,
+    state: &state::State,
     pending_actions: &mut Vec<event::EventAction>,
     status_color: &ui::StatusColor,
 ) {

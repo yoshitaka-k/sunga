@@ -1,6 +1,6 @@
-use crate::{event, file, duration_format};
-use crate::ui::{self, main};
-use crate::ui::assets::{self, icon, svg, lang};
+use crate::{event, file, state, ui, lang, duration_format};
+use crate::ui::main;
+use crate::ui::assets::{self, icon, svg};
 
 /// ミドルパネルを描画
 /// * `ui` - UI
@@ -10,7 +10,7 @@ use crate::ui::assets::{self, icon, svg, lang};
 /// * `row_height` - 行の高さ
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    state: &ui::State,
+    state: &state::State,
     pending_actions: &mut Vec<event::EventAction>,
     status_color: &ui::StatusColor,
     row_height: f32,
@@ -40,20 +40,20 @@ pub(crate) fn view(
             let start = row_range.start;
 
             // 選択された行がある場合はスクロールエリアの表示位置を調整
-            if state.scroll_token.selected {
-                if let Some(index) = state.files.selected_index() {
-                    // スクロール位置への矩形を計算・作成
-                    let area = ui.max_rect();
-                    let top = area.top() + (index as f32 - start as f32) * row_stride;
-                    let rect = egui::Rect::from_min_size(
-                        egui::pos2(area.left(), top),
-                        egui::vec2(area.width(), row_height),
-                    );
+            if state.scroll_token.selected
+                && let Some(index) = state.files.selected_index()
+            {
+                // スクロール位置への矩形を計算・作成
+                let area = ui.max_rect();
+                let top = area.top() + (index as f32 - start as f32) * row_stride;
+                let rect = egui::Rect::from_min_size(
+                    egui::pos2(area.left(), top),
+                    egui::vec2(area.width(), row_height),
+                );
 
-                    // スクロールエリアの表示位置を調整
-                    // ui.scroll_to_rect(rect, None);
-                    ui.scroll_to_rect_animation(rect, None, egui::style::ScrollAnimation::none());
-                }
+                // スクロールエリアの表示位置を調整
+                // ui.scroll_to_rect(rect, None);
+                ui.scroll_to_rect_animation(rect, None, egui::style::ScrollAnimation::none());
             }
 
             // 行がクリックされたかどうか

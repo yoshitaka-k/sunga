@@ -1,11 +1,12 @@
-use crate::ui::{self, modal, ErrorToken};
-use crate::ui::assets::{icon, lang, svg};
+use crate::{state, lang};
+use crate::ui::{self, modal};
+use crate::ui::assets::{icon, svg};
 
 /// エラーモーダルを表示
 /// * `show_modal` - モーダルを表示するかどうか
 /// * `ctx` - コンテキスト
 /// * `error_token` - エラーモーダルを表示するためのトークン
-pub(crate) fn error(ctx: &egui::Context, error_token: &mut ErrorToken) {
+pub(crate) fn error(ctx: &egui::Context, error_token: &mut state::ErrorToken) {
     if error_token.value.is_none() {
         return;
     }

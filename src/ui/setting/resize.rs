@@ -1,6 +1,5 @@
-use crate::{config, resize};
+use crate::{config, resize, lang};
 use crate::ui::{self, setting};
-use crate::ui::assets::lang;
 
 /// リサイズ設定を表示
 /// * `ui` - UI

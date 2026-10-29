@@ -1,6 +1,6 @@
-use crate::{error, event, ui};
+use crate::{error, event, state};
 use crate::event::{button, click, key, open};
-use crate::ui::lang;
+use crate::lang;
 
 /// イベントを処理
 /// * `ctx` - コンテキスト
@@ -9,8 +9,8 @@ use crate::ui::lang;
 /// * `action` - イベントアクション
 pub(crate) fn handle(
     ctx: &egui::Context,
-    state: &mut ui::State,
-    jobs: &mut ui::Jobs,
+    state: &mut state::State,
+    jobs: &mut state::Jobs,
     action: event::EventAction,
 ) -> error::Result<()> {
     match action {

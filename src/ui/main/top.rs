@@ -1,6 +1,6 @@
-use crate::{event, ui};
+use crate::{event, state, ui, lang};
 use crate::ui::main;
-use crate::ui::assets::{self, icon, lang, svg};
+use crate::ui::assets::{self, icon, svg};
 
 /// トップメニューバーを描画
 /// * `ui` - UI
@@ -8,7 +8,7 @@ use crate::ui::assets::{self, icon, lang, svg};
 /// * `pending_actions` - 待機中のアクション
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    state: &ui::State,
+    state: &state::State,
     pending_actions: &mut Vec<event::EventAction>,
 ) {
     let style = ui::panel_style(ui, ui::TOP_PANEL_INNER_MARGIN);

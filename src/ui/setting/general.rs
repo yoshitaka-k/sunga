@@ -1,6 +1,5 @@
-use crate::config;
+use crate::{config, lang};
 use crate::ui::{self, setting};
-use crate::ui::assets::lang;
 
 /// 設定の一般設定を表示する
 pub(crate) fn view(

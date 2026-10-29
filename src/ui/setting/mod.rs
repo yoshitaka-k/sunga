@@ -7,8 +7,8 @@ mod about;
 
 pub(crate) use view::view;
 
-use crate::{event, ui};
-use crate::ui::assets::{self, lang, icon, svg};
+use crate::{event, ui, lang};
+use crate::ui::assets::{self, icon, svg};
 
 // ウィンドウのID
 const SETTING_WINDOW_ID: &str = "setting_window";

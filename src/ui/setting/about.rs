@@ -1,7 +1,7 @@
 use crate::{APP_NAME, GITHUB_URL};
-use crate::event;
+use crate::{event, lang};
 use crate::ui::{self, setting};
-use crate::ui::assets::{self, lang, svg, icon};
+use crate::ui::assets::{self, svg, icon};
 
 /// バージョンを表示
 /// * `ui` - UI

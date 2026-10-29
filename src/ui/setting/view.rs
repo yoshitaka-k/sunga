@@ -1,12 +1,12 @@
+use crate::{state, lang};
 use crate::event::{self, input};
-use crate::ui::assets::lang;
-use crate::ui::{self, setting, modal};
+use crate::ui::{setting, modal};
 
 /// 設定ウィンドウを描画
 /// * `ctx` - コンテキスト
 pub(crate) fn view(
     ctx: &egui::Context,
-    state: &mut ui::State,
+    state: &mut state::State,
     pending_actions: &mut Vec<event::EventAction>,
 ) {
     let window_id = egui::ViewportId::from_hash_of(setting::SETTING_WINDOW_ID);
@@ -37,10 +37,10 @@ pub(crate) fn view(
         // 設定ウィンドウの中央パネルを描画
         egui::CentralPanel::default().show(ui, |ui| {
             match state.setting_token.tab {
-                ui::SettingTab::General => setting::general::view(ui, &mut state.config),
-                ui::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.config),
-                ui::SettingTab::Resize => setting::resize::view(ui, &mut state.config),
-                ui::SettingTab::About => setting::about::view(ui, pending_actions, true),
+                state::SettingTab::General => setting::general::view(ui, &mut state.config),
+                state::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.config),
+                state::SettingTab::Resize => setting::resize::view(ui, &mut state.config),
+                state::SettingTab::About => setting::about::view(ui, pending_actions, true),
             }
         });
 

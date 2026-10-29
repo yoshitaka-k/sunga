@@ -4,7 +4,6 @@ mod setting;
 mod modal;
 
 pub use main::render::Render;
-pub(crate) use assets::lang;
 
 // パネルの内側のマージン
 pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
@@ -17,114 +16,8 @@ pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
 
-use crate::{config, file, error, resize, update};
+use crate::file;
 use crate::ui::assets::{color, font, svg};
-
-pub(crate) fn install(ctx: &egui::Context) {
-    // フォントと SVG ローダーを追加
-    font::install(ctx);
-    svg::install(ctx);
-}
-
-/// アプリケーションの状態
-pub(crate) struct State {
-    pub config: config::Config,
-    pub files: file::OpenFiles,
-    pub setting_token: SettingToken,
-    pub updated_token: update::UpdatedToken,
-    pub error_token: ErrorToken,
-    pub scroll_token: ScrollToken,
-}
-
-/// ジョブ
-pub(crate) struct Jobs {
-    pub resize_job: resize::ResizeJob,
-    pub update_job: update::UpdateJob,
-}
-
-/// スクロールエリアを表示するためのトークン
-pub(crate) struct ScrollToken {
-    pub selected: bool,
-}
-impl ScrollToken {
-    pub fn new() -> Self {
-        Self {
-            selected: false,
-        }
-    }
-}
-
-/// エラーモーダルを表示するためのトークン
-pub(crate) struct ErrorToken {
-    pub open: bool,
-    pub value: Option<error::SungaError>,
-    pub dismissed: bool,
-}
-impl ErrorToken {
-    pub fn new() -> Self {
-        Self {
-            open: false,
-            value: None,
-            dismissed: false,
-        }
-    }
-
-    /// エラーモーダルを表示
-    /// * `error` - エラー内容
-    pub fn show(&mut self, error: error::SungaError) {
-        if self.dismissed {
-            return;
-        }
-
-        // 同じ失敗が毎フレーム来ても、ログは最初の1回だけ出す
-        if self.value.is_none() {
-            let (file, line) = error.location();
-            log::error!("{error} @ {file}:{line}");
-        }
-
-        self.open = true;
-        self.value = Some(error);
-    }
-
-    /// エラーモーダルを非表示
-    pub fn dismiss(&mut self) {
-        self.open = false;
-        self.value = None;
-        self.dismissed = true;
-    }
-
-    /// エラーモーダルをリセット
-    pub fn reset(&mut self) {
-        self.open = false;
-        self.value = None;
-        self.dismissed = false;
-    }
-}
-
-/// 設定ウィンドウのタブ
-#[derive(PartialEq)]
-pub enum SettingTab {
-    General,
-    Concurrent,
-    Resize,
-    About,
-}
-
-/// 設定ウィンドウを表示するためのデータ
-pub(crate) struct SettingToken {
-    pub open: bool,
-    pub pos: Option<egui::Pos2>,
-    pub tab: SettingTab,
-}
-impl SettingToken {
-    pub fn new() -> Self {
-        Self {
-            open: false,
-            pos: None,
-            tab: SettingTab::General,
-        }
-    }
-}
 
 /// ステータスアイコンの色
 pub(crate) struct StatusColor {
@@ -148,6 +41,12 @@ impl StatusColor {
             error: assets::status_color(ctx, file::Status::Error(String::new())),
         }
     }
+}
+
+pub(crate) fn install(ctx: &egui::Context) {
+    // フォントと SVG ローダーを追加
+    font::install(ctx);
+    svg::install(ctx);
 }
 
 /// アイコンを追加

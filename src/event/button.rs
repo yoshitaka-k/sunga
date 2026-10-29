@@ -1,4 +1,4 @@
-use crate::{config, error, file, resize, ui};
+use crate::{config, error, file, resize, state};
 use crate::event::open;
 
 /// ファイルダイアログを開く
@@ -64,11 +64,11 @@ pub(crate) fn cancel_and_clear_files(
 /// * `setting_token` - 設定ウィンドウトークン
 /// * `pos` - 設定ウィンドウの表示位置
 pub(crate) fn setting_open(
-    setting_token: &mut ui::SettingToken,
+    setting_token: &mut state::SettingToken,
     pos: Option<egui::Pos2>,
 ) {
     // タブを初期化
-    setting_token.tab = ui::SettingTab::General;
+    setting_token.tab = state::SettingTab::General;
 
     // 設定ウィンドウの表示位置を設定
     setting_token.pos = pos;

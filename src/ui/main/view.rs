@@ -1,4 +1,4 @@
-use crate::{event, ui};
+use crate::{event, state, ui};
 use crate::ui::assets::icon;
 use crate::ui::main::{self, top, bottom, middle};
 use crate::ui::{modal, setting};
@@ -7,7 +7,7 @@ use crate::ui::{modal, setting};
 /// * `ui` - UI
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    state: &mut ui::State,
+    state: &mut state::State,
     pending_actions: &mut Vec<event::EventAction>,
     status_color: &ui::StatusColor,
 ) {

@@ -1,4 +1,4 @@
-use crate::{config, event, file, resize, update};
+use crate::{config, event, file, resize, update, state};
 use crate::event::{input, handler};
 use crate::ui::assets::sounds;
 use crate::ui::{self, main};
@@ -6,10 +6,10 @@ use crate::ui::{self, main};
 /// 描画用のウィジェット
 pub struct Render {
     /// アプリケーションの状態
-    state: ui::State,
+    state: state::State,
 
     /// ジョブ
-    jobs: ui::Jobs,
+    jobs: state::Jobs,
 
     /// 待機中のアクション
     pending_actions: Vec<event::EventAction>,
@@ -42,17 +42,17 @@ impl Render {
             .unwrap_or(config);
 
         // アプリケーションの状態を作成
-        let state = ui::State {
+        let state = state::State {
             config,
             files: file::OpenFiles::new(),
-            setting_token: ui::SettingToken::new(),
+            setting_token: state::SettingToken::new(),
             updated_token: update::UpdatedToken::new(),
-            error_token: ui::ErrorToken::new(),
-            scroll_token: ui::ScrollToken::new(),
+            error_token: state::ErrorToken::new(),
+            scroll_token: state::ScrollToken::new(),
         };
 
         // ジョブを作成
-        let jobs = ui::Jobs {
+        let jobs = state::Jobs {
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
             update_job: update::UpdateJob::new(cc.egui_ctx.clone()),
         };

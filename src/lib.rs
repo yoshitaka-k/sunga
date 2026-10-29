@@ -2,6 +2,8 @@
 #![warn(clippy::all, rust_2018_idioms)]
 
 mod config;
+mod state;
+mod lang;
 mod update;
 mod event;
 mod file;

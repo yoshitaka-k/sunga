@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::{error, file, resize, ui};
+use crate::{error, file, resize, state};
 
 /// 上矢印キーが押されたら選択された行を上に移動する
 /// * `id` - 選択された行のID
@@ -8,7 +8,7 @@ use crate::{error, file, resize, ui};
 pub(crate) fn up(
     id: u64,
     files: &mut file::OpenFiles,
-    scroll_token: &mut ui::ScrollToken
+    scroll_token: &mut state::ScrollToken
 ) {
     let mut min = files.images().iter().map(|image| *image.id()).min().unwrap_or(1);
     if id > min { min = id - 1; }
@@ -24,7 +24,7 @@ pub(crate) fn up(
 pub(crate) fn down(
     id: u64,
     files: &mut file::OpenFiles,
-    scroll_token: &mut ui::ScrollToken
+    scroll_token: &mut state::ScrollToken
 ) {
     let mut max = files.images().iter().map(|image| *image.id()).max().unwrap_or(1);
     if id < max { max = id + 1; }
