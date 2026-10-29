@@ -1,13 +1,13 @@
-use crate::app;
+use crate::config;
 use crate::ui::{self, setting};
 use crate::ui::assets::lang;
 
 /// 並行処理数を表示
 /// * `ui` - UI
-/// * `app` - アプリ
+/// * `config` - 設定
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    app: &mut app::App
+    config: &mut config::Config
 ) {
     // グループヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_concurrent.header_concurrent);
@@ -20,7 +20,7 @@ pub(crate) fn view(
             ui::add_label(ui, lang::current().setting_concurrent.concurrent, setting::CONCURRENT_LABEL_WIDTH);
             ui.scope(|ui| {
                 ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
-                ui.add(egui::Slider::new(app.concurrent_num_mut(), setting::CONCURRENT_NUM_MIN..=setting::CONCURRENT_NUM_MAX));
+                ui.add(egui::Slider::new(config.concurrent_num_mut(), setting::CONCURRENT_NUM_MIN..=setting::CONCURRENT_NUM_MAX));
             });
         });
 

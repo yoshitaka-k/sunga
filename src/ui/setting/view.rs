@@ -37,9 +37,9 @@ pub(crate) fn view(
         // 設定ウィンドウの中央パネルを描画
         egui::CentralPanel::default().show(ui, |ui| {
             match state.setting_token.tab {
-                ui::SettingTab::General => setting::general::view(ui, &mut state.app),
-                ui::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.app),
-                ui::SettingTab::Resize => setting::resize::view(ui, &mut state.app),
+                ui::SettingTab::General => setting::general::view(ui, &mut state.config),
+                ui::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.config),
+                ui::SettingTab::Resize => setting::resize::view(ui, &mut state.config),
                 ui::SettingTab::About => setting::about::view(ui, pending_actions, true),
             }
         });

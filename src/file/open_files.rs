@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use getset::{Getters, Setters};
 
-use crate::{app, file};
+use crate::{config, file};
 
 /// ファイル情報
 struct FileInfo {
@@ -58,12 +58,12 @@ impl OpenFiles {
     }
 
     /// ファイルを追加
-    /// * `app` - アプリケーションのインスタンス
+    /// * `config` - 設定
     /// * `path` - 追加するファイルのパス
-    pub fn add(&mut self, app: &app::App, path: PathBuf) {
+    pub fn add(&mut self, config: &config::Config, path: PathBuf) {
         let base_dir = path.parent().unwrap_or(&path);
 
-        self.find_file(app, &path, base_dir);
+        self.find_file(config, &path, base_dir);
     }
 
     /// 諸々クリア
@@ -301,7 +301,7 @@ impl OpenFiles {
     /// * `path` - ドロップされたファイルのパス
     /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
     fn find_file(&mut self,
-        app: &app::App,
+        config: &config::Config,
         path: &Path,
         base_dir: &Path
     ) {
@@ -327,7 +327,7 @@ impl OpenFiles {
                 let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
 
                 // 出力パスを作成
-                let output_path = image.make_output_path(app);
+                let output_path = image.make_output_path(config);
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
                 if self.is_standby_or_resizing(path) {
@@ -337,7 +337,7 @@ impl OpenFiles {
                 }
 
                 // 同じパスはスキップ
-                if *app.skip_same_path() && self.is_input_and_output(path, &output_path) {
+                if *config.skip_same_path() && self.is_input_and_output(path, &output_path) {
                     image.set_status(file::Status::Skipped);
                     self.images.push(image);
                     return;
@@ -355,7 +355,7 @@ impl OpenFiles {
             // ディレクトリ内のファイルを検索
             for entry in entries {
                 match entry {
-                    Ok(entry) => self.find_file(app, &entry.path(), base_dir),
+                    Ok(entry) => self.find_file(config, &entry.path(), base_dir),
                     Err(e) => self.error_file(path, base_dir, e.to_string()),
                 }
             }

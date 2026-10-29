@@ -17,18 +17,18 @@ pub(crate) fn handle(
         // ファイルダイアログを表示
         event::EventAction::FilesOpen => {
             let label = lang::current().file_dialog.image_files;
-            button::files_open(&state.app, &mut state.files, label);
+            button::files_open(&state.config, &mut state.files, label);
             Ok(())
         },
         // フォルダダイアログを表示
         event::EventAction::FolderOpen => {
             let label = lang::current().file_dialog.image_files;
-            button::folders_open(&state.app, &mut state.files, label);
+            button::folders_open(&state.config, &mut state.files, label);
             Ok(())
         },
         // ドロップされたファイルを処理
         event::EventAction::DropOpen(files) => {
-            open::drop_open(ctx, &state.app, &mut state.files, files);
+            open::drop_open(ctx, &state.config, &mut state.files, files);
             Ok(())
         },
         // ファイルをクリア

@@ -1,7 +1,7 @@
 // Clippy と Rust 2018 の慣用から外れた箇所を警告する
 #![warn(clippy::all, rust_2018_idioms)]
 
-mod app;
+mod config;
 mod update;
 mod event;
 mod file;
@@ -9,7 +9,7 @@ mod ui;
 mod error;
 mod resize;
 
-pub use app::App;
+pub use config::Config;
 pub use ui::Render;
 
 /// アプリケーション名

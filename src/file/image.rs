@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use std::sync::atomic::{AtomicU64, Ordering, AtomicBool};
 use std::collections::HashSet;
 use getset::{Getters, Setters};
-use crate::{app, error, file, resize};
+use crate::{config, error, file, resize};
 
 /// Image の一意 ID を発行する
 const COUNT_UP: u64 = 1;
@@ -122,24 +122,24 @@ impl Image {
     }
 
     /// 出力先を作成
-    /// * `app` - アプリケーションのインスタンス
+    /// * `config` - 設定
     /// * `return` - 出力先
-    pub fn make_output_path(&self, app: &app::App) -> PathBuf {
-        if app.output_path().is_empty() {
+    pub fn make_output_path(&self, config: &config::Config) -> PathBuf {
+        if config.output_path().is_empty() {
             self.path.clone()
         } else {
-            PathBuf::from(app.output_path()).join(self.relative_path.clone())
+            PathBuf::from(config.output_path()).join(self.relative_path.clone())
         }
     }
 
     /// ファイルをリサイズ
-    /// * `app` - アプリケーションのインスタンス
+    /// * `config` - 設定
     /// * `running` - リサイズ実行中フラグ
     /// * `canceled` - リサイズキャンセルフラグ
     /// * `return` - リサイズステータス
     pub fn resize(
         &mut self,
-        app: &app::App,
+        config: &config::Config,
         running: Arc<AtomicBool>,
         canceled: Arc<Mutex<HashSet<u64>>>,
     ) -> error::Result<file::Status> {
@@ -149,13 +149,13 @@ impl Image {
         }
 
         // 範囲外の場合はエラーメッセージを設定
-        let out_of_range = if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(app.width()) {
+        let out_of_range = if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(config.width()) {
             // 幅が範囲外の場合は実行しない
             Some(format!("Width is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX))
-        } else  if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(app.height()) {
+        } else  if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(config.height()) {
             // 高さが範囲外の場合は実行しない
             Some(format!("Height is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX))
-        } else  if !(resize::SCALE_RANGE_MIN..=resize::SCALE_RANGE_MAX).contains(app.scale()) {
+        } else  if !(resize::SCALE_RANGE_MIN..=resize::SCALE_RANGE_MAX).contains(config.scale()) {
             // 倍率が範囲外の場合は実行しない
             Some(format!("Scale is out of range ({}..{})", resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX))
         } else {
@@ -172,7 +172,7 @@ impl Image {
         let start_time = std::time::Instant::now();
 
         // 出力先
-        let output_path = self.make_output_path(app);
+        let output_path = self.make_output_path(config);
         self.output_path = Some(output_path.clone());
 
         // リサイズトークン
@@ -187,10 +187,10 @@ impl Image {
 
         // リサイズオプション
         let options = resize::Options {
-            width: *app.width(),
-            height: *app.height(),
-            scale: *app.scale(),
-            is_scale: *app.is_scale(),
+            width: *config.width(),
+            height: *config.height(),
+            scale: *config.scale(),
+            is_scale: *config.is_scale(),
         };
 
         match resize::Sunga::execute(&self.path, &output_path, &options, &token) {

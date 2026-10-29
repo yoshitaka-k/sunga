@@ -21,10 +21,10 @@ pub(crate) fn view(
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
                 ui.label(format!("{}: ", lang::current().main_top.header_resize));
 
-                if *state.app.is_scale() {
-                    ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.app.scale()));
+                if *state.config.is_scale() {
+                    ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.config.scale()));
                 } else {
-                    ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, state.app.width(), state.app.height()));
+                    ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, state.config.width(), state.config.height()));
                 }
             },
             |ui| {

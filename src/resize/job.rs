@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::sync::{mpsc, Mutex};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::collections::HashSet;
-use crate::{app, error, file};
+use crate::{config, error, file};
 
 // リサイズ実行中のカウント数
 const RUNNING_COUNT_NUM: usize = 1;
@@ -46,7 +46,7 @@ impl ResizeJob {
     /// リサイズジョブを実行
     /// * `files` - 開いているファイル
     /// * `return` - リサイズジョブ
-    pub fn run(&self, app: &app::App, files: &mut file::OpenFiles) {
+    pub fn run(&self, config: &config::Config, files: &mut file::OpenFiles) {
         // ファイルがない場合は、リサイズを行わない
         if files.is_empty() { return; }
 
@@ -56,7 +56,7 @@ impl ResizeJob {
         }
 
         // 最適化実行可能なら、リサイズを続ける
-        while self.is_runnable(app) {
+        while self.is_runnable(config) {
             // 待機中のファイルがない場合は、リサイズを終了
             let Some(file) = files.get_standby_file() else { break };
 
@@ -65,7 +65,7 @@ impl ResizeJob {
             let mut file = file.clone();
 
             // そのほかもクローン
-            let app = app.clone();
+            let config = config.clone();
             let ctx = self.ctx.clone();
             let result_tx = self.result_tx.clone();
             let running = self.running.clone();
@@ -78,7 +78,7 @@ impl ResizeJob {
             // リサイズの実行スレッドを作成
             std::thread::spawn(move || {
                 // リサイズを実行
-                let _ = file.resize(&app, Arc::clone(&running), Arc::clone(&canceled));
+                let _ = file.resize(&config, Arc::clone(&running), Arc::clone(&canceled));
 
                 // リサイズ結果を送信
                 let _ = result_tx.send(file);
@@ -124,10 +124,10 @@ impl ResizeJob {
 /// private methods
 impl ResizeJob {
     /// リサイズ実行可能かどうか
-    /// * `app` - アプリケーション
+    /// * `config` - 設定
     /// * `return` - リサイズ実行可能かどうか
-    fn is_runnable(&self, app: &app::App) -> bool {
-        self.running_count.load(Ordering::Relaxed) < *app.concurrent_num() as usize
+    fn is_runnable(&self, config: &config::Config) -> bool {
+        self.running_count.load(Ordering::Relaxed) < *config.concurrent_num() as usize
     }
 
     /// リサイズ実行中のカウントをクローン

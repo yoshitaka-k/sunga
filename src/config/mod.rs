@@ -7,11 +7,11 @@ const DEFAULT_SCALE: u16 = 100;
 const DEFAULT_CONCURRENT_NUM: u8 = 4;
 const DEFAULT_SOUND_VOLUME: u8 = 5;
 
-/// 状態管理アプリケーション
+/// アプリケーションの設定
 #[derive(Clone, Getters, MutGetters, Deserialize, Serialize)]
 #[serde(default)]
 #[getset(get = "pub", get_mut = "pub")]
-pub struct App {
+pub struct Config {
     /// リサイズする幅・高さ
     width: u32,
     height: u32,
@@ -38,9 +38,9 @@ pub struct App {
     sound_volume: u8,
 }
 
-impl Default for App {
+impl Default for Config {
     /// デフォルト値を設定
-    /// * `return` - App のインスタンス
+    /// * `return` - Config のインスタンス
     fn default() -> Self {
         Self {
             width: DEFAULT_WIDTH,
@@ -56,9 +56,9 @@ impl Default for App {
     }
 }
 
-impl App {
-    /// 新しい App を作成
-    /// * `return` - App のインスタンス
+impl Config {
+    /// 新しい Config を作成
+    /// * `return` - Config のインスタンス
     pub fn new() -> Self {
         Self::default()
     }

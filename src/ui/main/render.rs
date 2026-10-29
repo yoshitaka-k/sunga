@@ -1,4 +1,4 @@
-use crate::{app, event, file, resize, update};
+use crate::{config, event, file, resize, update};
 use crate::event::{input, handler};
 use crate::ui::assets::sounds;
 use crate::ui::{self, main};
@@ -24,9 +24,9 @@ pub struct Render {
 impl Render {
     /// 新しい Render を作成
     /// * `cc` - 作成コンテキスト
-    /// * `app` - アプリケーション
+    /// * `config` - 設定
     /// * `return` - 新しい Render
-    pub fn new(cc: &eframe::CreationContext<'_>, app: app::App) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>, config: config::Config) -> Self {
         // アセットを追加
         ui::install(&cc.egui_ctx);
 
@@ -36,14 +36,14 @@ impl Render {
             style.interaction.selectable_labels = false;
         });
 
-        // 前回保存した App があれば復元（なければ引数の app を使う）
-        let app = cc.storage
+        // 前回保存した Config があれば復元（なければ引数の config を使う）
+        let config = cc.storage
             .and_then(|storage| eframe::get_value(storage, eframe::APP_KEY))
-            .unwrap_or(app);
+            .unwrap_or(config);
 
         // アプリケーションの状態を作成
         let state = ui::State {
-            app,
+            config,
             files: file::OpenFiles::new(),
             setting_token: ui::SettingToken::new(),
             updated_token: update::UpdatedToken::new(),
@@ -69,10 +69,10 @@ impl Render {
 
 /// eframe::App の実装
 impl eframe::App for Render {
-    /// 終了前に App の状態を保存
+    /// 終了前に Config の状態を保存
     /// * `storage` - ストレージ
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        eframe::set_value(storage, eframe::APP_KEY, &self.state.app);
+        eframe::set_value(storage, eframe::APP_KEY, &self.state.config);
     }
 
     /// 描画
@@ -92,7 +92,7 @@ impl eframe::App for Render {
         self.process_pending_actions(ui);
 
         // リサイズジョブを実行
-        self.jobs.resize_job.run(&self.state.app, &mut self.state.files);
+        self.jobs.resize_job.run(&self.state.config, &mut self.state.files);
 
         // ファイル情報を更新
         self.state.files.update_file_info();
@@ -144,9 +144,9 @@ impl Render {
         let now_idle = !self.state.files.has_standby() && !self.state.files.has_resizing();
 
         // 効果音を再生
-        if *self.state.app.play_sound() && was_busy && now_idle {
+        if *self.state.config.play_sound() && was_busy && now_idle {
             // 効果音の音量を設定
-            self.sound.set_volume(*self.state.app.sound_volume());
+            self.sound.set_volume(*self.state.config.sound_volume());
 
             if self.state.files.has_error() {
                 self.sound.play_alert();

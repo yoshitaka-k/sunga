@@ -1,28 +1,28 @@
-use crate::{app, error, file, resize, ui};
+use crate::{config, error, file, resize, ui};
 use crate::event::open;
 
 /// ファイルダイアログを開く
-/// * `app` - アプリケーション
+/// * `config` - 設定
 /// * `files` - 開いているファイル
 /// * `label` - ラベル
 pub(crate) fn files_open(
-    app: &app::App,
+    config: &config::Config,
     files: &mut file::OpenFiles,
     label: &str,
 ) {
-    open::file(app, label, files);
+    open::file(config, label, files);
 }
 
 /// フォルダダイアログを開く
-/// * `app` - アプリケーション
+/// * `config` - 設定
 /// * `files` - 開いているファイル
 /// * `label` - ラベル
 pub(crate) fn folders_open(
-    app: &app::App,
+    config: &config::Config,
     files: &mut file::OpenFiles,
     label: &str,
 ) {
-    open::folder(app, label, files);
+    open::folder(config, label, files);
 }
 
 /// 開いているファイルをクリア

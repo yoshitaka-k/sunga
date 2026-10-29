@@ -17,7 +17,7 @@ pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
 
-use crate::{app, file, error, resize, update};
+use crate::{config, file, error, resize, update};
 use crate::ui::assets::{color, font, svg};
 
 pub(crate) fn install(ctx: &egui::Context) {
@@ -28,7 +28,7 @@ pub(crate) fn install(ctx: &egui::Context) {
 
 /// アプリケーションの状態
 pub(crate) struct State {
-    pub app: app::App,
+    pub config: config::Config,
     pub files: file::OpenFiles,
     pub setting_token: SettingToken,
     pub updated_token: update::UpdatedToken,
