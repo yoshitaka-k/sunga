@@ -1,6 +1,5 @@
-use crate::{error, event, state};
+use crate::{error, event, state, lang};
 use crate::event::{button, click, key, open};
-use crate::lang;
 
 /// イベントを処理
 /// * `ctx` - コンテキスト
