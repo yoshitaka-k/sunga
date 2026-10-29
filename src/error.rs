@@ -79,6 +79,7 @@ impl SungaError {
     /// * `message` - エラーメッセージ
     /// * `path` - ファイルパス
     /// * `return` - ファイルエラー
+    #[allow(dead_code)]
     #[track_caller]
     pub fn file_error(message: impl Into<String>, path: path::PathBuf) -> Self {
         let (file, line) = Self::caller();

@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use getset::{Getters, Setters};
 
-use crate::{app, file, error};
+use crate::{app, file};
 
 /// ファイル情報
 struct FileInfo {
@@ -58,11 +58,12 @@ impl OpenFiles {
     }
 
     /// ファイルを追加
-    /// * `file` - 追加するファイルのパス
-    pub fn add(&mut self, app: &app::App, path: PathBuf) -> error::Result<bool> {
+    /// * `app` - アプリケーションのインスタンス
+    /// * `path` - 追加するファイルのパス
+    pub fn add(&mut self, app: &app::App, path: PathBuf) {
         let base_dir = path.parent().unwrap_or(&path);
 
-        self.find_file(app, &path, base_dir)
+        self.find_file(app, &path, base_dir);
     }
 
     /// 諸々クリア
@@ -277,18 +278,39 @@ impl OpenFiles {
         })
     }
 
+    /// ファイルが存在しない場合の処理
+    /// * `path` - ファイルのパス
+    /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
+    /// * `error` - エラー内容
+    fn error_file(
+        &mut self,
+        path: &Path,
+        base_dir: &Path,
+        error: String
+    ) {
+        let relative_path = path.strip_prefix(base_dir);
+        let is_in_folder = relative_path.as_ref().is_ok_and(|p| p.components().count() > 1);
+        let relative_path = relative_path.unwrap_or(path).to_path_buf();
+
+        let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
+        image.set_status(file::Status::Error(error));
+        self.images.push(image);
+    }
+
     /// ファイルを検索
     /// * `path` - ドロップされたファイルのパス
     /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
-    /// * `return` - ファイルのパス
     fn find_file(&mut self,
         app: &app::App,
         path: &Path,
         base_dir: &Path
-    ) -> error::Result<bool> {
-        let metadata = path.metadata().map_err(|e| {
-            error::SungaError::file_error(e.to_string(), path.to_path_buf())
-        })?;
+    ) {
+        // ファイルの存在を確認
+        // シンボリックリンクは無視する
+        let metadata = match path.symlink_metadata() {
+            Ok(metadata) => metadata,
+            Err(e) => return self.error_file(path, base_dir, e.to_string()),
+        };
 
         if metadata.is_file() {
             if file::is_allowed_extension(path) {
@@ -311,32 +333,32 @@ impl OpenFiles {
                 if self.is_standby_or_resizing(path) {
                     image.set_status(file::Status::Error("Already in progress".to_string()));
                     self.images.push(image);
-                    return Ok(false);
+                    return;
                 }
 
                 // 同じパスはスキップ
                 if *app.skip_same_path() && self.is_input_and_output(path, &output_path) {
                     image.set_status(file::Status::Skipped);
                     self.images.push(image);
-                    return Ok(false);
+                    return;
                 }
 
                 // 画像ファイル構造体を追加
                 self.images.push(image);
             }
         } else if metadata.is_dir() {
-            for entry in fs::read_dir(path).map_err(|e| {
-                error::SungaError::file_error(e.to_string(), path.to_path_buf())
-            })? {
-                let entry = entry.map_err(|e| {
-                    error::SungaError::file_error(e.to_string(), path.to_path_buf())
-                })?;
+            let entries = match fs::read_dir(path) {
+                Ok(entries) => entries,
+                Err(e) => return self.error_file(path, base_dir, e.to_string()),
+            };
 
-                // ディレクトリ内のファイルを検索
-                self.find_file(app, &entry.path(), base_dir)?;
+            // ディレクトリ内のファイルを検索
+            for entry in entries {
+                match entry {
+                    Ok(entry) => self.find_file(app, &entry.path(), base_dir),
+                    Err(e) => self.error_file(path, base_dir, e.to_string()),
+                }
             }
         }
-
-        Ok(true)
     }
 }

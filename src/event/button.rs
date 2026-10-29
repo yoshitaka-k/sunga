@@ -5,26 +5,24 @@ use crate::event::open;
 /// * `app` - アプリケーション
 /// * `files` - 開いているファイル
 /// * `label` - ラベル
-/// * `return` - ファイルが開かれたかどうか
 pub(crate) fn files_open(
     app: &app::App,
     files: &mut file::OpenFiles,
     label: &str,
-) -> error::Result<bool> {
-    open::file(app, label, files)
+) {
+    open::file(app, label, files);
 }
 
 /// フォルダダイアログを開く
 /// * `app` - アプリケーション
 /// * `files` - 開いているファイル
 /// * `label` - ラベル
-/// * `return` - フォルダが開かれたかどうか
 pub(crate) fn folders_open(
     app: &app::App,
     files: &mut file::OpenFiles,
     label: &str,
-) -> error::Result<bool> {
-    open::folder(app, label, files)
+) {
+    open::folder(app, label, files);
 }
 
 /// 開いているファイルをクリア
@@ -33,7 +31,7 @@ pub(crate) fn folders_open(
 pub(crate) fn cancel_and_clear_files(
     files: &mut file::OpenFiles,
     resize_job: &mut resize::ResizeJob,
-) -> error::Result<bool> {
+) -> error::Result<()> {
     // リサイズをキャンセル
     resize_job.stop_running();
 
@@ -59,7 +57,7 @@ pub(crate) fn cancel_and_clear_files(
         return Err(e);
     }
 
-    Ok(true)
+    Ok(())
 }
 
 /// 設定ダイアログを開く
@@ -68,7 +66,7 @@ pub(crate) fn cancel_and_clear_files(
 pub(crate) fn setting_open(
     setting_token: &mut ui::SettingToken,
     pos: Option<egui::Pos2>,
-) -> error::Result<bool> {
+) {
     // タブを初期化
     setting_token.tab = ui::SettingTab::General;
 
@@ -77,6 +75,4 @@ pub(crate) fn setting_open(
 
     // 設定ウィンドウを開く
     setting_token.open = true;
-
-    Ok(true)
 }

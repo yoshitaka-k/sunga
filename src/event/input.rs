@@ -1,4 +1,20 @@
+use std::path::PathBuf;
 use crate::{event, file};
+
+/// ドロップされたファイルを処理する
+/// * `ui` - ウィジェットのUI
+/// * `pending_actions` - 処理予約
+pub(crate) fn drop(
+    ui: &mut egui::Ui,
+    pending_actions: &mut Vec<event::EventAction>
+) {
+    let files: Vec<PathBuf> = ui.ctx().input(|input| {
+        input.raw.dropped_files.iter().map(|f| f.path().to_path_buf()).collect()
+    });
+    if files.is_empty() { return; }
+
+    pending_actions.push(event::EventAction::DropOpen(files));
+}
 
 /// Command + O キーが押されたらファイルを開く
 /// * `ui` - ウィジェットのUI

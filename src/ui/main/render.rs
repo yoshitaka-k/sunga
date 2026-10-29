@@ -89,9 +89,6 @@ impl eframe::App for Render {
         // 入力イベントを処理
         self.input_events(ui);
 
-        // ドラッグドロップでファイルを開く
-        self.drop_files(ui);
-
         // 待機中のアクションを処理
         self.process_pending_actions(ui);
 
@@ -155,6 +152,9 @@ impl Render {
     /// 入力イベントを処理
     /// * `ui` - UI
     fn input_events(&mut self, ui: &mut egui::Ui) {
+        // ドロップされたファイルを処理
+        input::drop(ui, &mut self.pending_actions);
+
         // Command + O キーが押されたらファイルを開く
         input::command_open(ui, &mut self.pending_actions);
 
@@ -175,34 +175,6 @@ impl Render {
 
         // バックスペースキーが押されたら選択された行をキャンセル
         input::backspace(ui, &mut self.pending_actions);
-    }
-
-    /// ドロップされたファイルを処理
-    /// * `ui` - UI
-    fn drop_files(&mut self, ui: &egui::Ui) {
-        let Some(result) = open::drop(ui, &self.state.app, &mut self.state.files) else { return; };
-
-        self.state.error_token.reset();
-
-        // ファイルを開く結果を処理
-        match result {
-            Ok(true) => (),
-            Ok(false) => {
-                eprintln!("open failed");
-                // 一括追加したときモーダルでると煩わしいので一旦コメントアウト
-                // self.error_token.show(error::SungaError::open_failed());
-            },
-            Err(e) => {
-                eprintln!("open error: {}", e);
-                self.state.error_token.show(e);
-            }
-        }
-
-        // ウィンドウを前面に持ってくる
-        ui.ctx().send_viewport_cmd_to(
-            egui::ViewportId::ROOT,
-            egui::ViewportCommand::Focus,
-        );
     }
 
     /// リサイズを実行
@@ -243,11 +215,20 @@ impl Render {
             let result = match action {
                 // ファイルダイアログを表示
                 event::EventAction::FilesOpen => {
-                    button::files_open(&self.state.app, &mut self.state.files, lang::current().file_dialog.image_files)
+                    let label = lang::current().file_dialog.image_files;
+                    button::files_open(&self.state.app, &mut self.state.files, label);
+                    Ok(())
                 },
                 // フォルダダイアログを表示
                 event::EventAction::FolderOpen => {
-                    button::folders_open(&self.state.app, &mut self.state.files, lang::current().file_dialog.image_files)
+                    let label = lang::current().file_dialog.image_files;
+                    button::folders_open(&self.state.app, &mut self.state.files, label);
+                    Ok(())
+                },
+                // ドロップされたファイルを処理
+                event::EventAction::DropOpen(files) => {
+                    open::drop_open(ui.ctx(), &self.state.app, &mut self.state.files, files);
+                    Ok(())
                 },
                 // ファイルをクリア
                 event::EventAction::Clear => {
@@ -255,11 +236,13 @@ impl Render {
                 },
                 // 設定ウィンドウを表示
                 event::EventAction::SettingOpen(pos) => {
-                    button::setting_open(&mut self.state.setting_token, pos)
+                    button::setting_open(&mut self.state.setting_token, pos);
+                    Ok(())
                 },
                 // ファイルをクリック
                 event::EventAction::Click { id } => {
-                    click::click(id, &mut self.state.files)
+                    click::click(id, &mut self.state.files);
+                    Ok(())
                 }
                 // ファイルをダブルクリック
                 event::EventAction::DoubleClick(path) => {
@@ -279,21 +262,23 @@ impl Render {
                 }
                 // 上矢印キーが押されたら選択された行を上に移動する
                 event::EventAction::Up { id } => {
-                    key::up(id, &mut self.state.files, &mut self.state.scroll_token)
+                    key::up(id, &mut self.state.files, &mut self.state.scroll_token);
+                    Ok(())
                 }
                 // 下矢印キーが押されたら選択された行を下に移動する
                 event::EventAction::Down { id } => {
-                    key::down(id, &mut self.state.files, &mut self.state.scroll_token)
+                    key::down(id, &mut self.state.files, &mut self.state.scroll_token);
+                    Ok(())
                 }
                 // 設定ウィンドウを閉じる
                 event::EventAction::SettingClose => {
                     self.state.setting_token.open = false;
-                    Ok(true)
+                    Ok(())
                 }
                 // アップデート確認ボタンが押されたらアップデート確認を行う
                 event::EventAction::CheckForUpdate => {
                     self.update_job.run();
-                    Ok(true)
+                    Ok(())
                 }
             };
 
