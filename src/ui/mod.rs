@@ -17,8 +17,14 @@ pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
 
-use crate::{app, file, error};
-use crate::ui::assets::color;
+use crate::{app, file, error, resize};
+use crate::ui::assets::{color, font, svg};
+
+pub(crate) fn install(ctx: &egui::Context) {
+    // フォントと SVG ローダーを追加
+    font::install(ctx);
+    svg::install(ctx);
+}
 
 /// アプリケーションの状態
 pub(crate) struct State {
@@ -28,6 +34,12 @@ pub(crate) struct State {
     pub updated_token: app::UpdatedToken,
     pub error_token: ErrorToken,
     pub scroll_token: ScrollToken,
+}
+
+/// ジョブ
+pub(crate) struct Jobs {
+    pub resize_job: resize::ResizeJob,
+    pub update_job: app::UpdateJob,
 }
 
 /// スクロールエリアを表示するためのトークン

@@ -1,7 +1,10 @@
 pub(crate) mod render;
+pub(crate) mod view;
 mod top;
 mod bottom;
 mod middle;
+
+pub(crate) use view::view;
 
 const TOP_PANEL_NAME: &str = "top_menubar";
 const BOTTOM_PANEL_NAME: &str = "bottom_menubar";

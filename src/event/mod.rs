@@ -1,3 +1,4 @@
+pub(crate) mod handler;
 pub(crate) mod button;
 pub(crate) mod input;
 pub(crate) mod open;
