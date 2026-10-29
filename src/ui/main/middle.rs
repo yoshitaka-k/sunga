@@ -4,22 +4,20 @@ use crate::ui::assets::{self, icon, svg, lang};
 
 /// ミドルパネルを描画
 /// * `ui` - UI
-/// * `open_files` - 開いているファイル
-/// * `row_height` - 行の高さ
-/// * `status_color` - ステータスカラー
+/// * `state` - アプリケーションの状態
 /// * `pending_actions` - 待機中のアクション
-/// * `scroll_token` - スクロールエリアを表示するためのトークン
+/// * `status_color` - ステータスカラー
+/// * `row_height` - 行の高さ
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    open_files: &mut file::OpenFiles,
-    row_height: f32,
-    status_color: &ui::StatusColor,
+    state: &ui::State,
     pending_actions: &mut Vec<event::EventAction>,
-    scroll_token: &mut ui::ScrollToken,
+    status_color: &ui::StatusColor,
+    row_height: f32,
 ) {
     egui::CentralPanel::default().show(ui, |ui| {
         // ファイルの総数を取得
-        let total_length = open_files.len();
+        let total_length = state.files.len();
 
         // ビューポートの高さを取得
         let viewport_height: f32 = ui.available_height();
@@ -42,8 +40,8 @@ pub(crate) fn view(
             let start = row_range.start;
 
             // 選択された行がある場合はスクロールエリアの表示位置を調整
-            if scroll_token.selected {
-                if let Some(index) = open_files.selected_index() {
+            if state.scroll_token.selected {
+                if let Some(index) = state.files.selected_index() {
                     // スクロール位置への矩形を計算・作成
                     let area = ui.max_rect();
                     let top = area.top() + (index as f32 - start as f32) * row_stride;
@@ -56,15 +54,13 @@ pub(crate) fn view(
                     // ui.scroll_to_rect(rect, None);
                     ui.scroll_to_rect_animation(rect, None, egui::style::ScrollAnimation::none());
                 }
-
-                scroll_token.selected = false;
             }
 
             // 行がクリックされたかどうか
             let mut row_clicked: bool = false;
 
             // 表示させる範囲のファイルを取得
-            let visibles: Vec<_> = open_files.images()
+            let visibles: Vec<_> = state.files.images()
                 .get(row_range)
                 .unwrap_or(&[])
                 .to_vec();
@@ -92,7 +88,7 @@ pub(crate) fn view(
                 }
 
                 // 選択されている場合は背景を表示
-                if *open_files.selected_id() == Some(*image.id()) {
+                if *state.files.selected_id() == Some(*image.id()) {
                     ui.painter().rect_filled(row_rect, main::LIST_CORNER_RADIUS, assets::selected_background_color(ui));
                 }
 
@@ -170,7 +166,7 @@ pub(crate) fn view(
 
                 // 行がクリックされた場合は選択されたアイテムを更新
                 if response.clicked() {
-                    pending_actions.push(event::EventAction::Click { id: *image.id() });
+                    pending_actions.push(event::EventAction::Click { id: Some(*image.id()) });
                     row_clicked = true;
                 }
 
@@ -185,7 +181,7 @@ pub(crate) fn view(
 
         // リスト行以外をクリックしたら選択解除
         if ui.input(|i| i.pointer.primary_clicked()) && !row_clicked {
-            open_files.set_selected_id(None);
+            pending_actions.push(event::EventAction::Click { id: None });
         }
     });
 }

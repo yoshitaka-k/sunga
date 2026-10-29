@@ -7,8 +7,7 @@ mod about;
 
 pub(crate) use view::view;
 
-use crate::{app, ui};
-use crate::event::button;
+use crate::{event, ui};
 use crate::ui::assets::{self, lang, icon, svg};
 
 // ウィンドウのID
@@ -48,12 +47,14 @@ pub(crate) const SOUND_VOLUME_MAX: u8 = 10;
 /// * `ui` - UI
 /// * `icon` - アイコン
 /// * `label` - ラベル
-/// * `update_job` - アップデートジョブ
+/// * `pending_actions` - 処理予約
+/// * `is_update_check` - アップデート確認ボタンを表示するかどうか
 pub(crate) fn header_panel(
     ui: &mut egui::Ui,
     icon: egui::ImageSource<'static>,
     label: &str,
-    update_job: Option<&mut app::UpdateJob>,
+    pending_actions: &mut Vec<event::EventAction>,
+    is_update_check: bool,
 ) {
     let spacing = ui.spacing().item_spacing.x;
 
@@ -67,10 +68,10 @@ pub(crate) fn header_panel(
         ui.label(label);
 
         // アップデート確認ボタン
-        if let Some(update_job) = update_job {
+        if is_update_check {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 if ui.button(lang::current().setting_about.update_check).clicked() {
-                    let _ =button::check_for_update(update_job);
+                    pending_actions.push(event::EventAction::CheckForUpdate);
                 }
             });
         }

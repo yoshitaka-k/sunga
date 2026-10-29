@@ -1,5 +1,26 @@
 use std::path::PathBuf;
 use crate::{app, error, file};
+use crate::event::drop;
+
+/// ドロップされたファイルを処理する
+/// * `ui` - ウィジェットのUI
+/// * `app` - アプリケーション
+/// * `open_files` - 開いているファイル
+/// * `return` - ドロップがなければ `None`、あれば処理結果
+pub(crate) fn drop(
+    ui: &egui::Ui,
+    app: &app::App,
+    open_files: &mut file::OpenFiles,
+) -> Option<error::Result<bool>> {
+    ui.ctx().input(|input| {
+        let files = input.raw.dropped_files.clone();
+        if files.is_empty() {
+            None
+        } else {
+            Some(drop::files(&files, app, open_files))
+        }
+    })
+}
 
 /// ファイルオープンダイアログを開いて選択結果を追加する
 /// * `label` - ファイルダイアログのラベル

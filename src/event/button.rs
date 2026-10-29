@@ -31,7 +31,6 @@ pub(crate) fn folders_open(
 /// * `ui` - UI
 /// * `files` - 開いているファイル
 pub(crate) fn cancel_and_clear_files(
-    ui: &egui::Ui,
     files: &mut file::OpenFiles,
     resize_job: &mut resize::ResizeJob,
 ) -> error::Result<bool> {
@@ -55,9 +54,6 @@ pub(crate) fn cancel_and_clear_files(
     // 開いているファイルをクリア
     files.clear();
 
-    // 再描画を要求
-    ui.ctx().request_repaint();
-
     // エラーがある場合はエラーを返す
     if let Some(e) = error {
         return Err(e);
@@ -67,32 +63,20 @@ pub(crate) fn cancel_and_clear_files(
 }
 
 /// 設定ダイアログを開く
-/// * `ui` - UI
-/// * `setting_token` - 設定ダイアログを開くトークン
+/// * `setting_token` - 設定ウィンドウトークン
+/// * `pos` - 設定ウィンドウの表示位置
 pub(crate) fn setting_open(
-    ui: &egui::Ui,
     setting_token: &mut ui::SettingToken,
+    pos: Option<egui::Pos2>,
 ) -> error::Result<bool> {
-    // 設定ダイアログを開く
+    // タブを初期化
+    setting_token.tab = ui::SettingTab::General;
+
+    // 設定ウィンドウの表示位置を設定
+    setting_token.pos = pos;
+
+    // 設定ウィンドウを開く
     setting_token.open = true;
 
-    // 設定ダイアログの表示位置を設定
-    setting_token.pos = ui.ctx().input(|input| {
-        input.viewport().outer_rect.map(|rect| rect.min)
-    });
-
-    // 再描画を要求
-    ui.ctx().request_repaint();
-
     Ok(true)
-}
-
-/// アップデートを確認する
-/// * `update_job` - 更新ジョブ
-pub(crate) fn check_for_update(
-    update_job: &mut app::UpdateJob
-) -> error::Result<()> {
-    update_job.run();
-
-    Ok(())
 }

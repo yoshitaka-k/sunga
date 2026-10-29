@@ -17,8 +17,18 @@ pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
 
-use crate::{file, error};
+use crate::{app, file, error};
 use crate::ui::assets::color;
+
+/// アプリケーションの状態
+pub(crate) struct State {
+    pub app: app::App,
+    pub files: file::OpenFiles,
+    pub setting_token: SettingToken,
+    pub updated_token: app::UpdatedToken,
+    pub error_token: ErrorToken,
+    pub scroll_token: ScrollToken,
+}
 
 /// スクロールエリアを表示するためのトークン
 pub(crate) struct ScrollToken {

@@ -1,12 +1,14 @@
-use crate::{app, event, ui};
+use crate::{event, ui};
 use crate::ui::main;
 use crate::ui::assets::{self, icon, lang, svg};
 
 /// トップメニューバーを描画
 /// * `ui` - UI
+/// * `state` - アプリケーションの状態
+/// * `pending_actions` - 待機中のアクション
 pub(crate) fn view(
     ui: &mut egui::Ui,
-    app: &app::App,
+    state: &ui::State,
     pending_actions: &mut Vec<event::EventAction>,
 ) {
     let style = ui::panel_style(ui, ui::TOP_PANEL_INNER_MARGIN);
@@ -19,10 +21,10 @@ pub(crate) fn view(
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
                 ui.label(format!("{}: ", lang::current().main_top.header_resize));
 
-                if *app.is_scale() {
-                    ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, app.scale()));
+                if *state.app.is_scale() {
+                    ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.app.scale()));
                 } else {
-                    ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, app.width(), app.height()));
+                    ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, state.app.width(), state.app.height()));
                 }
             },
             |ui| {
@@ -32,8 +34,10 @@ pub(crate) fn view(
                 if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(settings_button_image))
                     .on_hover_text(hover_text).clicked()
                 {
-                    pending_actions.push(event::EventAction::SettingOpen);
-                    ui.ctx().request_repaint();
+                    let pos = ui.ctx().input(|input| {
+                        input.viewport().outer_rect.map(|rect| rect.min)
+                    });
+                    pending_actions.push(event::EventAction::SettingOpen(pos));
                 }
 
                 // フォルダダイアログを開くボタン
@@ -44,7 +48,6 @@ pub(crate) fn view(
                         .on_hover_text(lang::current().main_top.file_or_folder_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FolderOpen);
-                        ui.ctx().request_repaint();
                     }
                 }
                 #[cfg(not(target_os = "macos"))]
@@ -54,7 +57,6 @@ pub(crate) fn view(
                         .on_hover_text(lang::current().main_top.folder_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FolderOpen);
-                        ui.ctx().request_repaint();
                     }
                 }
 
@@ -67,7 +69,6 @@ pub(crate) fn view(
                         .on_hover_text(lang::current().main_top.files_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FilesOpen);
-                        ui.ctx().request_repaint();
                     }
                 }
             },

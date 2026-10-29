@@ -1,14 +1,19 @@
 use crate::{APP_NAME, GITHUB_URL};
-use crate::app::UpdateJob;
+use crate::event;
 use crate::ui::{self, setting};
 use crate::ui::assets::{self, lang, svg, icon};
 
 /// バージョンを表示
 /// * `ui` - UI
-/// * `update_job` - アップデートジョブ
-pub(crate) fn view(ui: &mut egui::Ui, update_job: &mut UpdateJob) {
+/// * `pending_actions` - 処理予約
+/// * `is_update_check` - アップデート確認ボタンを表示するかどうか
+pub(crate) fn view(
+    ui: &mut egui::Ui,
+    pending_actions: &mut Vec<event::EventAction>,
+    is_update_check: bool,
+) {
     // ヘッダーパネルを表示
-    setting::header_panel(ui, svg::INFO, lang::current().setting_about.heading, Some(update_job));
+    setting::header_panel(ui, svg::INFO, lang::current().setting_about.heading, pending_actions, is_update_check);
 
     ui.separator();
 

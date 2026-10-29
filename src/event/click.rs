@@ -6,10 +6,10 @@ use crate::{error, file};
 /// * `files` - ファイルのリスト
 /// * `return` - エラーが発生したかどうか
 pub(crate) fn click(
-    id: u64,
+    id: Option<u64>,
     files: &mut file::OpenFiles
 ) -> error::Result<bool> {
-    files.set_selected_id(Some(id));
+    files.set_selected_id(id);
     Ok(true)
 }
 

@@ -1,5 +1,4 @@
-use crate::{app, error, event, file, ui};
-use crate::event::{button, drop};
+use crate::{event, file};
 
 /// Command + O キーが押されたらファイルを開く
 /// * `ui` - ウィジェットのUI
@@ -43,52 +42,35 @@ pub(crate) fn command_open(
 
 /// Command + Comma キーが押されたら設定ウィンドウを開く
 /// * `ui` - ウィジェットのUI
-/// * `setting_token` - 設定ウィンドウトークン
+/// * `pending_actions` - 処理予約
 pub(crate) fn command_comma(
     ui: &mut egui::Ui,
-    setting_token: &mut ui::SettingToken
+    pending_actions: &mut Vec<event::EventAction>,
 ) {
     if ui.input(|input| {
         input.modifiers.matches_exact(egui::Modifiers::COMMAND)
         && input.key_pressed(egui::Key::Comma)
     }) {
-        let _ = button::setting_open(ui, setting_token);
+        let pos = ui.ctx().input(|input| {
+            input.viewport().outer_rect.map(|rect| rect.min)
+        });
+        pending_actions.push(event::EventAction::SettingOpen(pos));
     }
 }
 
 /// Command + W キーが押されたら設定ダイアログを閉じる
 /// * `ui` - UI
-/// * `setting_token` - 設定ダイアログのトークン
+/// * `pending_actions` - 処理予約
 pub(crate) fn command_w(
     ui: &mut egui::Ui,
-    setting_token: &mut ui::SettingToken,
+    pending_actions: &mut Vec<event::EventAction>,
 ) {
     if ui.input(|input| {
         input.modifiers.matches_exact(egui::Modifiers::COMMAND)
         && input.key_pressed(egui::Key::W)
     }) {
-        setting_token.open = false;
+        pending_actions.push(event::EventAction::SettingClose);
     }
-}
-
-/// ドロップされたファイルを処理する
-/// * `ui` - ウィジェットのUI
-/// * `app` - アプリケーション
-/// * `open_files` - 開いているファイル
-/// * `return` - ドロップがなければ `None`、あれば処理結果
-pub(crate) fn drop(
-    ui: &egui::Ui,
-    app: &app::App,
-    open_files: &mut file::OpenFiles,
-) -> Option<error::Result<bool>> {
-    ui.ctx().input(|input| {
-        let files = input.raw.dropped_files.clone();
-        if files.is_empty() {
-            None
-        } else {
-            Some(drop::files(&files, app, open_files))
-        }
-    })
 }
 
 /// 上矢印キーが押されたら選択された行を上に移動する
@@ -97,7 +79,7 @@ pub(crate) fn drop(
 /// * `pending_actions` - 処理予約
 pub(crate) fn up(
     ui: &mut egui::Ui,
-    files: &mut file::OpenFiles,
+    files: &file::OpenFiles,
     pending_actions: &mut Vec<event::EventAction>
 ) {
     if ui.input(|input| input.key_pressed(egui::Key::ArrowUp))
@@ -113,7 +95,7 @@ pub(crate) fn up(
 /// * `pending_actions` - 処理予約
 pub(crate) fn down(
     ui: &mut egui::Ui,
-    files: &mut file::OpenFiles,
+    files: &file::OpenFiles,
     pending_actions: &mut Vec<event::EventAction>
 ) {
     if ui.input(|input| input.key_pressed(egui::Key::ArrowDown))

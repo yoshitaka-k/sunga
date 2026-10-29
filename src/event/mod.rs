@@ -11,13 +11,15 @@ pub(crate) enum EventAction {
     FilesOpen,
 
     FolderOpen,
-    SettingOpen,
     Clear,
-    Click { id: u64 },
+    Click { id: Option<u64> },
     DoubleClick(std::path::PathBuf),
     Enter(std::path::PathBuf),
     Space(std::path::PathBuf),
     Backspace,
     Up { id: u64 },
     Down { id: u64 },
+    SettingOpen(Option<egui::Pos2>),
+    SettingClose,
+    CheckForUpdate,
 }
