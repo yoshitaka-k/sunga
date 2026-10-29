@@ -65,7 +65,7 @@ impl UpdateJob {
                                     token.check = Some(update::UpdateCheck::Latest);
                                 }
                                 Err(error) => {
-                                    eprintln!("error: {:?}", error);
+                                    log::error!("error: {:?}", error);
                                     token.open = true;
                                     token.check = Some(update::UpdateCheck::Failed(error.to_string()));
                                 }
@@ -73,7 +73,7 @@ impl UpdateJob {
                         }
                         // アップデート情報が取得できなかった場合
                         Err(error) => {
-                            eprintln!("error: {:?}", error);
+                            log::error!("error: {:?}", error);
                             token.open = true;
                             token.check = Some(update::UpdateCheck::Failed(error.to_string()));
                         }
@@ -81,7 +81,7 @@ impl UpdateJob {
                 }
                 // リクエストが失敗した場合
                 Err(error) => {
-                    eprintln!("error: {:?}", error);
+                    log::error!("error: {:?}", error);
                     token.open = true;
                     token.check = Some(update::UpdateCheck::Failed(error.to_string()));
                 }
