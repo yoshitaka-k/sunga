@@ -1,4 +1,4 @@
-use crate::{app, event, file, resize};
+use crate::{app, event, file, resize, update};
 use crate::event::{input, handler};
 use crate::ui::assets::sounds;
 use crate::ui::{self, main};
@@ -46,7 +46,7 @@ impl Render {
             app,
             files: file::OpenFiles::new(),
             setting_token: ui::SettingToken::new(),
-            updated_token: app::UpdatedToken::new(),
+            updated_token: update::UpdatedToken::new(),
             error_token: ui::ErrorToken::new(),
             scroll_token: ui::ScrollToken::new(),
         };
@@ -54,7 +54,7 @@ impl Render {
         // ジョブを作成
         let jobs = ui::Jobs {
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
-            update_job: app::UpdateJob::new(cc.egui_ctx.clone()),
+            update_job: update::UpdateJob::new(cc.egui_ctx.clone()),
         };
 
         Self {

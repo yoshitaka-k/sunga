@@ -1,4 +1,4 @@
-use crate::app::{UpdateCheck, UpdatedToken};
+use crate::update::{UpdateCheck, UpdatedToken};
 use crate::ui::{self, modal};
 use crate::ui::assets::{icon, lang, svg};
 

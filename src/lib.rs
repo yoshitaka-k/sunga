@@ -2,6 +2,7 @@
 #![warn(clippy::all, rust_2018_idioms)]
 
 mod app;
+mod update;
 mod event;
 mod file;
 mod ui;
