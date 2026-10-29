@@ -5,14 +5,16 @@ mod config;
 mod state;
 mod lang;
 mod update;
+mod render;
 mod event;
 mod file;
 mod ui;
 mod error;
 mod resize;
+mod sounds;
 
 pub use config::Config;
-pub use ui::Render;
+pub use render::Render;
 
 /// アプリケーション名
 pub const APP_NAME: &str = "Sunga";

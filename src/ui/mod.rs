@@ -3,7 +3,8 @@ mod main;
 mod setting;
 mod modal;
 
-pub use main::render::Render;
+/// メイン描画関数を公開
+pub(crate) use main::view as draw;
 
 // パネルの内側のマージン
 pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {

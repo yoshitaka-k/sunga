@@ -1,9 +1,7 @@
-use crate::{config, event, file, resize, update, state};
+use crate::{config, event, file, resize, update, state, sounds, ui};
 use crate::event::{input, handler};
-use crate::ui::assets::sounds;
-use crate::ui::{self, main};
 
-/// 描画用のウィジェット
+/// アプリケーション本体
 pub struct Render {
     /// アプリケーションの状態
     state: state::State,
@@ -98,7 +96,7 @@ impl eframe::App for Render {
         self.state.files.update_file_info();
 
         // 描画は一番最後
-        main::view(ui, &mut self.state, &mut self.pending_actions, &self.status_color);
+        ui::draw(ui, &mut self.state, &mut self.pending_actions, &self.status_color);
     }
 }
 
@@ -164,7 +162,7 @@ impl Render {
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
             if let Err(e) = handler::handle(ui.ctx(), &mut self.state, &mut self.jobs, action) {
-                eprintln!("Error processing action: {}", e);
+                log::error!("Error processing action: {}", e);
                 self.state.error_token.reset();
                 self.state.error_token.show(e);
             }
