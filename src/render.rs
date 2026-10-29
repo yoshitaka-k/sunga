@@ -102,6 +102,33 @@ impl eframe::App for Render {
 
 /// private methods
 impl Render {
+    /// 結果を処理
+    fn jobs_result(&mut self) {
+        // 待機中かリサイズ中かどうかをチェック
+        let was_busy = self.state.files.has_standby() || self.state.files.has_resizing();
+
+        // リサイズ結果を受信
+        self.jobs.resize_job.result(&mut self.state.files);
+
+        // 最適化後か最適化中が終わっているかどうかをチェック
+        let now_idle = !self.state.files.has_standby() && !self.state.files.has_resizing();
+
+        // 効果音を再生
+        if *self.state.config.play_sound() && was_busy && now_idle {
+            // 効果音の音量を設定
+            self.sound.set_volume(*self.state.config.sound_volume());
+
+            if self.state.files.has_error() {
+                self.sound.play_alert();
+            } else {
+                self.sound.play_completed();
+            }
+        }
+
+        // 更新結果を取得
+        self.jobs.update_job.result(&mut self.state.updated_token);
+    }
+
     /// 入力イベントを処理
     /// * `ui` - UI
     fn input_events(&mut self, ui: &mut egui::Ui) {
@@ -128,33 +155,6 @@ impl Render {
 
         // バックスペースキーが押されたら選択された行をキャンセル
         input::backspace(ui, &mut self.pending_actions);
-    }
-
-    /// 結果を処理
-    fn jobs_result(&mut self) {
-        // 待機中かリサイズ中かどうかをチェック
-        let was_busy = self.state.files.has_standby() || self.state.files.has_resizing();
-
-        // リサイズ結果を受信
-        self.jobs.resize_job.result(&mut self.state.files);
-
-        // 最適化後か最適化中が終わっているかどうかをチェック
-        let now_idle = !self.state.files.has_standby() && !self.state.files.has_resizing();
-
-        // 効果音を再生
-        if *self.state.config.play_sound() && was_busy && now_idle {
-            // 効果音の音量を設定
-            self.sound.set_volume(*self.state.config.sound_volume());
-
-            if self.state.files.has_error() {
-                self.sound.play_alert();
-            } else {
-                self.sound.play_completed();
-            }
-        }
-
-        // 更新結果を取得
-        self.jobs.update_job.result(&mut self.state.updated_token);
     }
 
     /// 待機中のアクションを処理
