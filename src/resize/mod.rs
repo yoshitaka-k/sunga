@@ -38,7 +38,7 @@ impl Token {
             error::SungaError::lock_poisoned()
         })?;
 
-        // リサイズ実行中またはキャンセルされた場合は true
+        // リサイズ実行外またはキャンセルされた場合はキャンセルされたと判定
         Ok(!self.running.load(Ordering::Acquire) || canceled.contains(&self.id))
     }
 }
