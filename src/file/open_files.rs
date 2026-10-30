@@ -42,7 +42,7 @@ pub(crate) struct OpenFiles {
     file_info: FileInfo,
 
     #[getset(set = "pub")]
-    selected_id: Option<u64>,
+    selected_index: Option<usize>,
 }
 
 /// public methods
@@ -53,7 +53,7 @@ impl OpenFiles {
         Self {
              images: Vec::new(),
              file_info: FileInfo::new(),
-             selected_id: None,
+             selected_index: None,
         }
     }
 
@@ -69,7 +69,7 @@ impl OpenFiles {
     /// 諸々クリア
     pub fn clear(&mut self) {
         self.images.clear();
-        self.selected_id = None;
+        self.selected_index = None;
     }
 
     /// ファイル情報を更新
@@ -213,21 +213,41 @@ impl OpenFiles {
         self.images.iter_mut().find(|f| f.is_standby())
     }
 
-    /// 選択されたファイルのインデックスを取得
+    /// 選択されたファイルのインデックスを1増やす
     /// * `return` - 選択されたファイルのインデックス
-    pub fn selected_index(&self) -> Option<usize> {
-        if let Some(id) = self.selected_id {
-            self.images.iter().position(|f| *f.id() == id)
-        } else {
-            None
+    pub fn index_add(&mut self) -> Option<usize> {
+        if let Some(index) = self.selected_index {
+            if index < self.images.len() - 1 {
+                self.selected_index = Some(index + 1);
+            } else if self.images.len() > 0 {
+                self.selected_index = Some(self.images.len() - 1);
+            } else {
+                self.selected_index = Some(0);
+            }
         }
+
+        self.selected_index
+    }
+
+    /// 選択されたファイルのインデックスを1減らす
+    /// * `return` - 選択されたファイルのインデックス
+    pub fn index_sub(&mut self) -> Option<usize> {
+        if let Some(index) = self.selected_index {
+            if index > 0 {
+                self.selected_index = Some(index - 1);
+            } else {
+                self.selected_index = Some(0);
+            }
+        }
+
+        self.selected_index
     }
 
     /// 選択されたファイルを取得
     /// * `return` - 選択されたファイル
     pub fn selected_image(&self) -> Option<&file::Image> {
-        if let Some(id) = self.selected_id {
-            self.images.iter().find(|f| *f.id() == id)
+        if let Some(index) = self.selected_index {
+            self.images.get(index)
         } else {
             None
         }

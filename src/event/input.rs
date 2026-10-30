@@ -99,9 +99,9 @@ pub(crate) fn up(
     pending_actions: &mut Vec<event::EventAction>
 ) {
     if ui.input(|input| input.key_pressed(egui::Key::ArrowUp))
-        && let Some(id) = files.selected_id()
+        && let Some(_index) = files.selected_index()
     {
-        pending_actions.push(event::EventAction::Up { id: *id });
+        pending_actions.push(event::EventAction::Up);
     }
 }
 
@@ -115,9 +115,9 @@ pub(crate) fn down(
     pending_actions: &mut Vec<event::EventAction>
 ) {
     if ui.input(|input| input.key_pressed(egui::Key::ArrowDown))
-        && let Some(id) = files.selected_id()
+        && let Some(_index) = files.selected_index()
     {
-        pending_actions.push(event::EventAction::Down { id: *id });
+        pending_actions.push(event::EventAction::Down);
     }
 }
 

@@ -41,7 +41,7 @@ pub(crate) fn view(
 
             // 選択された行がある場合はスクロールエリアの表示位置を調整
             if state.scroll_token.selected
-                && let Some(index) = state.files.selected_index()
+                && let Some(index) = *state.files.selected_index()
             {
                 // スクロール位置への矩形を計算・作成
                 let area = ui.max_rect();
@@ -88,7 +88,7 @@ pub(crate) fn view(
                 }
 
                 // 選択されている場合は背景を表示
-                if *state.files.selected_id() == Some(*image.id()) {
+                if *state.files.selected_index() == Some(index) {
                     ui.painter().rect_filled(row_rect, main::LIST_CORNER_RADIUS, assets::selected_background_color(ui));
                 }
 
@@ -166,7 +166,7 @@ pub(crate) fn view(
 
                 // 行がクリックされた場合は選択されたアイテムを更新
                 if response.clicked() {
-                    pending_actions.push(event::EventAction::Click { id: Some(*image.id()) });
+                    pending_actions.push(event::EventAction::Click { index: Some(index) });
                     row_clicked = true;
                 }
 
@@ -181,7 +181,7 @@ pub(crate) fn view(
 
         // リスト行以外をクリックしたら選択解除
         if ui.input(|i| i.pointer.primary_clicked()) && !row_clicked {
-            pending_actions.push(event::EventAction::Click { id: None });
+            pending_actions.push(event::EventAction::Click { index: None });
         }
     });
 }

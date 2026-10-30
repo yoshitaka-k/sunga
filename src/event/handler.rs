@@ -40,8 +40,8 @@ pub(crate) fn handle(
             Ok(())
         },
         // ファイルをクリック
-        event::EventAction::Click { id } => {
-            click::click(id, &mut state.files);
+        event::EventAction::Click { index } => {
+            click::click(index, &mut state.files);
             Ok(())
         }
         // ファイルをダブルクリック
@@ -61,13 +61,13 @@ pub(crate) fn handle(
             key::backspace(&mut state.files, &mut jobs.resize_job)
         }
         // 上矢印キーが押されたら選択された行を上に移動する
-        event::EventAction::Up { id } => {
-            key::up(id, &mut state.files, &mut state.scroll_token);
+        event::EventAction::Up => {
+            key::up(&mut state.files, &mut state.scroll_token);
             Ok(())
         }
         // 下矢印キーが押されたら選択された行を下に移動する
-        event::EventAction::Down { id } => {
-            key::down(id, &mut state.files, &mut state.scroll_token);
+        event::EventAction::Down => {
+            key::down(&mut state.files, &mut state.scroll_token);
             Ok(())
         }
         // 設定ウィンドウを閉じる

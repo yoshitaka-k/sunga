@@ -7,14 +7,10 @@ use crate::{error, file, resize, state};
 /// * `files` - ファイル一覧
 /// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn up(
-    id: u64,
     files: &mut file::OpenFiles,
     scroll_token: &mut state::ScrollToken
 ) {
-    let mut min = files.images().iter().map(|image| *image.id()).min().unwrap_or(1);
-    if id > min { min = id - 1; }
-
-    files.set_selected_id(Some(min));
+    files.index_sub();
     scroll_token.selected = true;
 }
 
@@ -24,14 +20,10 @@ pub(crate) fn up(
 /// * `files` - ファイル一覧
 /// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn down(
-    id: u64,
     files: &mut file::OpenFiles,
     scroll_token: &mut state::ScrollToken
 ) {
-    let mut max = files.images().iter().map(|image| *image.id()).max().unwrap_or(1);
-    if id < max { max = id + 1; }
-
-    files.set_selected_id(Some(max));
+    files.index_add();
     scroll_token.selected = true;
 }
 
@@ -45,18 +37,17 @@ pub(crate) fn backspace(
     let Some(image) = files.selected_image() else {
         return Ok(());
     };
-    let id = *image.id();
 
     // 選択中のファイルをキャンセル
     // リサイズ中のファイルはリサイズジョブにも中断を伝える
     // 待機中・リサイズ中以外のファイルはキャンセルできない
     if image.is_resizing() {
-        resize_job.add_canceled_id(id)?;
+        resize_job.add_canceled_id(*image.id())?;
     } else if !image.is_standby() {
         return Ok(());
     }
 
-    files.set_status_canceled(id);
+    files.set_status_canceled(*image.id());
 
     Ok(())
 }

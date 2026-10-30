@@ -2,13 +2,13 @@ use std::path::Path;
 use crate::{error, file};
 
 /// ファイルを選択状態にする
-/// * `id` - ファイルのID
+/// * `index` - ファイルのインデックス
 /// * `files` - ファイルのリスト
 pub(crate) fn click(
-    id: Option<u64>,
+    index: Option<usize>,
     files: &mut file::OpenFiles
 ) {
-    files.set_selected_id(id);
+    files.set_selected_index(index);
 }
 
 /// ダブルクリックで Finder でファイルを選択表示する
