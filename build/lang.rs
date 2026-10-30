@@ -71,6 +71,18 @@ pub const {const_name}: Labels = Labels {{\n"));
 
         output.push_str("};\n");
     }
+    output.push('\n');
+
+    // 言語リストを定義
+    output.push_str("#[allow(dead_code)]
+pub const LIST: &[&Labels] = &[");
+    for (index, lang_file) in lang_files.iter().enumerate() {
+        let const_name = to_const_name(lang_file);
+        output.push_str(&format!("&{const_name}"));
+
+        if index < lang_files.len() - 1 { output.push_str(", "); }
+    }
+    output.push_str("];\n");
 
     println!("cargo:warning=generated lang: {:?}", lang_files);
 

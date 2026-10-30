@@ -63,8 +63,9 @@ impl ScrollToken {
 #[derive(PartialEq)]
 pub(crate) enum SettingTab {
     General,
-    Concurrent,
     Resize,
+    Concurrent,
+    Output,
     About,
 }
 

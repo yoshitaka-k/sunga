@@ -1,4 +1,4 @@
-use crate::{config, event, file, resize, update, state, sounds, ui};
+use crate::{config, lang, event, file, resize, update, state, sounds, ui};
 use crate::event::{input, handler};
 
 /// アプリケーション本体
@@ -38,6 +38,9 @@ impl Render {
         let config = cc.storage
             .and_then(|storage| eframe::get_value(storage, eframe::APP_KEY))
             .unwrap_or(config);
+
+        // 言語を設定
+        lang::set(&config.language());
 
         // アプリケーションの状態を作成
         let state = state::State {

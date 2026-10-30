@@ -22,8 +22,9 @@ pub(crate) fn view(
             ui::add_icon(ui, svg::SETTINGS, icon::SETTINGS_TOP_ICON_SIZE, color);
 
             ui.selectable_value(&mut setting_token.tab, state::SettingTab::General, lang::current().setting.general);
-            ui.selectable_value(&mut setting_token.tab, state::SettingTab::Concurrent, lang::current().setting.concurrent);
             ui.selectable_value(&mut setting_token.tab, state::SettingTab::Resize, lang::current().setting.resize);
+            ui.selectable_value(&mut setting_token.tab, state::SettingTab::Output, lang::current().setting.output);
+            ui.selectable_value(&mut setting_token.tab, state::SettingTab::Concurrent, lang::current().setting.concurrent);
             ui.selectable_value(&mut setting_token.tab, state::SettingTab::About, lang::current().setting.about);
         });
     });

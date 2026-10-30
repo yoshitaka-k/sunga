@@ -38,8 +38,9 @@ pub(crate) fn view(
         egui::CentralPanel::default().show(ui, |ui| {
             match state.setting_token.tab {
                 state::SettingTab::General => setting::general::view(ui, &mut state.config),
-                state::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.config),
                 state::SettingTab::Resize => setting::resize::view(ui, &mut state.config),
+                state::SettingTab::Output => setting::output::view(ui, &mut state.config),
+                state::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.config),
                 state::SettingTab::About => setting::about::view(ui, pending_actions, true),
             }
         });

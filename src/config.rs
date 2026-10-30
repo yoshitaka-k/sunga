@@ -36,6 +36,9 @@ pub struct Config {
 
     /// サウンドの音量
     sound_volume: u8,
+
+    /// 言語
+    language: String,
 }
 
 impl Default for Config {
@@ -52,6 +55,7 @@ impl Default for Config {
             skip_same_path: true,
             play_sound: true,
             sound_volume: DEFAULT_SOUND_VOLUME,
+            language: "en".to_string(),
         }
     }
 }

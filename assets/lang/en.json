@@ -31,30 +31,18 @@
     "setting": {
       "heading": "Settings",
       "general": "General",
-      "concurrent": "Concurrent",
       "resize": "Resize",
+      "concurrent": "Concurrent",
+      "output": "Output",
       "about": "About"
     },
     "setting_general": {
-      "header_output": "Output",
-      "path": "Path",
-      "browse": "Browse",
-      "clear": "Clear",
-      "output_warning_note": "Leave empty to overwrite the original files.",
-      "skip_same_path": "Skip same path:",
-      "skip_same_path_option": "Skip same path",
-      "dont_skip_same_path_option": "Don't skip same path",
-      "skip_same_path_warning_note": "Skip if already completed. Retry canceled and errors.",
+      "header_language": "Language",
       "header_sound": "Sound",
       "sound_effects": "Sound effects",
       "play_sound": "Play sound",
       "dont_play_sound": "Don't play sound",
       "sound_volume": "Volume"
-    },
-    "setting_concurrent": {
-      "header_concurrent": "Concurrent",
-      "concurrent": "Processing",
-      "concurrent_warning_note": "Concurrent processing of files."
     },
     "setting_resize": {
       "header_sized": "Sized",
@@ -63,6 +51,22 @@
       "sized_warning_note": "Resize to fit the specified values.",
       "header_scale": "Scale",
       "scale": "Scale"
+    },
+    "setting_output": {
+      "header_output": "Output",
+      "path": "Path",
+      "browse": "Browse",
+      "clear": "Clear",
+      "output_warning_note": "Leave empty to overwrite the original files.",
+      "skip_same_path": "Skip same path:",
+      "skip_same_path_option": "Skip same path",
+      "dont_skip_same_path_option": "Don't skip same path",
+      "skip_same_path_warning_note": "Skip if already completed. Retry canceled and errors."
+    },
+    "setting_concurrent": {
+      "header_concurrent": "Concurrent",
+      "concurrent": "Processing",
+      "concurrent_warning_note": "Concurrent processing of files."
     },
     "setting_about": {
       "heading": "About",

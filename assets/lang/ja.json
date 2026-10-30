@@ -31,30 +31,18 @@
     "setting": {
       "heading": "設定",
       "general": "一般",
-      "concurrent": "並行処理",
       "resize": "リサイズ",
-      "about": "About"
+      "concurrent": "並行処理",
+      "output": "出力",
+      "about": "情報"
     },
     "setting_general": {
-      "header_output": "出力",
-      "path": "パス",
-      "browse": "参照",
-      "clear": "クリア",
-      "output_warning_note": "空欄のままだと、元のファイルを上書きします。",
-      "skip_same_path": "同じパス:",
-      "skip_same_path_option": "スキップする",
-      "dont_skip_same_path_option": "スキップしない",
-      "skip_same_path_warning_note": "完了済みはスキップ。キャンセルとエラーはやり直します。",
+      "header_language": "言語",
       "header_sound": "サウンド",
       "sound_effects": "効果音",
       "play_sound": "再生",
       "dont_play_sound": "再生しない",
       "sound_volume": "音量"
-    },
-    "setting_concurrent": {
-      "header_concurrent": "並行処理",
-      "concurrent": "処理数",
-      "concurrent_warning_note": "ファイルの並行処理を行います。"
     },
     "setting_resize": {
       "header_sized": "サイズ",
@@ -64,8 +52,24 @@
       "header_scale": "倍率",
       "scale": "倍率"
     },
+    "setting_output": {
+      "header_output": "出力",
+      "path": "パス",
+      "browse": "参照",
+      "clear": "クリア",
+      "output_warning_note": "空欄のままだと、元のファイルを上書きします。",
+      "skip_same_path": "同じパス:",
+      "skip_same_path_option": "スキップする",
+      "dont_skip_same_path_option": "スキップしない",
+      "skip_same_path_warning_note": "完了済みはスキップ。キャンセルとエラーはやり直します。"
+    },
+    "setting_concurrent": {
+      "header_concurrent": "並行処理",
+      "concurrent": "処理数",
+      "concurrent_warning_note": "ファイルの並行処理を行います。"
+    },
     "setting_about": {
-      "heading": "About",
+      "heading": "情報",
       "update_check": "アップデートを確認"
     },
     "file_dialog": {

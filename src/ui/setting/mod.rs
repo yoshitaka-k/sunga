@@ -1,8 +1,9 @@
 mod view;
 mod top;
 mod general;
-mod concurrent;
 mod resize;
+mod concurrent;
+mod output;
 mod about;
 
 pub(crate) use view::view;
@@ -15,7 +16,7 @@ const SETTING_WINDOW_ID: &str = "setting_window";
 
 // ウィンドウのサイズ
 const WINDOW_WIDTH: f32 = 480.0;
-const WINDOW_HEIGHT: f32 = 300.0;
+const WINDOW_HEIGHT: f32 = 260.0;
 
 // トップパネルの名前
 const TOP_PANEL_NAME: &str = "tab_panel";
