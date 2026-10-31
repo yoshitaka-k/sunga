@@ -193,7 +193,7 @@ impl Image {
             is_scale: *config.is_scale(),
         };
 
-        match resize::Sunga::execute(&self.path, &output_path, &options, &token) {
+        match resize::Resize::execute(&self.path, &output_path, &options, &token) {
             Ok(status) => {
                 match status {
                     file::Status::Resized => {

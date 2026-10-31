@@ -44,9 +44,9 @@ impl Token {
 }
 
 /// リサイズ
-pub struct Sunga;
+pub struct Resize;
 /// public methods
-impl Sunga {
+impl Resize {
     /// リサイズ
     /// * `path` - リサイズするファイルのパス
     /// * `output_path` - リサイズしたファイルの出力先のパス
@@ -148,7 +148,7 @@ impl Sunga {
 }
 
 /// private methods
-impl Sunga {
+impl Resize {
     /// リサイズ
     /// * `image` - リサイズする画像
     /// * `options` - リサイズオプション
