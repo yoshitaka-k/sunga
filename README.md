@@ -31,13 +31,8 @@ Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（�
 | Extension | Format |
 | --- | --- |
 | `.jpg` / `.jpeg` / `.png` | JPEG / PNG |
-| `.gif` / `.webp` / `.avif` / `.bmp` / `.ico` | GIF / WebP / AVIF / BMP / ICO |
-| `.tiff` / `.tif` / `.tga` / `.qoi` | TIFF / TGA / QOI |
-| `.exr` / `.hdr` | OpenEXR / Radiance HDR |
-| `.pbm` / `.pgm` / `.ppm` / `.pam` | PNM |
-| `.dds` / `.ff` | DDS / Farbfeld |
 
-読み書きは [image](https://github.com/image-rs/image) クレートで、形式は拡張子ではなく中身から判定します。保存は元と同じ形式で、書き出しに対応していない形式は `Error` になります。
+読み書きは [image](https://github.com/image-rs/image) クレートで、形式は拡張子ではなく中身から判定します。
 
 リサイズ後のサイズが元と変わらない場合は書き換えず、`Unchanged` になります。出力先が別パスなら、元ファイルをそのままコピーします。
 

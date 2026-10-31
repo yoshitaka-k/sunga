@@ -9,14 +9,9 @@ pub(crate) use status::Status;
 use std::path::Path;
 
 /// 読み込める拡張子
-/// image crate でサポートされている拡張子
 /// * `return` - 読み込める拡張子
 pub(crate) fn allowed_extensions() -> Vec<&'static str> {
-    vec![
-        "png", "jpg", "jpeg", "gif", "webp", "bmp",
-        "tiff", "tif", "ico",  "avif", "qoi", "exr",
-        "tga", "dds", "pbm", "pgm", "ppm", "pam", "hdr", "ff",
-    ]
+    vec!["png", "jpg", "jpeg"]
 }
 
 /// ファイルの拡張子が許可されているかどうかを確認
