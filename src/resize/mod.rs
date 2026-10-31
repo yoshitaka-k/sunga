@@ -15,6 +15,9 @@ use crate::{error, file, resize};
 /// 一時ファイルの拡張子
 const TEMP_EXTENSION: &str = "sunga.temp";
 
+/// JPEG の品質
+const JPEG_QUALITY: u8 = 100;
+
 /// サイズの範囲
 pub(crate) const SIZED_RANGE_MIN: u32 = 10;
 pub(crate) const SIZED_RANGE_MAX: u32 = 10000;
