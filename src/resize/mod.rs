@@ -7,7 +7,9 @@ pub(crate) use token::Token;
 pub(crate) use option::Options;
 
 use std::path::Path;
-use image::{self, GenericImageView};
+use std::io::BufWriter;
+use image::{self, GenericImageView, ImageDecoder, DynamicImage, ImageEncoder};
+use image::codecs::{jpeg::JpegEncoder, png::PngEncoder};
 use crate::{error, file, resize};
 
 /// 一時ファイルの拡張子
@@ -53,13 +55,32 @@ impl Resize {
         // フォーマットの拡張子を取得
         let extension = format.extensions_str()[0].to_string();
 
+        // リーダーをデコーダーに変換
+        let mut decoder = reader.into_decoder().map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+
+        // 情報を取得
+        let orientation = decoder.orientation().map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+        let exif = decoder.exif_metadata().map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+        let icc = decoder.icc_profile().map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
-        // 画像をデコード
-        let image = reader.decode().map_err(|e| {
+        // 画像をデコードからピクセルデータへ変換
+        let mut image = DynamicImage::from_decoder(decoder).map_err(|e| {
             error::SungaError::resize_error(e.to_string(), path.to_path_buf())
         })?;
+
+        // 画像の向きを適用
+        image.apply_orientation(orientation);
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
@@ -87,23 +108,33 @@ impl Resize {
 
         // 出力パスを作成
         Self::make_output_path(output_path)?;
+        // 一時ファイルのパスを作成
+        let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
-
-        // 一時ファイルのパスを作成
-        let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
 
         // 一時ファイルを削除するためのガードを作成
         let mut guard = guard::ResizeGuard::new(temp_path.clone());
 
-        // リサイズ後の画像を保存
-        resized.save_with_format(&temp_path, format).map_err(|e| {
+        // バッファを作成
+        let mut buffer = Self::create_buffer(&temp_path)?;
+
+        // リサイズ後の画像をエンコード
+        match format {
+            image::ImageFormat::Jpeg => {
+                Self::write(&resized, JpegEncoder::new_with_quality(&mut buffer, JPEG_QUALITY), exif, icc, &temp_path)
+            }
+            image::ImageFormat::Png => {
+                Self::write(&resized, PngEncoder::new(&mut buffer), exif, icc, &temp_path)
+            }
+            _ => return Err(error::SungaError::resize_error("Unsupported image format".to_string(), temp_path.to_path_buf())),
+        }?;
+
+        // バッファをクローズ
+        buffer.into_inner().map_err(|e| {
             error::SungaError::resize_error(e.to_string(), temp_path.to_path_buf())
         })?;
-
-        // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
         // 一時ファイルを元のファイルに上書き
         Self::replace_file(&temp_path, output_path)?;
@@ -121,7 +152,7 @@ impl Resize {
     /// * `image` - リサイズする画像
     /// * `options` - リサイズオプション
     /// * `return` - リサイズした画像
-    fn resize(image: &image::DynamicImage, options: &resize::Options) -> image::DynamicImage {
+    fn resize(image: &DynamicImage, options: &resize::Options) -> DynamicImage {
         let (orig_width, orig_height) = image.dimensions();
 
         let (width, height) = if options.is_scale {
@@ -151,6 +182,44 @@ impl Resize {
         // 親ディレクトリを作成
         std::fs::create_dir_all(parent).map_err(|e| {
             error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
+        })
+    }
+
+    /// バッファを作成
+    /// * `path` - バッファのパス
+    /// * `return` - バッファ
+    fn create_buffer(path: &Path) -> error::Result<BufWriter<std::fs::File>> {
+        let file = std::fs::File::create(path).map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        })?;
+        Ok(BufWriter::new(file))
+    }
+
+    /// 画像をエンコード
+    /// * `image` - 画像
+    /// * `encoder` - エンコーダー
+    /// * `exif` - EXIF 情報
+    /// * `icc` - ICC プロファイル
+    /// * `return` - 画像をエンコードしたかどうか
+    fn write<E: ImageEncoder>(
+        image: &DynamicImage,
+        mut encoder: E,
+        exif: Option<Vec<u8>>,
+        icc: Option<Vec<u8>>,
+        path: &Path,
+    ) -> error::Result<()> {
+        // EXIF 情報を削除
+        if let Some(mut exif) = exif {
+            let _ = image::metadata::Orientation::remove_from_exif_chunk(&mut exif);
+            let _ = encoder.set_exif_metadata(exif);
+        }
+        // ICC プロファイルを設定
+        if let Some(icc) = icc {
+            let _ = encoder.set_icc_profile(icc);
+        }
+
+        image.write_with_encoder(encoder).map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
         })
     }
 
