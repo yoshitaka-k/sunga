@@ -113,23 +113,35 @@ impl Sunga {
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
-        // 一時ファイルのパスでリサイズ後の画像を保存
+        // 一時ファイルのパスを作成
         let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
-        resized.save_with_format(&temp_path, format).map_err(|e| {
-            error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
-        })?;
+
+        // リサイズ後の画像を保存
+        let result = resized.save_with_format(&temp_path, format);
+
+        // 保存に失敗した場合は一時ファイルを削除して終了
+        if let Err(e) = result {
+            // 一時ファイルを削除して終了
+            let _ = Self::remove_file(&temp_path);
+            return Err(error::SungaError::resize_error(e.to_string(), output_path.to_path_buf()));
+        }
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? {
             // 一時ファイルを削除して終了
-            std::fs::remove_file(&temp_path).map_err(|e| {
-                error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
-            })?;
+            let _ = Self::remove_file(&temp_path);
             return Ok(file::Status::Canceled);
         }
 
         // 一時ファイルを元のファイルに上書き
-        Self::replace_file(&temp_path, output_path)?;
+        let result = Self::replace_file(&temp_path, output_path);
+
+        // 上書きに失敗した場合は一時ファイルを削除して終了
+        if let Err(e) = result {
+            // 一時ファイルを削除して終了
+            let _ = Self::remove_file(&temp_path);
+            return Err(e);
+        }
 
         Ok(file::Status::Resized)
     }
@@ -176,6 +188,15 @@ impl Sunga {
         Ok(())
     }
 
+    /// 一時ファイルを削除
+    /// * `path` - 一時ファイルのパス
+    /// * `return` - 一時ファイルを削除したかどうか
+    fn remove_file(path: &Path) -> error::Result<()> {
+        std::fs::remove_file(path).map_err(|e| {
+            error::SungaError::resize_error(e.to_string(), path.to_path_buf())
+        })
+    }
+
     /// 一時ファイルを元のファイルに上書き
     /// * `from` - 一時ファイルのパス
     /// * `to` - 元のファイルのパス
@@ -186,7 +207,7 @@ impl Sunga {
         {
             std::fs::rename(from, to).map_err(|e| {
                 error::SungaError::resize_error(e.to_string(), to.to_path_buf())
-            })?;
+            })
         }
 
         // Windows 環境では MoveFileExW を使用してファイルを上書き
@@ -208,7 +229,8 @@ impl Sunga {
             if result == 0 {
                 return Err(error::SungaError::resize_error(std::io::Error::last_os_error().to_string(), to.to_path_buf()));
             }
+
+            Ok(())
         }
-        Ok(())
     }
 }
