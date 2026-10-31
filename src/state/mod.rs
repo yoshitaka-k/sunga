@@ -23,11 +23,16 @@ pub(crate) struct Jobs {
 }
 
 /// 設定ウィンドウのタブ
+/// * `General` - 一般
+/// * `Resize` - リサイズ
+/// * `Output` - 出力
+/// * `Concurrent` - 同時処理
+/// * `About` - アバウト
 #[derive(PartialEq)]
 pub(crate) enum SettingTab {
     General,
     Resize,
-    Concurrent,
     Output,
+    Concurrent,
     About,
 }
