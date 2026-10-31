@@ -29,9 +29,10 @@ pub(crate) fn selected_background_color(_ui: &egui::Ui) -> egui::Color32 {
     egui::Color32::from_rgba_unmultiplied(140, 130, 240, 50)
 }
 
-/// ラベルと同じ色を返す
-/// * `ui` - UI
-/// * `return` - アイコンの色
+/// テーマに応じたステータスカラーを取得
+/// * `ctx` - egui コンテキスト
+/// * `status` - ステータス
+/// * `return` - ステータスカラー
 pub(crate) fn status_color(ctx: &egui::Context,status: file::Status) -> egui::Color32 {
     if ctx.global_style().visuals.dark_mode {
         match status {

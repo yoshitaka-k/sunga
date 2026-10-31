@@ -12,9 +12,6 @@ pub struct Render {
     /// 待機中のアクション
     pending_actions: Vec<event::EventAction>,
 
-    /// ステータスカラー
-    status_color: ui::StatusColor,
-
     /// 効果音プレイヤー
     sound: sounds::SoundPlayer,
 }
@@ -65,7 +62,6 @@ impl Render {
             state,
             jobs,
             pending_actions: Vec::new(),
-            status_color: ui::StatusColor::new(&cc.egui_ctx),
             sound: sounds::SoundPlayer::new(),
         }
     }
@@ -101,8 +97,11 @@ impl eframe::App for Render {
         // ファイル情報を更新
         self.state.files.update_file_info();
 
+        // ステータスカラーを作成
+        let status_color = ui::StatusColor::new(ui.ctx());
+
         // 描画は一番最後
-        ui::draw(ui, &mut self.state, &mut self.pending_actions, &self.status_color);
+        ui::draw(ui, &mut self.state, &mut self.pending_actions, &status_color);
     }
 }
 
