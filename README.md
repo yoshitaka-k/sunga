@@ -110,6 +110,7 @@ Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（�
 | Setting | Behavior |
 | --- | --- |
 | Language | 表示言語。English / 日本語。選ぶとすぐ切り替わる（既定 English） |
+| Theme | 画面の配色。Dark / Light。選ぶとすぐ切り替わる（既定 Dark） |
 | Sound effects | リサイズ完了時に再生。エラーがあればアラート（既定 Play sound） |
 | Volume | 1–10（既定 5） |
 
