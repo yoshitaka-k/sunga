@@ -16,15 +16,15 @@ use crate::{error, file, resize};
 const TEMP_EXTENSION: &str = "sunga.temp";
 
 /// JPEG の品質
-const JPEG_QUALITY: u8 = 100;
+const JPEG_QUALITY: u8 = 95;
 
 /// サイズの範囲
 pub(crate) const SIZED_RANGE_MIN: u32 = 10;
-pub(crate) const SIZED_RANGE_MAX: u32 = 10000;
+pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
 
 /// 倍率の範囲
 pub(crate) const SCALE_RANGE_MIN: u16 = 10;
-pub(crate) const SCALE_RANGE_MAX: u16 = 500;
+pub(crate) const SCALE_RANGE_MAX: u16 = 200;
 
 /// リサイズ
 pub struct Resize;

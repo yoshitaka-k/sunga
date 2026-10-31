@@ -32,7 +32,7 @@ impl Render {
         });
 
         // 前回保存した Config があれば復元（なければ引数の config を使う）
-        let config = cc.storage
+        let mut config = cc.storage
             .and_then(|storage| eframe::get_value(storage, eframe::APP_KEY))
             .unwrap_or(config);
 
@@ -41,6 +41,14 @@ impl Render {
 
         // テーマを設定
         cc.egui_ctx.set_visuals(config.theme().clone());
+
+        // 範囲外の値をクランプ
+        let scale = config.scale_mut();
+        *scale = (*scale).clamp(resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX);
+        let width = config.width_mut();
+        *width = (*width).clamp(resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
+        let height = config.height_mut();
+        *height = (*height).clamp(resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
 
         // アプリケーションの状態を作成
         let state = state::State {

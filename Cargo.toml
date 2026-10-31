@@ -1,6 +1,6 @@
 [package]
 name = "sunga"
-version = "1.7.8"
+version = "1.7.9"
 edition = "2024"
 description = "Image Re Size"
 authors = ["yoshitaka-k"]
