@@ -2,7 +2,6 @@ mod token;
 
 pub(crate) use token::ErrorToken;
 pub(crate) use token::ScrollToken;
-pub(crate) use token::SettingTab;
 pub(crate) use token::SettingToken;
 
 use crate::{config, file, resize, update};
@@ -21,4 +20,14 @@ pub(crate) struct State {
 pub(crate) struct Jobs {
     pub resize_job: resize::ResizeJob,
     pub update_job: update::UpdateJob,
+}
+
+/// 設定ウィンドウのタブ
+#[derive(PartialEq)]
+pub(crate) enum SettingTab {
+    General,
+    Resize,
+    Concurrent,
+    Output,
+    About,
 }

@@ -1,4 +1,5 @@
 use crate::error;
+use crate::state::SettingTab;
 
 /// エラーモーダルを表示するためのトークン
 pub(crate) struct ErrorToken {
@@ -57,16 +58,6 @@ impl ScrollToken {
             selected: false,
         }
     }
-}
-
-/// 設定ウィンドウのタブ
-#[derive(PartialEq)]
-pub(crate) enum SettingTab {
-    General,
-    Resize,
-    Concurrent,
-    Output,
-    About,
 }
 
 /// 設定ウィンドウを表示するためのデータ
