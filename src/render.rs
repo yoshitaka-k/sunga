@@ -42,6 +42,9 @@ impl Render {
         // 言語を設定
         lang::set(&config.language());
 
+        // テーマを設定
+        cc.egui_ctx.set_visuals(config.theme().clone());
+
         // アプリケーションの状態を作成
         let state = state::State {
             config,

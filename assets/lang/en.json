@@ -38,6 +38,9 @@
     },
     "setting_general": {
       "header_language": "Language",
+      "header_theme": "Theme",
+      "dark_theme": "Dark",
+      "light_theme": "Light",
       "header_sound": "Sound",
       "sound_effects": "Sound effects",
       "play_sound": "Play sound",

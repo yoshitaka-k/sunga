@@ -39,6 +39,9 @@ pub struct Config {
 
     /// 言語
     language: String,
+
+    /// テーマ
+    theme: egui::Visuals,
 }
 
 impl Default for Config {
@@ -56,6 +59,7 @@ impl Default for Config {
             play_sound: true,
             sound_volume: DEFAULT_SOUND_VOLUME,
             language: "en".to_string(),
+            theme: egui::Visuals::dark(),
         }
     }
 }

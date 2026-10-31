@@ -25,6 +25,25 @@ pub(crate) fn view(
     ui.add_space(setting::ADD_SPACING);
 
     // グループヘッダーパネルを表示
+    setting::group_header_panel(ui, lang::current().setting_general.header_theme);
+
+    // フレームを表示
+    egui::Frame::group(ui.style()).show(ui, |ui| {
+        ui.take_available_width();
+
+        ui.horizontal(|ui| {
+            if ui.radio_value(config.theme_mut(), egui::Visuals::dark(), lang::current().setting_general.dark_theme).changed() {
+                ui.ctx().set_visuals(egui::Visuals::dark());
+            }
+            if ui.radio_value(config.theme_mut(), egui::Visuals::light(), lang::current().setting_general.light_theme).changed() {
+                ui.ctx().set_visuals(egui::Visuals::light());
+            }
+        });
+    });
+
+    ui.add_space(setting::ADD_SPACING);
+
+    // グループヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_general.header_sound);
 
     // フレームを表示

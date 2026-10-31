@@ -38,6 +38,9 @@
     },
     "setting_general": {
       "header_language": "言語",
+      "header_theme": "テーマ",
+      "dark_theme": "ダーク",
+      "light_theme": "ライト",
       "header_sound": "サウンド",
       "sound_effects": "効果音",
       "play_sound": "再生",
