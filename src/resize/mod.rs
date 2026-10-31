@@ -1,13 +1,11 @@
 mod job;
+mod token;
 mod option;
 pub(crate) use job::ResizeJob;
+pub(crate) use token::Token;
 pub(crate) use option::Options;
 
 use std::path::Path;
-use std::sync::Arc;
-use std::sync:: Mutex;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::collections::HashSet;
 use image::{self, GenericImageView};
 use crate::{error, file, resize};
 
@@ -21,27 +19,6 @@ pub(crate) const SIZED_RANGE_MAX: u32 = 10000;
 /// 倍率の範囲
 pub(crate) const SCALE_RANGE_MIN: u16 = 10;
 pub(crate) const SCALE_RANGE_MAX: u16 = 500;
-
-/// リサイズトークン
-#[derive(Clone)]
-pub struct Token {
-    pub id: u64,
-    pub running: Arc<AtomicBool>,
-    pub canceled: Arc<Mutex<HashSet<u64>>>,
-}
-
-impl Token {
-    /// キャンセルされたかどうか
-    /// * `return` - キャンセルされたかどうか
-    pub fn is_canceled(&self) -> error::Result<bool> {
-        let canceled = self.canceled.lock().map_err(|_| {
-            error::SungaError::lock_poisoned()
-        })?;
-
-        // リサイズ実行外またはキャンセルされた場合はキャンセルされたと判定
-        Ok(!self.running.load(Ordering::Acquire) || canceled.contains(&self.id))
-    }
-}
 
 /// リサイズ
 pub struct Resize;
