@@ -16,7 +16,7 @@ pub(crate) fn view(
         ui.horizontal(|ui| {
             for lang in lang::LIST {
                 if ui.radio_value(config.language_mut(), lang.code.to_string(), lang.name.to_string()).changed() {
-                    lang::set(&lang.code);
+                    lang::set(lang.code);
                 }
             }
         });

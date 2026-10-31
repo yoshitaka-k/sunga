@@ -219,7 +219,7 @@ impl OpenFiles {
         if let Some(index) = self.selected_index {
             if index < self.images.len() - 1 {
                 self.selected_index = Some(index + 1);
-            } else if self.images.len() > 0 {
+            } else if !self.images.is_empty() {
                 self.selected_index = Some(self.images.len() - 1);
             } else {
                 self.selected_index = Some(0);

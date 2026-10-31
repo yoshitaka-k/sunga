@@ -37,7 +37,7 @@ impl Render {
             .unwrap_or(config);
 
         // 言語を設定
-        lang::set(&config.language());
+        lang::set(config.language());
 
         // テーマを設定
         cc.egui_ctx.set_visuals(config.theme().clone());
