@@ -4,7 +4,7 @@ pub type Result<T> = std::result::Result<T, SungaError>;
 
 #[derive(Debug)]
 pub enum SungaError {
-    FileNotFound(String, path::PathBuf, String, u32),
+    FileNotFound(path::PathBuf, String, u32),
     FileError(String, path::PathBuf, String, u32),
     ResizeError(String, path::PathBuf, String, u32),
     IndexError(usize, String, u32),
@@ -19,7 +19,7 @@ impl fmt::Display for SungaError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         let code = self.code();
         match self {
-            SungaError::FileNotFound(e, p, _, _) => write!(fmt, "[{}] File does not exist: {}\n\n{}", code, e, p.display()),
+            SungaError::FileNotFound(p, _, _) => write!(fmt, "[{}] File does not exist.\n\n{}", code, p.display()),
             SungaError::FileError(e, p, _, _) => write!(fmt, "[{}] File error: {}\n\n{}", code, e, p.display()),
             SungaError::ResizeError(e, p, _, _) => write!(fmt, "[{}] Resize error: {}\n\n{}", code, e, p.display()),
             SungaError::IndexError(i, _, _) => write!(fmt, "[{}] Index error: {}", code, i),
@@ -35,7 +35,7 @@ impl fmt::Display for SungaError {
 impl error::Error for SungaError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match *self {
-            SungaError::FileNotFound(_, _, _, _) => None,
+            SungaError::FileNotFound(_, _, _) => None,
             SungaError::FileError(_, _, _, _) => None,
             SungaError::ResizeError(_, _, _, _) => None,
             SungaError::IndexError(_, _, _) => None,
@@ -70,9 +70,9 @@ impl SungaError {
     /// * `path` - ファイルパス
     /// * `return` - ファイルが見つからないエラー
     #[track_caller]
-    pub fn file_not_found(message: impl Into<String>, path: path::PathBuf) -> Self {
+    pub fn file_not_found(path: path::PathBuf) -> Self {
         let (file, line) = Self::caller();
-        Self::FileNotFound(message.into(), path, file, line)
+        Self::FileNotFound(path, file, line)
     }
 
     /// ファイルエラー
@@ -146,7 +146,7 @@ impl SungaError {
     #[allow(dead_code)]
     pub fn location(&self) -> (&str, u32) {
         match self {
-            Self::FileNotFound(_, _, file, line)
+            Self::FileNotFound(_, file, line)
             | Self::FileError(_, _, file, line)
             | Self::ResizeError(_, _, file, line)
             | Self::IndexError(_, file, line)
@@ -163,7 +163,7 @@ impl SungaError {
     /// * `return` - エラーコード
     pub fn code(&self) -> String {
         match self {
-            Self::FileNotFound(_, _, f, l) => format!("FNF_{}_{}", Self::file_to_code(f), l),
+            Self::FileNotFound(_, f, l) => format!("FNF_{}_{}", Self::file_to_code(f), l),
             Self::FileError(_, _, f, l) => format!("FE_{}_{}", Self::file_to_code(f), l),
             Self::ResizeError(_, _, f, l) => format!("RE_{}_{}", Self::file_to_code(f), l),
             Self::IndexError(_, f, l) => format!("IE_{}_{}", Self::file_to_code(f), l),

@@ -56,7 +56,7 @@ pub(crate) fn backspace(
 /// * `path` - ファイルのパス
 pub(crate) fn space(path: &Path) -> error::Result<()> {
     if !path.exists() {
-        return Err(error::SungaError::file_not_found("File does not exist", path.to_path_buf()));
+        return Err(error::SungaError::file_not_found(path.to_path_buf()));
     }
 
     // ファイルをプレビュー表示
