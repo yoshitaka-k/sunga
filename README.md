@@ -103,22 +103,15 @@ Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（�
 
 ## Settings
 
-歯車アイコン、または <kbd>⌘,</kbd> / <kbd>Ctrl+,</kbd> から設定ウィンドウを開きます。閉じるのは <kbd>⌘W</kbd> / <kbd>Ctrl+W</kbd> です。値は次回起動時に復元されます。
+歯車アイコン、または <kbd>⌘,</kbd> / <kbd>Ctrl+,</kbd> から設定ウィンドウを開きます。閉じるのは <kbd>⌘W</kbd> / <kbd>Ctrl+W</kbd> です。タブは General / Resize / Output / Concurrent / About です。値は次回起動時に復元されます。
 
 ### General
 
 | Setting | Behavior |
 | --- | --- |
-| Output path | 書き出し先。空なら元ファイルを上書き |
-| Skip same path | 完了済みの同じ入出力はスキップ。キャンセルとエラーは再実行できる（既定 Skip） |
+| Language | 表示言語。English / 日本語。選ぶとすぐ切り替わる（既定 English） |
 | Sound effects | リサイズ完了時に再生。エラーがあればアラート（既定 Play sound） |
 | Volume | 1–10（既定 5） |
-
-### Concurrent
-
-| Setting | Range | Notes |
-| --- | --- | --- |
-| Processing | 1–8 | 同時に処理するファイル数（既定 4） |
 
 ### Resize
 
@@ -126,6 +119,19 @@ Rust の勉強がてら、自分用に Image Resizer ってことで、Sunga（�
 | --- | --- | --- |
 | Sized: Width / Height | 10–10000 px | 縦横比を保って収める（既定 2560 × 1440） |
 | Scale | 10–500% | 元のサイズに対する倍率（既定 100%） |
+
+### Output
+
+| Setting | Behavior |
+| --- | --- |
+| Path | 書き出し先。Browse でフォルダを選び、Clear で空にする。空なら元ファイルを上書き |
+| Skip same path | 完了済みの同じ入出力はスキップ。キャンセルとエラーは再実行できる（既定 Skip same path） |
+
+### Concurrent
+
+| Setting | Range | Notes |
+| --- | --- | --- |
+| Processing | 1–8 | 同時に処理するファイル数（既定 4） |
 
 ### About
 
