@@ -20,13 +20,13 @@ pub use render::Render;
 pub const APP_NAME: &str = "Sunga";
 
 /// GitHub リポジトリ URL
-pub const GITHUB_URL: &str = "https://github.com/{repository}";
+pub(crate) const GITHUB_URL: &str = "https://github.com/{repository}";
 
 /// アップデート確認リクエスト URL
-pub const REQUEST_URL: &str = "https://api.github.com/repos/{repository}/releases/latest";
+pub(crate) const REQUEST_URL: &str = "https://api.github.com/repos/{repository}/releases/latest";
 
 /// 処理時間をフォーマット
-pub fn duration_format(duration: u64) -> String {
+pub(crate) fn duration_format(duration: u64) -> String {
     if duration < 1000 {
         format!("{:.2} ms", duration as f64)
     } else if duration < 60 * 1000 {
