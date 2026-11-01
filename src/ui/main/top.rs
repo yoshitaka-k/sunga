@@ -1,4 +1,4 @@
-use crate::{event, state, ui, lang};
+use crate::{event, state, ui, lang, resize};
 use crate::ui::main;
 use crate::ui::assets::{self, icon, svg};
 
@@ -21,10 +21,13 @@ pub(crate) fn view(
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
                 ui.label(format!("{}: ", lang::current().main_top.header_resize));
 
-                if *state.config.is_scale() {
-                    ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.config.scale()));
-                } else {
-                    ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, state.config.width(), state.config.height()));
+                match state.config.resize_mode() {
+                    resize::Mode::Size => {
+                        ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, state.config.width(), state.config.height()));
+                    }
+                    resize::Mode::Scale => {
+                        ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.config.scale()));
+                    }
                 }
             },
             |ui| {

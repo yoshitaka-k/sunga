@@ -148,22 +148,13 @@ impl Image {
             return Ok(self.status.clone());
         }
 
-        // 範囲外の場合はエラーメッセージを設定
-        let out_of_range = if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(config.width()) {
-            // 幅が範囲外の場合は実行しない
-            Some(format!("Width is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX))
-        } else  if !(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX).contains(config.height()) {
-            // 高さが範囲外の場合は実行しない
-            Some(format!("Height is out of range ({}..{})", resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX))
-        } else  if !(resize::SCALE_RANGE_MIN..=resize::SCALE_RANGE_MAX).contains(config.scale()) {
-            // 倍率が範囲外の場合は実行しない
-            Some(format!("Scale is out of range ({}..{})", resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX))
-        } else {
-            None
+        // リサイズオプション
+        let options = resize::Options {
+            target: config.resize_target(),
         };
 
-        // 範囲外の場合はエラーメッセージを設定
-        if let Some(msg) = out_of_range {
+        // 範囲外の場合はエラーメッセージを取得
+        if let Some(msg) = options.target.validate() {
             self.status = file::Status::Error(msg.clone());
             return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
@@ -184,14 +175,6 @@ impl Image {
 
         // ステータスをリサイズ中に設定
         self.status = file::Status::Resizing;
-
-        // リサイズオプション
-        let options = resize::Options {
-            width: *config.width(),
-            height: *config.height(),
-            scale: *config.scale(),
-            is_scale: *config.is_scale(),
-        };
 
         match resize::Resize::execute(&self.path, &output_path, &options, &token) {
             Ok(status) => {

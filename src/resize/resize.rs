@@ -137,16 +137,14 @@ impl Resize {
     fn resize(image: &DynamicImage, options: &resize::Options) -> DynamicImage {
         let (orig_width, orig_height) = image.dimensions();
 
-        let (width, height) = if options.is_scale {
-            // 倍率を使用する場合
-            let scale = options.scale as f32 / 100.0;
-            (
-                (orig_width as f32 * scale) as u32,
-                (orig_height as f32 * scale) as u32,
-            )
-        } else {
-            // 幅と高さを使用する場合
-            (options.width, options.height)
+        let (width, height) = match options.target {
+            resize::Target::Size { width, height } => (width, height),
+            resize::Target::Scale(scale) => {
+                (
+                    (orig_width as f32 * (scale as f32 / 100.0)) as u32,
+                    (orig_height as f32 * (scale as f32 / 100.0)) as u32,
+                )
+            }
         };
 
         image.resize(width, height, image::imageops::FilterType::Lanczos3)

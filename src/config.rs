@@ -1,5 +1,6 @@
 use getset::{Getters, MutGetters};
 use serde::{Deserialize, Serialize};
+use crate::resize;
 
 const DEFAULT_WIDTH: u32 = 2560;
 const DEFAULT_HEIGHT: u32 = 1440;
@@ -19,8 +20,8 @@ pub struct Config {
     /// リサイズする倍率
     scale: u16,
 
-    /// 倍率を使用するかどうか
-    is_scale: bool,
+    /// リサイズの種類
+    resize_mode: resize::Mode,
 
     /// 並行処理できる最大数
     concurrent_num: u8,
@@ -52,7 +53,7 @@ impl Default for Config {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
-            is_scale: false,
+            resize_mode: resize::Mode::Size,
             concurrent_num: DEFAULT_CONCURRENT_NUM,
             output_path: "".to_string(),
             skip_same_path: true,
@@ -69,5 +70,14 @@ impl Config {
     /// * `return` - Config のインスタンス
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// リサイズの対象を取得
+    /// * `return` - リサイズの対象
+    pub(crate) fn resize_target(&self) -> resize::Target {
+        match *self.resize_mode() {
+            resize::Mode::Size => resize::Target::Size { width: *self.width(), height: *self.height() },
+            resize::Mode::Scale => resize::Target::Scale(*self.scale()),
+        }
     }
 }
