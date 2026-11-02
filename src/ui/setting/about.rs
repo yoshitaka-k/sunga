@@ -12,7 +12,7 @@ pub(crate) fn view(
     pending_actions: &mut Vec<event::EventAction>,
     is_update_check: bool,
 ) {
-    // ヘッダーパネルを表示
+    // アプリ情報のヘッダーパネルを表示
     setting::header_panel(ui, svg::INFO, lang::current().setting_about.heading, pending_actions, is_update_check);
 
     ui.separator();

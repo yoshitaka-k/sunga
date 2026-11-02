@@ -6,10 +6,10 @@ pub(crate) fn view(
     ui: &mut egui::Ui,
     config: &mut config::Config,
 ) {
-    // グループヘッダーパネルを表示
+    // 出力パスのヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_output.header_output);
 
-    // フレームを表示
+    // 出力パスのフレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
         ui.take_available_width();
 

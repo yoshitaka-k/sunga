@@ -10,13 +10,13 @@ pub(crate) fn view(
     ui: &mut egui::Ui,
     config: &mut config::Config,
 ) {
-    // グループヘッダーパネルを表示
+    // サイズリサイズモードのヘッダーパネルを表示
     ui.horizontal(|ui| {
         ui.add_space(setting::RESIZE_INDENT_SPACING);
         ui.radio_value(config.resize_mode_mut(), resize::Mode::Size, lang::current().setting_resize.header_sized);
     });
 
-    // グループフレームを表示
+    // サイズリサイズモードのフレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
         ui.take_available_width();
 
@@ -47,13 +47,13 @@ pub(crate) fn view(
 
     ui.add_space(setting::ADD_SPACING);
 
-    // グループヘッダーパネルを表示
+    // 倍率リサイズモードのヘッダーパネルを表示
     ui.horizontal(|ui| {
         ui.add_space(setting::RESIZE_INDENT_SPACING);
         ui.radio_value(config.resize_mode_mut(), resize::Mode::Scale, lang::current().setting_resize.header_scale);
     });
 
-    // グループフレームを表示
+    // 倍率リサイズモードのフレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
         ui.take_available_width();
 
