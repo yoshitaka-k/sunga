@@ -2,6 +2,7 @@ use std::sync::Arc;
 use std::sync::{mpsc, Mutex};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::collections::HashSet;
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use crate::{config, error, file};
 
 // リサイズ実行中のカウント数
@@ -77,8 +78,24 @@ impl ResizeJob {
 
             // リサイズの実行スレッドを作成
             std::thread::spawn(move || {
-                // リサイズを実行
-                let _ = file.resize(&config, Arc::clone(&running), Arc::clone(&canceled));
+                // リサイズ中のパニックをキャッチ
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    // リサイズを実行
+                    file.resize(&config, Arc::clone(&running), Arc::clone(&canceled))
+                }));
+
+                // パニックが発生した場合は、エラーを設定
+                if let Err(payload) = result {
+                    let message = if let Some(error) = payload.downcast_ref::<&str>() {
+                        error
+                    } else if let Some(error) = payload.downcast_ref::<String>() {
+                        error
+                    } else {
+                        "Unknown error"
+                    };
+
+                    file.set_status(file::Status::Error(message.to_string()));
+                }
 
                 // リサイズ結果を送信
                 let _ = result_tx.send(file);
