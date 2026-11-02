@@ -40,7 +40,11 @@ impl Render {
         lang::set(config.language());
 
         // テーマを設定
-        cc.egui_ctx.set_visuals(config.theme().clone());
+        let theme = match config.theme() {
+            ui::Theme::Dark => egui::Visuals::dark(),
+            ui::Theme::Light => egui::Visuals::light(),
+        };
+        cc.egui_ctx.set_visuals(theme);
 
         // 範囲外の値をクランプ
         let scale = config.scale_mut();

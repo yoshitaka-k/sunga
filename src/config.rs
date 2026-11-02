@@ -1,6 +1,6 @@
 use getset::{Getters, MutGetters};
 use serde::{Deserialize, Serialize};
-use crate::resize;
+use crate::{resize, ui};
 
 const DEFAULT_WIDTH: u32 = 2560;
 const DEFAULT_HEIGHT: u32 = 1440;
@@ -45,7 +45,7 @@ pub struct Config {
     language: String,
 
     /// テーマ
-    theme: egui::Visuals,
+    theme: ui::Theme,
 }
 
 impl Default for Config {
@@ -64,7 +64,7 @@ impl Default for Config {
             play_sound: true,
             sound_volume: DEFAULT_SOUND_VOLUME,
             language: "en".to_string(),
-            theme: egui::Visuals::dark(),
+            theme: ui::Theme::Dark,
         }
     }
 }

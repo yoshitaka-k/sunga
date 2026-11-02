@@ -3,11 +3,12 @@ mod main;
 mod setting;
 mod modal;
 
-use crate::file;
-use crate::ui::assets::{color, font, svg};
-
 /// メイン描画関数を公開
 pub(crate) use main::view as draw;
+
+use serde::{Deserialize, Serialize};
+use crate::file;
+use crate::ui::assets::{color, font, svg};
 
 // パネルの内側のマージン
 pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
@@ -19,6 +20,13 @@ pub(crate) const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
 pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
+
+/// テーマ
+#[derive(Clone, Copy, PartialEq, Deserialize, Serialize)]
+pub(crate) enum Theme {
+    Dark,
+    Light,
+}
 
 /// ステータスアイコンの色
 pub(crate) struct StatusColor {
