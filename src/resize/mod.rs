@@ -8,6 +8,8 @@ pub(crate) use token::Token;
 pub(crate) use guard::ResizeGuard;
 
 use serde::{Deserialize, Serialize};
+use std::fmt;
+use crate::lang;
 
 /// 一時ファイルの拡張子
 pub(crate) const TEMP_EXTENSION: &str = "sunga.temp";
@@ -36,6 +38,42 @@ impl Mode {
     pub fn is_scale(&self) -> bool {
         matches!(self, Mode::Scale)
     }
+}
+
+/// 画像のフィルター種類
+#[derive(Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+pub(crate) enum Filter {
+    Lanczos3,
+    CatmullRom,
+    Triangle,
+    Gaussian,
+    Nearest,
+}
+impl fmt::Display for Filter {
+    /// 画像のフィルター種類を文字列に変換
+    /// * `return` - 画像のフィルター種類を文字列に変換
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let filter = &lang::current().resize_filter;
+        match self {
+            Filter::Lanczos3 => write!(f, "{}", filter.lanczos3),
+            Filter::CatmullRom => write!(f, "{}", filter.catmull_rom),
+            Filter::Triangle => write!(f, "{}", filter.triangle),
+            Filter::Gaussian => write!(f, "{}", filter.gaussian),
+            Filter::Nearest => write!(f, "{}", filter.nearest),
+        }
+    }
+}
+
+/// 画像のフィルター種類のイテレータ
+/// * `return` - 画像のフィルター種類のイテレータ
+pub(crate) fn filter_iter() -> impl Iterator<Item = Filter> {
+    vec![
+        Filter::Lanczos3,
+        Filter::CatmullRom,
+        Filter::Triangle,
+        Filter::Gaussian,
+        Filter::Nearest,
+    ].into_iter()
 }
 
 /// リサイズの対象
@@ -72,4 +110,5 @@ impl Target {
 /// * `target` - リサイズの対象
 pub(crate) struct Options {
     pub target: Target,
+    pub filter: Filter,
 }

@@ -147,7 +147,17 @@ impl Resize {
             }
         };
 
-        image.resize(width, height, image::imageops::FilterType::Lanczos3)
+        // 画像のフィルター種類を取得
+        let filter = match options.filter {
+            resize::Filter::Lanczos3 => image::imageops::FilterType::Lanczos3,
+            resize::Filter::CatmullRom => image::imageops::FilterType::CatmullRom,
+            resize::Filter::Triangle => image::imageops::FilterType::Triangle,
+            resize::Filter::Gaussian => image::imageops::FilterType::Gaussian,
+            resize::Filter::Nearest => image::imageops::FilterType::Nearest,
+        };
+
+        // 画像をリサイズ
+        image.resize(width, height, filter)
     }
 
     /// 出力パスを作成

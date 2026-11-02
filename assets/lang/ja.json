@@ -6,6 +6,7 @@
       "header_resize": "リサイズ",
       "header_scale": "倍率",
       "header_sized": "サイズ",
+      "header_filter": "フィルター",
       "settings": "設定",
       "files_open": "ファイルを開く",
       "folder_open": "フォルダを開く",
@@ -27,6 +28,20 @@
       "completed": "完了",
       "canceled": "キャンセル",
       "error": "エラー"
+    },
+    "resize_filter": {
+      "lanczos3": "Lanczos3",
+      "catmull_rom": "CatmullRom",
+      "triangle": "Triangle",
+      "gaussian": "Gaussian",
+      "nearest": "Nearest"
+    },
+    "resize_filter_note": {
+      "lanczos3": "くっきりして、細部が残ります。写真の標準向きです。",
+      "catmull_rom": "輪郭がはっきりして、Lanczos3より少し穏やかです。",
+      "triangle": "なめらかで、輪郭は少し柔らかくなります。",
+      "gaussian": "全体が柔らかく、細かい部分はぼやけます。",
+      "nearest": "ドットがそのまま残ります。ピクセルアート向きです。"
     },
     "setting": {
       "heading": "設定",
@@ -53,7 +68,9 @@
       "height": "高さ",
       "sized_warning_note": "指定した値に収まるようにリサイズします。",
       "header_scale": "倍率",
-      "scale": "倍率"
+      "scale": "倍率",
+      "header_filter": "フィルター",
+      "filter": "種類"
     },
     "setting_output": {
       "header_output": "出力",

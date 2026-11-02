@@ -1,6 +1,8 @@
 use crate::{config, resize, lang};
 use crate::ui::{self, setting};
 
+const FILTER_ID_SALT: &str = "filter_combo_box";
+
 /// リサイズ設定を表示
 /// * `ui` - UI
 /// * `config` - 設定
@@ -66,5 +68,35 @@ pub(crate) fn view(
                 );
             });
         });
+    });
+
+    ui.add_space(setting::ADD_SPACING);
+
+    // フィルターのヘッダーパネルを表示
+    setting::group_header_panel(ui, lang::current().setting_resize.header_filter);
+
+    // フィルターのフレームを表示
+    egui::Frame::group(ui.style()).show(ui, |ui| {
+        ui.take_available_width();
+
+        ui.horizontal(|ui| {
+            ui::add_label(ui, lang::current().setting_resize.filter, setting::RESIZE_LABEL_WIDTH);
+            egui::ComboBox::from_id_salt(FILTER_ID_SALT)
+                .selected_text(config.filter().to_string())
+                .show_ui(ui, |ui| {
+                    for filter in resize::filter_iter() {
+                        ui.selectable_value(config.filter_mut(), filter, filter.to_string());
+                    }
+                });
+        });
+
+        let note = match config.filter() {
+            resize::Filter::Lanczos3 => lang::current().resize_filter_note.lanczos3,
+            resize::Filter::CatmullRom => lang::current().resize_filter_note.catmull_rom,
+            resize::Filter::Triangle => lang::current().resize_filter_note.triangle,
+            resize::Filter::Gaussian => lang::current().resize_filter_note.gaussian,
+            resize::Filter::Nearest => lang::current().resize_filter_note.nearest,
+        };
+        setting::info_note(ui, note, Some(setting::RESIZE_LABEL_WIDTH));
     });
 }

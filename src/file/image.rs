@@ -151,6 +151,7 @@ impl Image {
         // リサイズオプション
         let options = resize::Options {
             target: config.resize_target(),
+            filter: *config.filter(),
         };
 
         // 範囲外の場合はエラーメッセージを取得

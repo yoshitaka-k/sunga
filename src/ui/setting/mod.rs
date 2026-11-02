@@ -33,7 +33,7 @@ const RESIZE_INDENT_SPACING: f32 = 8.0;
 // ラベルの幅
 const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
 const GENERAL_LABEL_WIDTH: f32 = 94.0;
-const RESIZE_LABEL_WIDTH: f32 = 60.0;
+const RESIZE_LABEL_WIDTH: f32 = 46.0;
 const CONCURRENT_LABEL_WIDTH: f32 = 80.0;
 
 // 並行処理数のスライダーの最小値と最大値
@@ -107,6 +107,26 @@ pub(crate) fn warning_note(
         ui.spacing_mut().item_spacing.x = WARNING_ICON_SPACING;
         ui::add_icon(ui, svg::WARNING, icon::WARNING_ICON_SIZE, assets::warning_color(ui));
         ui.spacing_mut().item_spacing.x = spacing;
+        ui.add(egui::Label::new(
+            egui::RichText::new(text).weak(),
+        ));
+    });
+}
+
+/// 情報ノートを表示
+/// * `ui` - UI
+/// * `text` - 情報ノートのテキスト
+/// * `space` - スペースの幅
+pub(crate) fn info_note(
+    ui: &mut egui::Ui,
+    text: &str,
+    space: Option<f32>,
+) {
+    ui.horizontal(|ui| {
+        if let Some(space) = space {
+            ui.add_space(space);
+        }
+
         ui.add(egui::Label::new(
             egui::RichText::new(text).weak(),
         ));

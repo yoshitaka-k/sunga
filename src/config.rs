@@ -23,6 +23,9 @@ pub struct Config {
     /// リサイズの種類
     resize_mode: resize::Mode,
 
+    /// 画像のフィルター種類
+    filter: resize::Filter,
+
     /// 並行処理できる最大数
     concurrent_num: u8,
 
@@ -54,6 +57,7 @@ impl Default for Config {
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
             resize_mode: resize::Mode::Size,
+            filter: resize::Filter::Lanczos3,
             concurrent_num: DEFAULT_CONCURRENT_NUM,
             output_path: "".to_string(),
             skip_same_path: true,

@@ -6,6 +6,7 @@
       "header_resize": "Resize",
       "header_scale": "Scale",
       "header_sized": "Sized",
+      "header_filter": "Filter",
       "settings": "Settings",
       "files_open": "Files Open",
       "folder_open": "Folder Open",
@@ -27,6 +28,20 @@
       "completed": "Completed",
       "canceled": "Canceled",
       "error": "Error"
+    },
+    "resize_filter": {
+      "lanczos3": "Lanczos3",
+      "catmull_rom": "CatmullRom",
+      "triangle": "Triangle",
+      "gaussian": "Gaussian",
+      "nearest": "Nearest"
+    },
+    "resize_filter_note": {
+      "lanczos3": "Sharp and detailed. A good default for photos.",
+      "catmull_rom": "Clear and balanced, a little softer than Lanczos3.",
+      "triangle": "Smooth, with slightly soft edges.",
+      "gaussian": "Soft overall. Fine detail gets blurred.",
+      "nearest": "Keeps hard pixels. Good for pixel art and icons."
     },
     "setting": {
       "heading": "Settings",
@@ -53,7 +68,9 @@
       "height": "Height",
       "sized_warning_note": "Resize to fit the specified values.",
       "header_scale": "Scale",
-      "scale": "Scale"
+      "scale": "Scale",
+      "header_filter": "Filter",
+      "filter": "Type"
     },
     "setting_output": {
       "header_output": "Output",

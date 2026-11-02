@@ -29,6 +29,10 @@ pub(crate) fn view(
                         ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.config.scale()));
                     }
                 }
+
+                ui.label("|");
+
+                ui.label(format!("{}: {}", lang::current().main_top.header_filter, state.config.filter()));
             },
             |ui| {
                 // 設定ボタン
