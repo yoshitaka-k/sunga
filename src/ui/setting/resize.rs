@@ -14,12 +14,16 @@ pub(crate) fn view(
     ui.horizontal(|ui| {
         ui.add_space(setting::RESIZE_INDENT_SPACING);
         ui.radio_value(config.resize_mode_mut(), resize::Mode::Size, lang::current().setting_resize.header_sized);
+
+        ui.add_space(setting::RESIZE_INDENT_SPACING);
+        ui.radio_value(config.resize_mode_mut(), resize::Mode::Scale, lang::current().setting_resize.header_scale);
     });
 
     // サイズリサイズモードのフレームを表示
     egui::Frame::group(ui.style()).show(ui, |ui| {
         ui.take_available_width();
 
+        // サイズリサイズモードのサイズを表示
         ui.add_enabled_ui(config.resize_mode().is_size(), |ui| {
             ui.horizontal(|ui| {
                 ui::add_label(ui, lang::current().setting_resize.width, setting::RESIZE_LABEL_WIDTH);
@@ -43,20 +47,10 @@ pub(crate) fn view(
 
             setting::warning_note(ui, lang::current().setting_resize.sized_warning_note, None);
         });
-    });
 
-    ui.add_space(setting::ADD_SPACING);
+        ui.separator();
 
-    // 倍率リサイズモードのヘッダーパネルを表示
-    ui.horizontal(|ui| {
-        ui.add_space(setting::RESIZE_INDENT_SPACING);
-        ui.radio_value(config.resize_mode_mut(), resize::Mode::Scale, lang::current().setting_resize.header_scale);
-    });
-
-    // 倍率リサイズモードのフレームを表示
-    egui::Frame::group(ui.style()).show(ui, |ui| {
-        ui.take_available_width();
-
+        // サイズリサイズモードの倍率を表示
         ui.add_enabled_ui(config.resize_mode().is_scale(), |ui| {
             ui.horizontal(|ui| {
                 ui::add_label(ui, lang::current().setting_resize.scale, setting::RESIZE_LABEL_WIDTH);
