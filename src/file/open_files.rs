@@ -217,10 +217,14 @@ impl OpenFiles {
     /// * `return` - 選択されたファイルのインデックス
     pub fn index_add(&mut self) -> Option<usize> {
         if let Some(index) = self.selected_index {
-            if index < self.images.len() - 1 {
-                self.selected_index = Some(index + 1);
-            } else if !self.images.is_empty() {
-                self.selected_index = Some(self.images.len() - 1);
+            if !self.images.is_empty() {
+                if index < self.images.len() - 1 {
+                    self.selected_index = Some(index + 1);
+                } else if !self.images.is_empty() {
+                    self.selected_index = Some(self.images.len() - 1);
+                } else {
+                    self.selected_index = Some(0);
+                }
             } else {
                 self.selected_index = Some(0);
             }
