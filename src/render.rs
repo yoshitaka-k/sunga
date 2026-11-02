@@ -179,7 +179,6 @@ impl Render {
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
             if let Err(e) = handler::handle(ui.ctx(), &mut self.state, &mut self.jobs, action) {
-                log::error!("Error processing action: {}", e);
                 self.state.error_token.reset();
                 self.state.error_token.show(e);
             }
