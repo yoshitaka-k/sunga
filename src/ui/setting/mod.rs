@@ -94,16 +94,21 @@ pub(crate) fn group_header_panel(
 /// 警告ノートを表示
 /// * `ui` - UI
 /// * `text` - 警告ノートのテキスト
-/// * `return` - 警告ノートのリッチテキスト
+/// * `space` - スペースの幅
 pub(crate) fn warning_note(
     ui: &mut egui::Ui,
-    text: &str
+    text: &str,
+    space: Option<f32>,
 ) {
     // デフォルトのスペースの幅を避けておく
     let spacing = ui.spacing().item_spacing.x;
 
     // 出力パスの注意書きを表示
     ui.horizontal(|ui| {
+        if let Some(space) = space {
+            ui.add_space(space);
+        }
+
         ui.spacing_mut().item_spacing.x = WARNING_ICON_SPACING;
         ui::add_icon(ui, svg::WARNING, icon::WARNING_ICON_SIZE, assets::warning_color(ui));
         ui.spacing_mut().item_spacing.x = spacing;

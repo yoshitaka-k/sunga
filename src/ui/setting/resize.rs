@@ -41,7 +41,7 @@ pub(crate) fn view(
                 );
             });
 
-            setting::warning_note(ui, lang::current().setting_resize.sized_warning_note);
+            setting::warning_note(ui, lang::current().setting_resize.sized_warning_note, None);
         });
     });
 

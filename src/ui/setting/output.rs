@@ -34,7 +34,7 @@ pub(crate) fn view(
         });
 
         // 出力パスの注意書きを表示
-        setting::warning_note(ui, lang::current().setting_output.output_warning_note);
+        setting::warning_note(ui, lang::current().setting_output.output_warning_note, None);
 
         ui.add_space(setting::ADD_SPACING);
         ui.separator();
@@ -48,6 +48,6 @@ pub(crate) fn view(
         });
 
         // 同じパスはスキップの注意書きを表示
-        setting::warning_note(ui, lang::current().setting_output.skip_same_path_warning_note);
+        setting::warning_note(ui, lang::current().setting_output.skip_same_path_warning_note, None);
     });
 }

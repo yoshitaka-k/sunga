@@ -23,6 +23,6 @@ pub(crate) fn view(
             });
         });
 
-        setting::warning_note(ui, lang::current().setting_concurrent.concurrent_warning_note);
+        setting::warning_note(ui, lang::current().setting_concurrent.concurrent_warning_note, None);
     });
 }
