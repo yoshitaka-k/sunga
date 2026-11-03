@@ -5,7 +5,7 @@ use std::collections::HashSet;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use crate::{config, error, file};
 
-// リサイズ実行中のカウント数
+// ジョブ実行中のカウント数
 const RUNNING_COUNT_NUM: usize = 1;
 
 /// リサイズジョブ
@@ -13,15 +13,15 @@ pub struct ResizeJob {
     /// コンテキスト
     ctx: egui::Context,
 
-    /// リサイズ結果を送信するチャネル
+    /// ジョブ結果を送信するチャネル
     result_tx: mpsc::Sender<file::Image>,
-    /// リサイズ結果を受信するチャネル
+    /// ジョブ結果を受信するチャネル
     result_rx: mpsc::Receiver<file::Image>,
 
-    /// リサイズ実行フラグ
+    /// ジョブ実行フラグ
     running: Arc<AtomicBool>,
 
-    /// リサイズ実行中のカウント
+    /// ジョブ実行中のカウント
     running_count: Arc<AtomicUsize>,
 
     /// キャンセルフラグ
@@ -29,7 +29,7 @@ pub struct ResizeJob {
 }
 
 impl ResizeJob {
-    /// 新しいリサイズジョブを作成
+    /// 新しいジョブを作成
     /// * `ctx` - コンテキスト
     /// * `return` - リサイズジョブ
     pub fn new(ctx: egui::Context) -> Self {
@@ -44,24 +44,24 @@ impl ResizeJob {
         }
     }
 
-    /// リサイズジョブを実行
+    /// ジョブを実行
+    /// * `config` - 設定
     /// * `files` - 開いているファイル
-    /// * `return` - リサイズジョブ
     pub fn run(&self, config: &config::Config, files: &mut file::OpenFiles) {
-        // ファイルがない場合は、リサイズを行わない
+        // ファイルがない場合は、ジョブを行わない
         if files.is_empty() { return; }
 
-        // 待機中のファイルがあったら、リサイズを開始
+        // 待機中のファイルがあったら、ジョブを開始
         if files.has_standby() {
             self.running.store(true, Ordering::Relaxed);
         }
 
-        // 最適化実行可能なら、リサイズを続ける
+        // 最適化実行可能なら、ジョブを続ける
         while self.is_runnable(config) {
-            // 待機中のファイルがない場合は、リサイズを終了
+            // 待機中のファイルがない場合は、ジョブを終了
             let Some(file) = files.get_standby_file() else { break };
 
-            // リサイズステータスを設定して、クローン
+            // ジョブステータスを設定して、クローン
             file.set_status(file::Status::Resizing);
             let mut file = file.clone();
 
@@ -72,15 +72,15 @@ impl ResizeJob {
             let running = self.running.clone();
             let canceled = self.canceled.clone();
 
-            // リサイズ実行中のカウントを追加してクローン
+            // ジョブ実行中のカウントを追加してクローン
             self.running_count.fetch_add(RUNNING_COUNT_NUM, Ordering::Relaxed);
             let running_count = self.clone_running_count();
 
-            // リサイズの実行スレッドを作成
+            // ジョブの実行スレッドを作成
             std::thread::spawn(move || {
-                // リサイズ中のパニックをキャッチ
+                // ジョブ中のパニックをキャッチ
                 let result = catch_unwind(AssertUnwindSafe(|| {
-                    // リサイズを実行
+                    // ジョブを実行
                     file.resize(&config, Arc::clone(&running), Arc::clone(&canceled))
                 }));
 
@@ -97,10 +97,10 @@ impl ResizeJob {
                     file.set_status(file::Status::Error(message.to_string()));
                 }
 
-                // リサイズ結果を送信
+                // ジョブ結果を送信
                 let _ = result_tx.send(file);
 
-                // リサイズ実行中のカウントを減少
+                // ジョブ実行中のカウントを減少
                 running_count.fetch_sub(RUNNING_COUNT_NUM, Ordering::Relaxed);
 
                 // 再描画を要求
@@ -109,14 +109,14 @@ impl ResizeJob {
         }
     }
 
-    /// リサイズ結果を受信
+    /// ジョブ結果を受信
     pub fn result(&self, files: &mut file::OpenFiles) {
-        // リサイズ結果を受信
+        // ジョブ結果を受信
         while let Ok(result) = self.result_rx.try_recv() {
             // ファイル ID を控えておく
             let id = *result.id();
 
-            // リサイズ結果を反映
+            // ジョブ結果を反映
             files.apply_result(result);
 
             // キャンセルされたファイル ID を削除
@@ -124,7 +124,7 @@ impl ResizeJob {
         }
     }
 
-    /// リサイズをキャンセル
+    /// ジョブをキャンセル
     pub fn stop_running(&self) {
         self.running.store(false, Ordering::Release);
     }
@@ -140,22 +140,22 @@ impl ResizeJob {
 
 /// private methods
 impl ResizeJob {
-    /// リサイズ実行可能かどうか
+    /// ジョブ実行可能かどうか
     /// * `config` - 設定
-    /// * `return` - リサイズ実行可能かどうか
+    /// * `return` - ジョブ実行可能かどうか
     fn is_runnable(&self, config: &config::Config) -> bool {
         self.running_count.load(Ordering::Relaxed) < *config.concurrent_num() as usize
     }
 
-    /// リサイズ実行中のカウントをクローン
-    /// * `return` - リサイズ実行中のカウント
+    /// ジョブ実行中のカウントをクローン
+    /// * `return` - ジョブ実行中のカウント
     fn clone_running_count(&self) -> Arc<AtomicUsize> {
         Arc::clone(&self.running_count)
     }
 
     /// キャンセルされたファイル ID を削除
     /// * `id` - ファイル ID
-    /// * `return` - キャンセルされたファイル ID を削除
+    /// * `return` - キャンセルされたファイル ID を削除したかどうか
     fn remove_canceled_id(&self, id: u64) -> error::Result<()> {
         self.canceled.lock().map_err(|_| {
             error::SungaError::lock_poisoned()
