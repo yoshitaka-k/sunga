@@ -1,9 +1,9 @@
 mod job;
-mod resize;
+mod executor;
 mod token;
 mod guard;
 pub(crate) use job::ResizeJob;
-pub(crate) use resize::Resize;
+pub(crate) use executor::Resize;
 pub(crate) use token::Token;
 pub(crate) use guard::ResizeGuard;
 
