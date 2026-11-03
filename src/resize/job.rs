@@ -59,11 +59,11 @@ impl ResizeJob {
         // 最適化実行可能なら、ジョブを続ける
         while self.is_runnable(config) {
             // 待機中のファイルがない場合は、ジョブを終了
-            let Some(file) = files.get_standby_file() else { break };
+            let Some(image) = files.get_standby_file() else { break };
 
             // ジョブステータスを設定して、クローン
-            file.set_status(file::Status::Resizing);
-            let mut file = file.clone();
+            image.set_status(file::Status::Resizing);
+            let mut image = image.clone();
 
             // そのほかもクローン
             let config = config.clone();
@@ -81,7 +81,7 @@ impl ResizeJob {
                 // ジョブ中のパニックをキャッチ
                 let result = catch_unwind(AssertUnwindSafe(|| {
                     // ジョブを実行
-                    file.resize(&config, Arc::clone(&running), Arc::clone(&canceled))
+                    image.resize(&config, Arc::clone(&running), Arc::clone(&canceled))
                 }));
 
                 // パニックが発生した場合は、エラーを設定
@@ -94,11 +94,11 @@ impl ResizeJob {
                         "Unknown error"
                     };
 
-                    file.set_status(file::Status::Error(message.to_string()));
+                    image.set_status(file::Status::Error(message.to_string()));
                 }
 
                 // ジョブ結果を送信
-                let _ = result_tx.send(file);
+                let _ = result_tx.send(image);
 
                 // ジョブ実行中のカウントを減少
                 running_count.fetch_sub(RUNNING_COUNT_NUM, Ordering::Relaxed);
