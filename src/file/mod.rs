@@ -1,12 +1,12 @@
 mod open_files;
 mod image;
 mod status;
-mod job;
+mod dimensions_job;
 
 pub(crate) use open_files::OpenFiles;
 pub(crate) use image::Image;
 pub(crate) use status::Status;
-pub(crate) use job::DimensionsJob;
+pub(crate) use dimensions_job::DimensionsJob;
 
 use std::path::Path;
 
