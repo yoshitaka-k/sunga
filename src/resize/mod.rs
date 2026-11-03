@@ -87,16 +87,16 @@ impl Target {
     pub fn validate(&self) -> Option<String> {
         match self {
             Target::Size { width, height } => {
-                if !(SIZED_RANGE_MIN..=SIZED_RANGE_MAX).contains(&width) {
+                if !(SIZED_RANGE_MIN..=SIZED_RANGE_MAX).contains(width) {
                     Some(format!("Width is out of range ({}..={})", SIZED_RANGE_MIN, SIZED_RANGE_MAX))
-                } else if !(SIZED_RANGE_MIN..=SIZED_RANGE_MAX).contains(&height) {
+                } else if !(SIZED_RANGE_MIN..=SIZED_RANGE_MAX).contains(height) {
                     Some(format!("Height is out of range ({}..={})", SIZED_RANGE_MIN, SIZED_RANGE_MAX))
                 } else {
                     None
                 }
             }
             Target::Scale(scale) => {
-                if !(SCALE_RANGE_MIN..=SCALE_RANGE_MAX).contains(&scale) {
+                if !(SCALE_RANGE_MIN..=SCALE_RANGE_MAX).contains(scale) {
                     Some(format!("Scale is out of range ({}..={})", SCALE_RANGE_MIN, SCALE_RANGE_MAX))
                 } else {
                     None
