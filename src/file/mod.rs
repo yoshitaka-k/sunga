@@ -6,7 +6,7 @@ mod job;
 pub(crate) use open_files::OpenFiles;
 pub(crate) use image::Image;
 pub(crate) use status::Status;
-pub(crate) use job::OpenJob;
+pub(crate) use job::DimensionsJob;
 
 use std::path::Path;
 

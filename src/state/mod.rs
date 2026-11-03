@@ -18,7 +18,7 @@ pub(crate) struct State {
 
 /// ジョブ
 pub(crate) struct Jobs {
-    pub open_job: file::OpenJob,
+    pub dimensions_job: file::DimensionsJob,
     pub resize_job: resize::ResizeJob,
     pub update_job: update::UpdateJob,
 }

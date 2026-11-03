@@ -6,8 +6,8 @@ use crate::file;
 const RUNNING_COUNT_NUM: usize = 1;
 const CONCURRENT_NUM: u8 = 10;
 
-/// ファイルオープンジョブ
-pub(crate) struct OpenJob {
+/// 寸法読み込みジョブ
+pub(crate) struct DimensionsJob {
     /// コンテキスト
     ctx: egui::Context,
 
@@ -20,10 +20,10 @@ pub(crate) struct OpenJob {
     running_count: Arc<AtomicUsize>,
 }
 
-impl OpenJob {
-    /// 新しいジョブを作成
+impl DimensionsJob {
+    /// 新しい寸法読み込みジョブを作成
     /// * `ctx` - コンテキスト
-    /// * `return` - ジョブ
+    /// * `return` - 寸法読み込みジョブ
     pub fn new(ctx: egui::Context) -> Self {
         let (result_tx, result_rx) = mpsc::channel();
         Self {
@@ -36,7 +36,6 @@ impl OpenJob {
 
     /// ジョブを実行
     /// * `files` - 開いているファイル
-    /// * `return` - ジョブ
     pub fn run(&self, files: &mut file::OpenFiles) {
         // ジョブ実行可能な間、ジョブを実行
         while self.is_runnable() {
@@ -88,7 +87,7 @@ impl OpenJob {
 }
 
 /// private methods
-impl OpenJob {
+impl DimensionsJob {
     /// ジョブ実行可能かどうか
     /// * `return` - ジョブ実行可能かどうか
     fn is_runnable(&self) -> bool {
