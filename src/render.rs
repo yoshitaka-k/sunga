@@ -66,6 +66,7 @@ impl Render {
 
         // ジョブを作成
         let jobs = state::Jobs {
+            scan_job: file::ScanJob::new(cc.egui_ctx.clone()),
             dimensions_job: file::DimensionsJob::new(cc.egui_ctx.clone()),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
             update_job: update::UpdateJob::new(cc.egui_ctx.clone()),
@@ -127,6 +128,9 @@ impl Render {
     fn jobs_result(&mut self) {
         // 待機中かリサイズ中かどうかをチェック
         let was_busy = self.state.files.has_standby() || self.state.files.has_resizing();
+
+        // ファイルスキャン結果を受信
+        self.jobs.scan_job.result(&self.state.config, &mut self.state.files);
 
         // 寸法読み込み結果を受信
         self.jobs.dimensions_job.result(&mut self.state.files);

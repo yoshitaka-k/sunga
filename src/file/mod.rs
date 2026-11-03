@@ -1,14 +1,26 @@
 mod open_files;
 mod image;
 mod status;
+mod token;
+mod scan_job;
 mod dimensions_job;
 
 pub(crate) use open_files::OpenFiles;
 pub(crate) use image::Image;
 pub(crate) use status::Status;
+pub(crate) use token::ScanToken;
+pub(crate) use scan_job::ScanJob;
 pub(crate) use dimensions_job::DimensionsJob;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
+
+/// ファイルスキャン結果
+/// * `Found` - ファイルが見つかった
+/// * `Failed` - ファイルが見つからなかった
+pub(crate) enum ScanResult {
+    Found { path: PathBuf, base_dir: PathBuf },
+    Failed { path: PathBuf, base_dir: PathBuf, error: String },
+}
 
 /// 画像の寸法の状態
 /// * `Pending` - まだ読んでいない

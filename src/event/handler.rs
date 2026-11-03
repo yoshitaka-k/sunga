@@ -16,23 +16,23 @@ pub(crate) fn handle(
         // ファイルダイアログを表示
         event::EventAction::FilesOpen => {
             let label = lang::current().file_dialog.image_files;
-            open::file(&state.config, &mut state.files, label);
+            open::file(&jobs.scan_job, label);
             Ok(())
         },
         // フォルダダイアログを表示
         event::EventAction::FolderOpen => {
             let label = lang::current().file_dialog.image_files;
-            open::folder(&state.config, &mut state.files, label);
+            open::folder(&jobs.scan_job, label);
             Ok(())
         },
         // ドロップされたファイルを処理
         event::EventAction::DropOpen(files) => {
-            open::drop(ctx, &state.config, &mut state.files, files);
+            open::drop(ctx, &jobs.scan_job, files);
             Ok(())
         },
         // ファイルをクリア
         event::EventAction::Clear => {
-            button::cancel_and_clear_files(&mut state.files, &mut jobs.resize_job)
+            button::cancel_and_clear_files(&mut state.files, &mut jobs.scan_job, &mut jobs.resize_job)
         },
         // 設定ウィンドウを表示
         event::EventAction::SettingOpen(pos) => {

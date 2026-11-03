@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use getset::{Getters, Setters};
 
 use crate::{config, file};
@@ -55,15 +54,6 @@ impl OpenFiles {
              file_info: FileInfo::new(),
              selected_index: None,
         }
-    }
-
-    /// ファイルを追加
-    /// * `config` - 設定
-    /// * `path` - 追加するファイルのパス
-    pub fn add(&mut self, config: &config::Config, path: PathBuf) {
-        let base_dir = path.parent().unwrap_or(&path);
-
-        self.find_file(config, &path, base_dir);
     }
 
     /// 諸々クリア
@@ -276,6 +266,51 @@ impl OpenFiles {
         }
     }
 
+    /// ファイルスキャン結果を反映
+    /// * `config` - 設定
+    /// * `result` - ファイルスキャン結果
+    pub fn scan_result(&mut self, config: &config::Config, result: file::ScanResult) {
+        match result {
+            file::ScanResult::Found { path, base_dir } => {
+                // base_dir からの相対パスを求める
+                let relative_path = path.strip_prefix(base_dir);
+
+                // フォルダ経由で追加されたファイルかどうか
+                let is_in_folder = relative_path.as_ref().is_ok_and(|p| p.components().count() > 1);
+
+                // 所有権のある PathBuf にする
+                let relative_path = relative_path.unwrap_or(&path).to_path_buf();
+
+                // 画像ファイル構造体を作成
+                let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
+
+                // 出力パスを作成
+                let output_path = image.make_output_path(config);
+
+                // 同じパスが待機中かリサイズ中の場合はエラーを返す
+                if self.is_standby_or_resizing(&path) {
+                    image.set_status(file::Status::Error("Already in progress".to_string()));
+                    self.images.push(image);
+                    return;
+                }
+
+                // 同じパスはスキップ
+                if *config.skip_same_path() && self.is_input_and_output(&path, &output_path) {
+                    image.set_status(file::Status::Skipped);
+                    self.images.push(image);
+                    return;
+                }
+
+                // 画像ファイル構造体を追加
+                self.images.push(image);
+            }
+            file::ScanResult::Failed { path, base_dir, error } => {
+                // エラーを追加
+                self.error_file(&path, &base_dir, error);
+            }
+        }
+    }
+
     /// 寸法読み込み結果を反映
     /// * `result` - 寸法読み込み結果
     pub fn apply_dimensions_result(&mut self, result: file::Image) {
@@ -335,70 +370,5 @@ impl OpenFiles {
         let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
         image.set_status(file::Status::Error(error));
         self.images.push(image);
-    }
-
-    /// ファイルを検索
-    /// * `path` - ドロップされたファイルのパス
-    /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
-    fn find_file(&mut self,
-        config: &config::Config,
-        path: &Path,
-        base_dir: &Path
-    ) {
-        // ファイルの存在を確認
-        // シンボリックリンクは無視する
-        let metadata = match path.symlink_metadata() {
-            Ok(metadata) => metadata,
-            Err(e) => return self.error_file(path, base_dir, e.to_string()),
-        };
-
-        if metadata.is_file() {
-            if file::is_allowed_extension(path) {
-                // base_dir からの相対パスを求める
-                let relative_path = path.strip_prefix(base_dir);
-
-                // フォルダ経由で追加されたファイルかどうか
-                let is_in_folder = relative_path.as_ref().is_ok_and(|p| p.components().count() > 1);
-
-                // 所有権のある PathBuf にする
-                let relative_path = relative_path.unwrap_or(path).to_path_buf();
-
-                // 画像ファイル構造体を作成
-                let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
-
-                // 出力パスを作成
-                let output_path = image.make_output_path(config);
-
-                // 同じパスが待機中かリサイズ中の場合はエラーを返す
-                if self.is_standby_or_resizing(path) {
-                    image.set_status(file::Status::Error("Already in progress".to_string()));
-                    self.images.push(image);
-                    return;
-                }
-
-                // 同じパスはスキップ
-                if *config.skip_same_path() && self.is_input_and_output(path, &output_path) {
-                    image.set_status(file::Status::Skipped);
-                    self.images.push(image);
-                    return;
-                }
-
-                // 画像ファイル構造体を追加
-                self.images.push(image);
-            }
-        } else if metadata.is_dir() {
-            let entries = match fs::read_dir(path) {
-                Ok(entries) => entries,
-                Err(e) => return self.error_file(path, base_dir, e.to_string()),
-            };
-
-            // ディレクトリ内のファイルを検索
-            for entry in entries {
-                match entry {
-                    Ok(entry) => self.find_file(config, &entry.path(), base_dir),
-                    Err(e) => self.error_file(path, base_dir, e.to_string()),
-                }
-            }
-        }
     }
 }

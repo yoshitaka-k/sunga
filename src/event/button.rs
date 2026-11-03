@@ -2,11 +2,16 @@ use crate::{error, file, resize, state};
 
 /// 開いているファイルをクリア
 /// * `files` - 開いているファイル
+/// * `scan_job` - スキャンジョブ
 /// * `resize_job` - リサイズジョブ
 pub(crate) fn cancel_and_clear_files(
     files: &mut file::OpenFiles,
+    scan_job: &file::ScanJob,
     resize_job: &mut resize::ResizeJob,
 ) -> error::Result<()> {
+    // スキャンをキャンセル
+    scan_job.stop_running();
+
     // リサイズをキャンセル
     resize_job.stop_running();
 

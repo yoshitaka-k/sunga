@@ -1,13 +1,11 @@
 use std::path::PathBuf;
-use crate::{config, file};
+use crate::file;
 
 /// ファイルオープンダイアログを開いて選択結果を追加する
-/// * `config` - 設定
+/// * `scan_job` - ファイルスキャンジョブ
 /// * `label` - ファイルダイアログのラベル
-/// * `open_files` - 開いているファイル
 pub(crate) fn file(
-    config: &config::Config,
-    open_files: &mut file::OpenFiles,
+    scan_job: &file::ScanJob,
     label: &str,
 ) {
     let extensions = file::allowed_extensions();
@@ -19,17 +17,15 @@ pub(crate) fn file(
 
     // ファイルを追加
     if let Some(paths) = paths {
-        open_paths(config, open_files, paths);
+        open_paths(scan_job, paths);
     }
 }
 
 /// フォルダダイアログを開いて選択結果を追加する
-/// * `config` - 設定
+/// * `scan_job` - ファイルスキャンジョブ
 /// * `label` - フォルダダイアログのラベル
-/// * `open_files` - 開いているファイル
 pub(crate) fn folder(
-    config: &config::Config,
-    open_files: &mut file::OpenFiles,
+    scan_job: &file::ScanJob,
     label: &str,
 ) {
     let extensions = file::allowed_extensions();
@@ -48,22 +44,20 @@ pub(crate) fn folder(
 
     // ファイルを追加
     if let Some(paths) = paths {
-        open_paths(config, open_files, paths);
+        open_paths(scan_job, paths);
     }
 }
 
 /// ドロップされたファイルを処理
 /// * `ctx` - コンテキスト
-/// * `config` - 設定
-/// * `open_files` - 開いているファイル
+/// * `scan_job` - ファイルスキャンジョブ
 /// * `files` - ドロップされたファイルのパス
 pub(crate) fn drop(
     ctx: &egui::Context,
-    config: &config::Config,
-    open_files: &mut file::OpenFiles,
+    scan_job: &file::ScanJob,
     files: Vec<PathBuf>,
 ) {
-    open_paths(config, open_files, files);
+    open_paths(scan_job, files);
 
     // ウィンドウを前面に持ってくる
     ctx.send_viewport_cmd_to(
@@ -73,15 +67,11 @@ pub(crate) fn drop(
 }
 
 /// ファイルを追加
-/// * `config` - 設定
+/// * `scan_job` - ファイルスキャンジョブ
 /// * `paths` - 追加するファイルのパス
-/// * `open_files` - 開いているファイル
 fn open_paths(
-    config: &config::Config,
-    open_files: &mut file::OpenFiles,
+    scan_job: &file::ScanJob,
     paths: Vec<PathBuf>,
 ) {
-    for path in paths {
-        open_files.add(config, path);
-    }
+    scan_job.run(paths);
 }
