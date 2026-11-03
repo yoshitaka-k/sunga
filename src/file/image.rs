@@ -29,7 +29,8 @@ pub(crate) struct Image {
     output_path: Option<PathBuf>,
 
     /// 画像の寸法
-    dimensions: Option<(u32, u32)>,
+    #[getset(set = "pub")]
+    dimensions: file::Dimensions,
 
     /// 新しい画像の寸法
     resized_dimensions: Option<(u32, u32)>,
@@ -54,20 +55,29 @@ impl Image {
     /// * `is_in_folder` - フォルダ経由で追加されたファイルかどうか
     /// * `return` - Image のインスタンス
     pub fn new(path: PathBuf, relative_path: PathBuf, is_in_folder: bool) -> Self {
-        // 画像の寸法を取得
-        let dimensions = dimensions(&path);
-
         Self {
             id: NEXT_ID.fetch_add(COUNT_UP, Ordering::Relaxed),
             path,
             relative_path,
             status: file::Status::Standby,
             output_path: None,
-            dimensions,
+            dimensions: file::Dimensions::Pending,
             resized_dimensions: None,
             is_in_folder,
             duration: DEFAULT_DURATION,
         }
+    }
+
+    /// ファイルが寸法を読み込んでないかどうか
+    /// * `return` - ファイルが寸法を読み込んでないかどうか
+    pub fn is_pending(&self) -> bool {
+        matches!(self.dimensions, file::Dimensions::Pending)
+    }
+
+    /// ファイルが寸法を読み込んでないかリサイズ中かどうか
+    /// * `return` - ファイルが寸法を読み込んでないかリサイズ中かどうか
+    pub fn is_pending_or_loading(&self) -> bool {
+        matches!(self.dimensions, file::Dimensions::Pending | file::Dimensions::Loading)
     }
 
     /// ファイルが待機中かどうか
@@ -188,7 +198,7 @@ impl Image {
                         self.duration = duration as u64;
 
                         // 新しい画像の寸法を設定
-                        self.resized_dimensions = dimensions(&output_path);
+                        self.resized_dimensions = open_dimensions(&output_path);
 
                         // ステータスをリサイズ済みに設定
                         self.status = file::Status::Resized;
@@ -224,7 +234,7 @@ impl Image {
 /// 画像の寸法を取得
 /// * `path` - 画像ファイルのパス
 /// * `return` - 画像の寸法
-fn dimensions(path: &PathBuf) -> Option<(u32, u32)> {
+pub fn open_dimensions(path: &PathBuf) -> Option<(u32, u32)> {
     image::ImageReader::open(path).ok()
         .and_then(|r| r.with_guessed_format().ok())
         .and_then(|r| r.into_dimensions().ok())

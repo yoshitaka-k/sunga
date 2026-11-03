@@ -1,12 +1,27 @@
 mod open_files;
 mod image;
 mod status;
+mod job;
 
 pub(crate) use open_files::OpenFiles;
 pub(crate) use image::Image;
 pub(crate) use status::Status;
+pub(crate) use job::OpenJob;
 
 use std::path::Path;
+
+/// 画像の寸法の状態
+/// * `Pending` - まだ読んでいない
+/// * `Loading` - 読んでいる最中
+/// * `Ready` - 読めた
+/// * `Unavailable` - 読めなかった
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Dimensions {
+    Pending,
+    Loading,
+    Ready(u32, u32),
+    Unavailable,
+}
 
 /// 読み込める拡張子
 /// * `return` - 読み込める拡張子

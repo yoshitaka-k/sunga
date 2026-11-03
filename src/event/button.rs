@@ -1,8 +1,8 @@
 use crate::{error, file, resize, state};
 
 /// 開いているファイルをクリア
-/// * `ui` - UI
 /// * `files` - 開いているファイル
+/// * `resize_job` - リサイズジョブ
 pub(crate) fn cancel_and_clear_files(
     files: &mut file::OpenFiles,
     resize_job: &mut resize::ResizeJob,

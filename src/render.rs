@@ -66,6 +66,7 @@ impl Render {
 
         // ジョブを作成
         let jobs = state::Jobs {
+            open_job: file::OpenJob::new(cc.egui_ctx.clone()),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
             update_job: update::UpdateJob::new(cc.egui_ctx.clone()),
         };
@@ -103,6 +104,9 @@ impl eframe::App for Render {
         // 待機中のアクションを処理
         self.process_pending_actions(ui);
 
+        // ファイルオープンジョブを実行
+        self.jobs.open_job.run(&mut self.state.files);
+
         // リサイズジョブを実行
         self.jobs.resize_job.run(&self.state.config, &mut self.state.files);
 
@@ -123,6 +127,9 @@ impl Render {
     fn jobs_result(&mut self) {
         // 待機中かリサイズ中かどうかをチェック
         let was_busy = self.state.files.has_standby() || self.state.files.has_resizing();
+
+        // ファイルオープン結果を受信
+        self.jobs.open_job.result(&mut self.state.files);
 
         // リサイズ結果を受信
         self.jobs.resize_job.result(&mut self.state.files);

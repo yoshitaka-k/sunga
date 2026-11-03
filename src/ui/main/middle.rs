@@ -146,9 +146,12 @@ pub(crate) fn view(
                                 ui.set_min_width(ui.available_width() * main::LIST_NAME_MIN_RATIO);
 
                                 let mut label = image.file_name().as_ref().to_string();
-                                if let Some((width, height)) = image.dimensions() {
+
+                                // 元の画像の寸法を追加表示
+                                if let file::Dimensions::Ready(width, height) = image.dimensions() {
                                     label = format!("{} ({}x{})", label, width, height);
                                 }
+
                                 ui.add(egui::Label::new(label).truncate());
                             });
                         });

@@ -207,10 +207,18 @@ impl OpenFiles {
         self.images.iter().any(|f| f.is_error())
     }
 
-    /// 待機中のファイルを1件取得
-    /// * `return` - 待機中のファイル1件
+    /// 寸法を読み込んでないファイルを1件取得
+    /// * `return` - 寸法を読み込んでないファイル1件
+    pub fn get_pending_file(&mut self) -> Option<&mut file::Image> {
+        self.images.iter_mut().find(|f| f.is_pending())
+    }
+
+    /// 読み終わっている待機中のファイルを1件取得
+    /// * `return` - 読み終わっている待機中のファイル1件
     pub fn get_standby_file(&mut self) -> Option<&mut file::Image> {
-        self.images.iter_mut().find(|f| f.is_standby())
+        self.images.iter_mut().find(|f| {
+            !f.is_pending_or_loading() && f.is_standby()
+        })
     }
 
     /// 選択されたファイルのインデックスを1増やす
@@ -265,6 +273,14 @@ impl OpenFiles {
             && image.is_standby_or_resizing()
         {
             image.set_status(file::Status::Canceled);
+        }
+    }
+
+    /// 寸法読み込み結果を反映
+    /// * `result` - 寸法読み込み結果
+    pub fn apply_dimensions_result(&mut self, result: file::Image) {
+        if let Some(image) = self.images.iter_mut().find(|f| f.id() == result.id()) {
+            image.set_dimensions(*result.dimensions());
         }
     }
 
