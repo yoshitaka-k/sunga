@@ -7,8 +7,8 @@ use crate::{config, file};
 /// * `open_files` - 開いているファイル
 pub(crate) fn file(
     config: &config::Config,
-    label: &str,
     open_files: &mut file::OpenFiles,
+    label: &str,
 ) {
     let extensions = file::allowed_extensions();
 
@@ -29,8 +29,8 @@ pub(crate) fn file(
 /// * `open_files` - 開いているファイル
 pub(crate) fn folder(
     config: &config::Config,
-    label: &str,
     open_files: &mut file::OpenFiles,
+    label: &str,
 ) {
     let extensions = file::allowed_extensions();
 
@@ -57,7 +57,7 @@ pub(crate) fn folder(
 /// * `config` - 設定
 /// * `open_files` - 開いているファイル
 /// * `files` - ドロップされたファイルのパス
-pub(crate) fn drop_open(
+pub(crate) fn drop(
     ctx: &egui::Context,
     config: &config::Config,
     open_files: &mut file::OpenFiles,
