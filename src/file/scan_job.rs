@@ -1,9 +1,13 @@
 use std::fs;
 use std::sync::{mpsc, Arc};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::path::{Path, PathBuf};
-use std::panic::{catch_unwind, AssertUnwindSafe};
 use crate::{config, file};
+
+// ジョブの世代の初期値
+const GENERATION_INIT: u64 = 0;
+// ジョブの世代の加算数
+const GENERATION_STEP: u64 = 1;
 
 /// ファイルスキャンジョブ
 pub(crate) struct ScanJob {
@@ -11,12 +15,12 @@ pub(crate) struct ScanJob {
     ctx: egui::Context,
 
     /// ジョブ結果を送信するチャネル
-    result_tx: mpsc::Sender<file::ScanResult>,
+    result_tx: mpsc::Sender<(u64, file::ScanResult)>,
     /// ジョブ結果を受信するチャネル
-    result_rx: mpsc::Receiver<file::ScanResult>,
+    result_rx: mpsc::Receiver<(u64, file::ScanResult)>,
 
-    /// ジョブ実行フラグ
-    running: Arc<AtomicBool>,
+    /// ジョブ実行世代
+    generation: Arc<AtomicU64>,
 }
 
 impl ScanJob {
@@ -29,7 +33,7 @@ impl ScanJob {
             ctx,
             result_tx,
             result_rx,
-            running: Arc::new(AtomicBool::new(false)),
+            generation: Arc::new(AtomicU64::new(GENERATION_INIT)),
         }
     }
 
@@ -37,23 +41,21 @@ impl ScanJob {
     /// * `paths` - ファイルパス
     pub fn run(&self, paths: Vec<PathBuf>) {
         if paths.is_empty() { return; }
-        self.running.store(true, Ordering::Relaxed);
 
         // スキャントークンを作成
         let token = file::ScanToken {
             ctx: self.ctx.clone(),
             result_tx: self.result_tx.clone(),
-            running: self.running.clone(),
+            generation: self.generation.load(Ordering::Relaxed),
+            current: Arc::clone(&self.generation),
         };
 
         // スキャンを実行
         std::thread::spawn(move || {
             // ファイルを検索
             for path in paths {
-                let _ = catch_unwind(AssertUnwindSafe(|| {
-                    let base_dir = path.parent().unwrap_or(&path);
-                    find_file(&token, &path, base_dir)
-                }));
+                let base_dir = path.parent().unwrap_or(&path);
+                find_file(&token, &path, base_dir)
             }
         });
     }
@@ -61,7 +63,9 @@ impl ScanJob {
     /// ジョブ結果を受信
     pub fn result(&self, config: &config::Config, files: &mut file::OpenFiles) {
         // ジョブ結果を受信
-        while let Ok(result) = self.result_rx.try_recv() {
+        while let Ok((generation, result)) = self.result_rx.try_recv() {
+            if generation != self.generation.load(Ordering::Relaxed) { continue; }
+
             // ジョブ結果を反映
             files.scan_result(config, result);
         }
@@ -69,7 +73,8 @@ impl ScanJob {
 
     /// ジョブをキャンセル
     pub fn stop_running(&self) {
-        self.running.store(false, Ordering::Release);
+        // ジョブ実行世代を更新
+        self.generation.fetch_add(GENERATION_STEP, Ordering::Relaxed);
     }
 }
 
@@ -90,7 +95,7 @@ fn error_file(
         error,
     };
 
-    let _ = token.result_tx.send(result);
+    let _ = token.result_tx.send((token.generation, result));
 
     // 再描画を要求
     token.ctx.request_repaint();
@@ -122,7 +127,7 @@ fn find_file(
                 base_dir: base_dir.to_path_buf()
             };
 
-            let _ = token.result_tx.send(result);
+            let _ = token.result_tx.send((token.generation, result));
 
             // 再描画を要求
             token.ctx.request_repaint();
