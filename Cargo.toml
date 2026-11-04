@@ -7,6 +7,9 @@ authors = ["yoshitaka-k"]
 repository = "yoshitaka-k/sunga"
 license = "Apache-2.0"
 
+[lints.rust]
+linker_messages = "allow"
+
 [profile.dev.package."*"]
 debug = false
 
