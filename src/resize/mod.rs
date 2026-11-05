@@ -109,7 +109,8 @@ impl Target {
 }
 
 /// リサイズオプション
-/// * `target` - リサイズの対象
+/// * `target` - リサイズの対象（サイズ指定・倍率指定）
+/// * `filter` - 画像のフィルター種類
 pub(crate) struct Options {
     pub target: Target,
     pub filter: Filter,
