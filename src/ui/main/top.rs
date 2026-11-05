@@ -21,11 +21,11 @@ pub(crate) fn view(
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
                 ui.label(format!("{}: ", lang::current().main_top.header_resize));
 
-                match state.config.resize_mode() {
-                    resize::Mode::Size => {
+                match state.config.target_kind() {
+                    resize::TargetKind::Size => {
                         ui.label(format!("{}: {}x{} pixels", lang::current().main_top.header_sized, state.config.width(), state.config.height()));
                     }
-                    resize::Mode::Scale => {
+                    resize::TargetKind::Scale => {
                         ui.label(format!("{}: {}% ", lang::current().main_top.header_scale, state.config.scale()));
                     }
                 }

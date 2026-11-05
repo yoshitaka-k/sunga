@@ -25,18 +25,18 @@ pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
 pub(crate) const SCALE_RANGE_MIN: u16 = 10;
 pub(crate) const SCALE_RANGE_MAX: u16 = 200;
 
-/// リサイズの種類
+/// リサイズする時の対象の種類
 #[derive(Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
-pub(crate) enum Mode {
+pub(crate) enum TargetKind {
     Size,
     Scale,
 }
-impl Mode {
+impl TargetKind {
     pub fn is_size(&self) -> bool {
-        matches!(self, Mode::Size)
+        matches!(self, TargetKind::Size)
     }
     pub fn is_scale(&self) -> bool {
-        matches!(self, Mode::Scale)
+        matches!(self, TargetKind::Scale)
     }
 }
 

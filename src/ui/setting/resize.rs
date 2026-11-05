@@ -13,10 +13,10 @@ pub(crate) fn view(
     // サイズリサイズモードのヘッダーパネルを表示
     ui.horizontal(|ui| {
         ui.add_space(setting::RESIZE_INDENT_SPACING);
-        ui.radio_value(config.resize_mode_mut(), resize::Mode::Size, lang::current().setting_resize.header_sized);
+        ui.radio_value(config.target_kind_mut(), resize::TargetKind::Size, lang::current().setting_resize.header_sized);
 
         ui.add_space(setting::RESIZE_INDENT_SPACING);
-        ui.radio_value(config.resize_mode_mut(), resize::Mode::Scale, lang::current().setting_resize.header_scale);
+        ui.radio_value(config.target_kind_mut(), resize::TargetKind::Scale, lang::current().setting_resize.header_scale);
     });
 
     // サイズリサイズモードのフレームを表示
@@ -24,7 +24,7 @@ pub(crate) fn view(
         ui.take_available_width();
 
         // サイズリサイズモードのサイズを表示
-        ui.add_enabled_ui(config.resize_mode().is_size(), |ui| {
+        ui.add_enabled_ui(config.target_kind().is_size(), |ui| {
             ui.horizontal(|ui| {
                 ui::add_label(ui, lang::current().setting_resize.width, setting::RESIZE_LABEL_WIDTH);
                 ui.add(
@@ -51,7 +51,7 @@ pub(crate) fn view(
         ui.separator();
 
         // サイズリサイズモードの倍率を表示
-        ui.add_enabled_ui(config.resize_mode().is_scale(), |ui| {
+        ui.add_enabled_ui(config.target_kind().is_scale(), |ui| {
             ui.horizontal(|ui| {
                 ui::add_label(ui, lang::current().setting_resize.scale, setting::RESIZE_LABEL_WIDTH);
                 ui.add(

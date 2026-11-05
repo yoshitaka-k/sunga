@@ -21,7 +21,7 @@ pub struct Config {
     scale: u16,
 
     /// リサイズの種類
-    resize_mode: resize::Mode,
+    target_kind: resize::TargetKind,
 
     /// 画像のフィルター種類
     filter: resize::Filter,
@@ -56,7 +56,7 @@ impl Default for Config {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
-            resize_mode: resize::Mode::Size,
+            target_kind: resize::TargetKind::Size,
             filter: resize::Filter::Lanczos3,
             concurrent_num: DEFAULT_CONCURRENT_NUM,
             output_path: "".to_string(),
@@ -79,9 +79,9 @@ impl Config {
     /// リサイズの対象を取得
     /// * `return` - リサイズの対象
     pub(crate) fn resize_target(&self) -> resize::Target {
-        match *self.resize_mode() {
-            resize::Mode::Size => resize::Target::Size { width: *self.width(), height: *self.height() },
-            resize::Mode::Scale => resize::Target::Scale(*self.scale()),
+        match *self.target_kind() {
+            resize::TargetKind::Size => resize::Target::Size { width: *self.width(), height: *self.height() },
+            resize::TargetKind::Scale => resize::Target::Scale(*self.scale()),
         }
     }
 }
