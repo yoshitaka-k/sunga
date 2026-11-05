@@ -84,18 +84,18 @@ impl ResizeJob {
                     image.resize(&config, Arc::clone(&running), Arc::clone(&canceled))
                 }));
 
-                // パニックが発生した場合は、エラーを設定
-                if let Err(payload) = result {
-                    let message = if let Some(error) = payload.downcast_ref::<&str>() {
-                        error
-                    } else if let Some(error) = payload.downcast_ref::<String>() {
-                        error
-                    } else {
-                        "Unknown error"
-                    };
+                let status = match result {
+                    Ok(Ok(status)) => status,
+                    Ok(Err(e)) => file::Status::Error(e.to_string()),
+                    Err(payload) => {
+                        let message = payload.downcast_ref::<&str>().map(|s| s.to_string())
+                            .or_else(|| payload.downcast_ref::<String>().cloned())
+                            .unwrap_or_else(|| "Unknown error".to_string());
+                        file::Status::Error(message)
+                    }
+                };
 
-                    image.set_status(file::Status::Error(message.to_string()));
-                }
+                image.set_status(status);
 
                 // ジョブ結果を送信
                 let _ = result_tx.send(image);

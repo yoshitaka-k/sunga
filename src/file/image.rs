@@ -166,7 +166,6 @@ impl Image {
 
         // 範囲外の場合はエラーメッセージを取得
         if let Some(msg) = options.target.validate() {
-            self.status = file::Status::Error(msg.clone());
             return Err(error::SungaError::resize_error(msg, self.path.clone()));
         }
 
@@ -185,25 +184,15 @@ impl Image {
         };
 
         // リサイズを実行
-        match resize::Resize::execute(&self.path, &output_path, &options, &token) {
-            Ok(status) => {
-                if matches!(status, file::Status::Resized) {
-                        // 処理時間を計算
-                        self.duration = start_time.elapsed().as_millis() as u64;
-                        // 新しい画像の寸法を設定
-                        self.resized_dimensions = open_dimensions(&output_path);
-                }
+        let status = resize::Resize::execute(&self.path, &output_path, &options, &token)?;
+        if matches!(status, file::Status::Resized) {
+            // 処理時間を計算
+            self.duration = start_time.elapsed().as_millis() as u64;
+            // 新しい画像の寸法を設定
+            self.resized_dimensions = open_dimensions(&output_path);
+        }
 
-                // ステータスをリサイズ済みに設定
-                self.status = status;
-            }
-            Err(e) => {
-                self.status = file::Status::Error(e.to_string());
-                return Err(e);
-            }
-        };
-
-        Ok(self.status.clone())
+        Ok(status)
     }
 }
 
