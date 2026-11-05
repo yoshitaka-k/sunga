@@ -26,6 +26,8 @@ pub(crate) const SCALE_RANGE_MIN: u16 = 10;
 pub(crate) const SCALE_RANGE_MAX: u16 = 200;
 
 /// リサイズする時の対象の種類
+/// * `Size` - サイズ指定
+/// * `Scale` - 倍率指定
 #[derive(Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 pub(crate) enum TargetKind {
     Size,
