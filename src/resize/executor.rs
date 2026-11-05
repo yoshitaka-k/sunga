@@ -67,23 +67,32 @@ impl Resize {
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
 
-        // リサイズを実行
-        let resized = Self::resize(&image, options);
+        // 画像のサイズが同じかどうかを判定
+        if Self::is_same_size(&image, options) {
+            // 出力ファイルが存在しない場合は作成、エラーが発生した場合はエラーを返す
+            match output_path.try_exists() {
+                Ok(true) => (),
+                Ok(false) => {
+                    Self::make_output_path(output_path)?;
 
-        // 同じサイズの場合はスキップ
-        if resized.width() == image.width() && resized.height() == image.height() {
-            // 出力ファイルが存在しない場合は作成
-            if path != output_path && !output_path.exists() {
-                // 出力パスを作成
-                Self::make_output_path(output_path)?;
-
-                // ファイルをコピー
-                std::fs::copy(path, output_path).map_err(|e| {
-                    error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
-                })?;
+                    // ファイルをコピー
+                    std::fs::copy(path, output_path).map_err(|e| {
+                        error::SungaError::resize_error(e.to_string(), output_path.to_path_buf())
+                    })?;
+                }
+                Err(e) => {
+                    return Err(error::SungaError::resize_error(e.to_string(), output_path.to_path_buf()));
+                }
             }
+
             return Ok(file::Status::Unchanged);
         }
+
+        // キャンセルされた場合は処理を中断
+        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+
+        // リサイズを実行
+        let resized = Self::resize(&image, options);
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(file::Status::Canceled); }
@@ -158,6 +167,25 @@ impl Resize {
 
         // 画像をリサイズ
         image.resize(width, height, filter)
+    }
+
+    /// 画像のサイズが同じかどうかを判定
+    /// * `image` - 画像
+    /// * `options` - リサイズオプション
+    /// * `return` - 画像のサイズが同じかどうか
+    fn is_same_size(image: &DynamicImage, options: &resize::Options) -> bool {
+        let (orig_width, orig_height) = image.dimensions();
+
+        let (width, height) = match options.target {
+            resize::Target::Size { width, height } => (width, height),
+            resize::Target::Scale(scale) => {
+                (
+                    (orig_width as f32 * (scale as f32 / 100.0)) as u32,
+                    (orig_height as f32 * (scale as f32 / 100.0)) as u32,
+                )
+            }
+        };
+        image.width() == width && image.height() == height
     }
 
     /// 出力パスを作成
