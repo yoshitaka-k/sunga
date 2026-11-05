@@ -144,17 +144,8 @@ impl Resize {
     /// * `options` - リサイズオプション
     /// * `return` - リサイズした画像
     fn resize(image: &DynamicImage, options: &resize::Options) -> DynamicImage {
-        let (orig_width, orig_height) = image.dimensions();
-
-        let (width, height) = match options.target {
-            resize::Target::Size { width, height } => (width, height),
-            resize::Target::Scale(scale) => {
-                (
-                    (orig_width as f32 * (scale as f32 / 100.0)) as u32,
-                    (orig_height as f32 * (scale as f32 / 100.0)) as u32,
-                )
-            }
-        };
+        // リサイズ後のサイズを計算
+        let (width, height) = Self::calculate_resized_size(image, options);
 
         // 画像のフィルター種類を取得
         let filter = match options.filter {
@@ -166,7 +157,7 @@ impl Resize {
         };
 
         // 画像をリサイズ
-        image.resize(width, height, filter)
+        image.resize_exact(width, height, filter)
     }
 
     /// 画像のサイズが同じかどうかを判定
@@ -174,18 +165,60 @@ impl Resize {
     /// * `options` - リサイズオプション
     /// * `return` - 画像のサイズが同じかどうか
     fn is_same_size(image: &DynamicImage, options: &resize::Options) -> bool {
+        // リサイズ後のサイズを計算
+        let (width, height) = Self::calculate_resized_size(image, options);
+
+        image.width() == width && image.height() == height
+    }
+
+    /// リサイズ後のサイズを計算
+    /// * `image` - 元の画像
+    /// * `options` - リサイズオプション
+    /// * `return` - リサイズ後のサイズ
+    fn calculate_resized_size(image: &DynamicImage, options: &resize::Options) -> (u32, u32) {
         let (orig_width, orig_height) = image.dimensions();
 
-        let (width, height) = match options.target {
-            resize::Target::Size { width, height } => (width, height),
-            resize::Target::Scale(scale) => {
-                (
-                    (orig_width as f32 * (scale as f32 / 100.0)) as u32,
-                    (orig_height as f32 * (scale as f32 / 100.0)) as u32,
-                )
+        match options.target {
+            resize::Target::Size { width, height } => {
+                Self::calculate_size((orig_width, orig_height), (width, height))
             }
-        };
-        image.width() == width && image.height() == height
+            resize::Target::Scale(scale) => {
+                let (width, height) = Self::calculate_scale((orig_width, orig_height), scale);
+                Self::calculate_size((orig_width, orig_height), (width, height))
+            }
+        }
+    }
+
+    /// 画像のサイズを計算
+    /// * `image_size` - 画像のサイズ
+    /// * `target_size` - リサイズ後のサイズ
+    /// * `return` - リサイズ後のサイズ
+    fn calculate_size(image_size: (u32, u32), target_size: (u32, u32)) -> (u32, u32) {
+        let (image_width, image_height) = image_size;
+        let (target_width, target_height) = target_size;
+
+        // 比率を計算
+        let ratio = (target_width as f64 / image_width as f64).min(target_height as f64 / image_height as f64);
+
+        // 幅と高さを計算
+        let width = (image_width as f64 * ratio).round().max(1.0) as u32;
+        let height = (image_height as f64 * ratio).round().max(1.0) as u32;
+
+        (width, height)
+    }
+
+    /// スケールを計算
+    /// * `image_size` - 画像のサイズ
+    /// * `scale` - スケール
+    /// * `return` - スケールしたサイズ
+    fn calculate_scale(image_size: (u32, u32), scale: u16) -> (u32, u32) {
+        let (image_width, image_height) = image_size;
+
+        // 幅と高さを計算
+        let width = (image_width as f64 * scale as f64 / 100.0).round().max(1.0) as u32;
+        let height = (image_height as f64 * scale as f64 / 100.0).round().max(1.0) as u32;
+
+        (width, height)
     }
 
     /// 出力パスを作成
