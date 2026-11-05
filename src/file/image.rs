@@ -184,50 +184,26 @@ impl Image {
             canceled: canceled.clone(),
         };
 
-        // ステータスをリサイズ中に設定
-        self.status = file::Status::Resizing;
-
+        // リサイズを実行
         match resize::Resize::execute(&self.path, &output_path, &options, &token) {
             Ok(status) => {
-                match status {
-                    file::Status::Resized => {
-                        // 処理終了時間を取得
-                        let end_time = std::time::Instant::now();
+                if matches!(status, file::Status::Resized) {
                         // 処理時間を計算
-                        let duration = end_time.duration_since(start_time).as_millis();
-                        self.duration = duration as u64;
-
+                        self.duration = start_time.elapsed().as_millis() as u64;
                         // 新しい画像の寸法を設定
                         self.resized_dimensions = open_dimensions(&output_path);
-
-                        // ステータスをリサイズ済みに設定
-                        self.status = file::Status::Resized;
-                        Ok(self.status.clone())
-                    }
-                    file::Status::Unchanged => {
-                        self.status = file::Status::Unchanged;
-                        Ok(self.status.clone())
-                    }
-                    file::Status::Skipped => {
-                        self.status = file::Status::Skipped;
-                        Ok(self.status.clone())
-                    }
-                    file::Status::Canceled => {
-                        self.status = file::Status::Canceled;
-                        Ok(self.status.clone())
-                    }
-                    file::Status::Error(e) => {
-                        self.status = file::Status::Error(e.clone());
-                        Err(error::SungaError::resize_error(e.to_string(), self.path.clone()))
-                    }
-                    _ => Ok(self.status.clone())
                 }
+
+                // ステータスをリサイズ済みに設定
+                self.status = status;
             }
             Err(e) => {
                 self.status = file::Status::Error(e.to_string());
-                Err(error::SungaError::resize_error(e.to_string(), self.path.clone()))
+                return Err(e);
             }
-        }
+        };
+
+        Ok(self.status.clone())
     }
 }
 
