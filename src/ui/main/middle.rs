@@ -68,7 +68,7 @@ pub(crate) fn view(
             // ファイルがない場合はアップロードノートを表示
             if visibles.is_empty() {
                 ui.horizontal(|ui| {
-                    ui.add(main::icon_widget(svg::UPLOAD_FILE, icon::MIDDLE_LIST_ICON_SIZE, assets::list_empty_color(ui)));
+                    ui.add(main::icon_widget(svg::UPLOAD_FILE, icon::EMPTY_ICON_SIZE, assets::list_empty_color(ui)));
                     ui.label(assets::text_color(lang::current().main_middle.upload_note, assets::list_empty_color(ui), None));
                 });
             }
