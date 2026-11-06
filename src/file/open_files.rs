@@ -212,47 +212,28 @@ impl OpenFiles {
     }
 
     /// 選択されたファイルのインデックスを1増やす
-    /// * `return` - 選択されたファイルのインデックス
-    pub fn index_add(&mut self) -> Option<usize> {
-        if let Some(index) = self.selected_index {
-            if !self.images.is_empty() {
-                if index < self.images.len() - 1 {
-                    self.selected_index = Some(index + 1);
-                } else if !self.images.is_empty() {
-                    self.selected_index = Some(self.images.len() - 1);
-                } else {
-                    self.selected_index = Some(0);
-                }
-            } else {
-                self.selected_index = Some(0);
-            }
-        }
+    pub fn index_add(&mut self) {
+        let selected = self.selected_index.map(|i| {
+            let last = self.images.len().saturating_sub(1);
+            (i + 1).min(last)
+        });
 
-        self.selected_index
+        self.selected_index = selected;
     }
 
     /// 選択されたファイルのインデックスを1減らす
-    /// * `return` - 選択されたファイルのインデックス
-    pub fn index_sub(&mut self) -> Option<usize> {
-        if let Some(index) = self.selected_index {
-            if index > 0 {
-                self.selected_index = Some(index - 1);
-            } else {
-                self.selected_index = Some(0);
-            }
-        }
+    pub fn index_sub(&mut self) {
+        let selected = self.selected_index.map(|i| {
+            i.saturating_sub(1)
+        });
 
-        self.selected_index
+        self.selected_index = selected;
     }
 
     /// 選択されたファイルを取得
     /// * `return` - 選択されたファイル
     pub fn selected_image(&self) -> Option<&file::Image> {
-        if let Some(index) = self.selected_index {
-            self.images.get(index)
-        } else {
-            None
-        }
+        self.selected_index.and_then(|index| self.images.get(index))
     }
 
     /// キャンセルされたファイルのステータスを更新
