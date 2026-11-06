@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use std::sync::atomic::{AtomicU64, Ordering, AtomicBool};
 use std::collections::HashSet;
 use getset::{Getters, Setters};
-use crate::{config, error, file, resize};
+use crate::{error, file, resize};
 
 /// Image の一意 ID を発行する
 const COUNT_UP: u64 = 1;
@@ -132,24 +132,26 @@ impl Image {
     }
 
     /// 出力先を作成
-    /// * `config` - 設定
+    /// * `output_path` - 出力先
     /// * `return` - 出力先
-    pub fn make_output_path(&self, config: &config::Config) -> PathBuf {
-        if config.output_path().is_empty() {
+    pub fn make_output_path(&self, output_path: &str) -> PathBuf {
+        if output_path.is_empty() {
             self.path.clone()
         } else {
-            PathBuf::from(config.output_path()).join(self.relative_path.clone())
+            PathBuf::from(output_path).join(self.relative_path.clone())
         }
     }
 
     /// ファイルをリサイズ
-    /// * `config` - 設定
+    /// * `output_path` - 出力先のパス
+    /// * `options` - リサイズオプション
     /// * `running` - リサイズ実行中フラグ
     /// * `canceled` - リサイズキャンセルフラグ
     /// * `return` - リサイズステータス
     pub fn resize(
         &mut self,
-        config: &config::Config,
+        output_path: &str,
+        options: &resize::Options,
         running: Arc<AtomicBool>,
         canceled: Arc<Mutex<HashSet<u64>>>,
     ) -> error::Result<file::Status> {
@@ -158,33 +160,22 @@ impl Image {
             return Ok(self.status.clone());
         }
 
-        // リサイズオプション
-        let options = resize::Options {
-            target: config.resize_target(),
-            filter: *config.filter(),
-        };
-
-        // 範囲外の場合はエラーメッセージを取得
-        if let Some(msg) = options.target.validate() {
-            return Err(error::SungaError::resize_error(msg, self.path.clone()));
-        }
-
         // 処理開始時間を取得
         let start_time = std::time::Instant::now();
 
         // 出力先
-        let output_path = self.make_output_path(config);
+        let output_path = self.make_output_path(output_path);
         self.output_path = Some(output_path.clone());
 
         // リサイズトークン
         let token = resize::Token {
             id: self.id,
-            running: running.clone(),
-            canceled: canceled.clone(),
+            running,
+            canceled,
         };
 
         // リサイズを実行
-        let status = resize::Resize::execute(&self.path, &output_path, &options, &token)?;
+        let status = resize::Resize::execute(&self.path, &output_path, options, &token)?;
         if matches!(status, file::Status::Resized) {
             // 処理時間を計算
             self.duration = start_time.elapsed().as_millis() as u64;

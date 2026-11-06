@@ -81,6 +81,7 @@ pub(crate) fn filter_iter() -> impl Iterator<Item = Filter> {
 /// リサイズの対象
 /// * `Size` - 幅と高さ
 /// * `Scale` - 倍率
+#[derive(Clone)]
 pub(crate) enum Target {
     Size { width: u32, height: u32 },
     Scale(u16),

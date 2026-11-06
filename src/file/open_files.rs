@@ -285,7 +285,7 @@ impl OpenFiles {
                 let mut image = file::Image::new(path.to_path_buf(), relative_path, is_in_folder);
 
                 // 出力パスを作成
-                let output_path = image.make_output_path(config);
+                let output_path = image.make_output_path(&config.output_path());
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
                 if self.is_standby_or_resizing(&path) {

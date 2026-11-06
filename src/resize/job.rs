@@ -3,7 +3,7 @@ use std::sync::{mpsc, Mutex};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::collections::HashSet;
 use std::panic::{catch_unwind, AssertUnwindSafe};
-use crate::{config, error, file};
+use crate::{config, error, file, resize};
 
 // ジョブ実行中のカウント数
 const RUNNING_COUNT_NUM: usize = 1;
@@ -51,6 +51,21 @@ impl ResizeJob {
         // ファイルがない場合は、ジョブを行わない
         if files.is_empty() { return; }
 
+        // リサイズオプション
+        let options = resize::Options {
+            direction: *config.direction(),
+            target: config.resize_target(),
+            filter: *config.filter(),
+        };
+
+        // 設定されている値が範囲外の場合はエラーメッセージを表示して終了
+        if let Some(msg) = options.target.validate() {
+            while let Some(image) = files.get_standby_file() {
+                image.set_status(file::Status::Error(msg.clone()));
+            }
+            return;
+        }
+
         // 待機中のファイルがあったら、ジョブを開始
         if files.has_standby() {
             self.running.store(true, Ordering::Relaxed);
@@ -66,11 +81,12 @@ impl ResizeJob {
             let mut image = image.clone();
 
             // そのほかもクローン
-            let config = config.clone();
+            let output_path = config.output_path().clone();
+            let options = options.clone();
             let ctx = self.ctx.clone();
             let result_tx = self.result_tx.clone();
-            let running = self.running.clone();
-            let canceled = self.canceled.clone();
+            let running = Arc::clone(&self.running);
+            let canceled = Arc::clone(&self.canceled);
 
             // ジョブ実行中のカウントを追加してクローン
             self.running_count.fetch_add(RUNNING_COUNT_NUM, Ordering::Relaxed);
@@ -81,7 +97,12 @@ impl ResizeJob {
                 // ジョブ中のパニックをキャッチ
                 let result = catch_unwind(AssertUnwindSafe(|| {
                     // ジョブを実行
-                    image.resize(&config, Arc::clone(&running), Arc::clone(&canceled))
+                    image.resize(
+                        &output_path,
+                        &options,
+                        running,
+                        canceled,
+                    )
                 }));
 
                 let status = match result {
