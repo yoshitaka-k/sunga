@@ -126,6 +126,7 @@ impl Target {
 /// * `filter` - 画像のフィルター種類
 #[derive(Clone)]
 pub(crate) struct Options {
+    #[expect(dead_code, reason = "拡大・縮小の切り替えは実装予定")]
     pub direction: Direction,
     pub target: Target,
     pub filter: Filter,
