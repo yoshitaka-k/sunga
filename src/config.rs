@@ -4,25 +4,33 @@ use crate::{resize, ui};
 
 /// デフォルトの幅
 const DEFAULT_WIDTH: u32 = 2560;
+/// デフォルトの高さ
 const DEFAULT_HEIGHT: u32 = 1440;
+/// デフォルトの倍率
 const DEFAULT_SCALE: u16 = 100;
+/// デフォルトの並行処理数
 const DEFAULT_CONCURRENT_NUM: u8 = 4;
+/// デフォルトの効果音の音量
 const DEFAULT_SOUND_VOLUME: u8 = 5;
 
-/// サイズの範囲
+/// サイズの範囲：最小値
 pub(crate) const SIZED_RANGE_MIN: u32 = 10;
+/// サイズの範囲：最大値
 pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
 
-/// 倍率の範囲
+/// 倍率の範囲：最小値
 pub(crate) const SCALE_RANGE_MIN: u16 = 10;
+/// 倍率の範囲：最大値
 pub(crate) const SCALE_RANGE_MAX: u16 = 200;
 
-// 並行処理数のスライダーの最小値と最大値
+/// 並行処理数の範囲：最小値
 pub(crate) const CONCURRENT_NUM_MIN: u8 = 1;
+/// 並行処理数の範囲：最大値
 pub(crate) const CONCURRENT_NUM_MAX: u8 = 8;
 
-// 効果音の音量のスライダーの最小値と最大値
+/// 効果音の音量の範囲：最小値
 pub(crate) const SOUND_VOLUME_MIN: u8 = 1;
+/// 効果音の音量の範囲：最大値
 pub(crate) const SOUND_VOLUME_MAX: u8 = 10;
 
 /// アプリケーションの設定
