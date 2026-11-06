@@ -25,6 +25,17 @@ pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
 pub(crate) const SCALE_RANGE_MIN: u16 = 10;
 pub(crate) const SCALE_RANGE_MAX: u16 = 200;
 
+/// リサイズの種類（拡大・縮小・両方）
+/// * `Enlarge` - 拡大
+/// * `Shrink` - 縮小
+/// * `Both` - 両方
+#[derive(Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+pub(crate) enum Direction {
+    Enlarge,
+    Shrink,
+    Both,
+}
+
 /// リサイズする時の対象の種類
 /// * `Size` - サイズ指定
 /// * `Scale` - 倍率指定
@@ -110,9 +121,12 @@ impl Target {
 }
 
 /// リサイズオプション
+/// * `direction` - リサイズの方向（拡大・縮小・両方）
 /// * `target` - リサイズの対象（サイズ指定・倍率指定）
 /// * `filter` - 画像のフィルター種類
+#[derive(Clone)]
 pub(crate) struct Options {
+    pub direction: Direction,
     pub target: Target,
     pub filter: Filter,
 }

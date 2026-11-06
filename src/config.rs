@@ -20,6 +20,9 @@ pub struct Config {
     /// リサイズする倍率
     scale: u16,
 
+    /// リサイズの方向
+    direction: resize::Direction,
+
     /// リサイズの種類
     target_kind: resize::TargetKind,
 
@@ -56,6 +59,7 @@ impl Default for Config {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             scale: DEFAULT_SCALE,
+            direction: resize::Direction::Both,
             target_kind: resize::TargetKind::Size,
             filter: resize::Filter::Lanczos3,
             concurrent_num: DEFAULT_CONCURRENT_NUM,
