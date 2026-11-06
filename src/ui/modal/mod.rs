@@ -3,15 +3,6 @@ mod updated;
 pub(crate) use error::error;
 pub(crate) use updated::updated;
 
-// モーダルのウィンドウの幅
-const MODAL_WINDOW_WIDTH: f32 = 300.0;
-
-// モーダルのウィンドウのスペース
-const MODAL_WINDOW_SPACING: f32 = 8.0;
-
-// モーダルのラベルの幅
-const MODAL_LABEL_WIDTH: f32 = 130.0;
-
 /// 見出し横のアイコン
 /// * `icon` - アイコン
 /// * `size` - アイコンのサイズ

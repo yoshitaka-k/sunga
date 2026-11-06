@@ -1,5 +1,5 @@
-use crate::{config, lang};
-use crate::ui::{self, setting};
+use crate::{config, lang, ui};
+use crate::ui::setting;
 
 /// 設定の出力設定を表示する
 pub(crate) fn view(
@@ -14,7 +14,7 @@ pub(crate) fn view(
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_output.path, setting::GENERAL_PATH_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_output.path, ui::GENERAL_PATH_LABEL_WIDTH);
             ui.add(
                 egui::TextEdit::singleline(config.output_path_mut())
                     .desired_width(ui.available_width())
@@ -22,7 +22,7 @@ pub(crate) fn view(
             );
         });
         ui.horizontal(|ui| {
-            ui.add_space(setting::GENERAL_PATH_LABEL_WIDTH + ui.spacing().item_spacing.x);
+            ui.add_space(ui::GENERAL_PATH_LABEL_WIDTH + ui.spacing().item_spacing.x);
             if ui.button(lang::current().setting_output.browse).clicked()
                 && let Some(path) = rfd::FileDialog::new().pick_folder()
             {
@@ -36,13 +36,13 @@ pub(crate) fn view(
         // 出力パスの注意書きを表示
         setting::warning_note(ui, lang::current().setting_output.output_warning_note, None);
 
-        ui.add_space(setting::ADD_SPACING);
+        ui.add_space(ui::ADD_SPACING);
         ui.separator();
-        ui.add_space(setting::ADD_SPACING);
+        ui.add_space(ui::ADD_SPACING);
 
         // 同じパスはスキップ
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_output.skip_same_path, setting::GENERAL_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_output.skip_same_path, ui::GENERAL_LABEL_WIDTH);
             ui.radio_value(config.skip_same_path_mut(), true, lang::current().setting_output.skip_same_path_option);
             ui.radio_value(config.skip_same_path_mut(), false, lang::current().setting_output.dont_skip_same_path_option);
         });

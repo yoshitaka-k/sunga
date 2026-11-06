@@ -2,11 +2,24 @@ use getset::{Getters, MutGetters};
 use serde::{Deserialize, Serialize};
 use crate::{resize, ui};
 
+/// デフォルトの幅
 const DEFAULT_WIDTH: u32 = 2560;
 const DEFAULT_HEIGHT: u32 = 1440;
 const DEFAULT_SCALE: u16 = 100;
 const DEFAULT_CONCURRENT_NUM: u8 = 4;
 const DEFAULT_SOUND_VOLUME: u8 = 5;
+
+/// サイズの範囲
+pub(crate) const SIZED_RANGE_MIN: u32 = 10;
+pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
+
+/// 倍率の範囲
+pub(crate) const SCALE_RANGE_MIN: u16 = 10;
+pub(crate) const SCALE_RANGE_MAX: u16 = 200;
+
+// 並行処理数のスライダーの最小値と最大値
+pub(crate) const CONCURRENT_NUM_MIN: u8 = 1;
+pub(crate) const CONCURRENT_NUM_MAX: u8 = 8;
 
 // 効果音の音量のスライダーの最小値と最大値
 pub(crate) const SOUND_VOLUME_MIN: u8 = 1;
@@ -91,5 +104,19 @@ impl Config {
             resize::TargetKind::Size => resize::Target::Size { width: *self.width(), height: *self.height() },
             resize::TargetKind::Scale => resize::Target::Scale(*self.scale()),
         }
+    }
+
+    /// 範囲外の値をクランプ
+    pub(crate) fn clamp_values(&mut self) {
+        let width = self.width_mut();
+        *width = (*width).clamp(SIZED_RANGE_MIN, SIZED_RANGE_MAX);
+        let height = self.height_mut();
+        *height = (*height).clamp(SIZED_RANGE_MIN, SIZED_RANGE_MAX);
+        let scale = self.scale_mut();
+        *scale = (*scale).clamp(SCALE_RANGE_MIN, SCALE_RANGE_MAX);
+        let concurrent_num = self.concurrent_num_mut();
+        *concurrent_num = (*concurrent_num).clamp(CONCURRENT_NUM_MIN, CONCURRENT_NUM_MAX);
+        let sound_volume = self.sound_volume_mut();
+        *sound_volume = (*sound_volume).clamp(SOUND_VOLUME_MIN, SOUND_VOLUME_MAX);
     }
 }

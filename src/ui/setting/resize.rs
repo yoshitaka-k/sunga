@@ -1,5 +1,5 @@
-use crate::{config, resize, lang};
-use crate::ui::{self, setting};
+use crate::{config, resize, lang, ui};
+use crate::ui::setting;
 
 const FILTER_ID_SALT: &str = "filter_combo_box";
 
@@ -12,10 +12,10 @@ pub(crate) fn view(
 ) {
     // サイズリサイズモードのヘッダーパネルを表示
     ui.horizontal(|ui| {
-        ui.add_space(setting::RESIZE_INDENT_SPACING);
+        ui.add_space(ui::RESIZE_INDENT_SPACING);
         ui.radio_value(config.target_kind_mut(), resize::TargetKind::Size, lang::current().setting_resize.header_sized);
 
-        ui.add_space(setting::RESIZE_INDENT_SPACING);
+        ui.add_space(ui::RESIZE_INDENT_SPACING);
         ui.radio_value(config.target_kind_mut(), resize::TargetKind::Scale, lang::current().setting_resize.header_scale);
     });
 
@@ -26,20 +26,20 @@ pub(crate) fn view(
         // サイズリサイズモードのサイズを表示
         ui.add_enabled_ui(config.target_kind().is_size(), |ui| {
             ui.horizontal(|ui| {
-                ui::add_label(ui, lang::current().setting_resize.width, setting::RESIZE_LABEL_WIDTH);
+                ui::add_label(ui, lang::current().setting_resize.width, ui::RESIZE_LABEL_WIDTH);
                 ui.add(
                     egui::DragValue::new(config.width_mut())
-                        .range(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX)
+                        .range(config::SIZED_RANGE_MIN..=config::SIZED_RANGE_MAX)
                         .speed(10)
                         .suffix("px"),
                 );
 
                 ui.separator();
 
-                ui::add_label(ui, lang::current().setting_resize.height, setting::RESIZE_LABEL_WIDTH);
+                ui::add_label(ui, lang::current().setting_resize.height, ui::RESIZE_LABEL_WIDTH);
                 ui.add(
                     egui::DragValue::new(config.height_mut())
-                        .range(resize::SIZED_RANGE_MIN..=resize::SIZED_RANGE_MAX)
+                        .range(config::SIZED_RANGE_MIN..=config::SIZED_RANGE_MAX)
                         .speed(10)
                         .suffix("px"),
                 );
@@ -53,10 +53,10 @@ pub(crate) fn view(
         // サイズリサイズモードの倍率を表示
         ui.add_enabled_ui(config.target_kind().is_scale(), |ui| {
             ui.horizontal(|ui| {
-                ui::add_label(ui, lang::current().setting_resize.scale, setting::RESIZE_LABEL_WIDTH);
+                ui::add_label(ui, lang::current().setting_resize.scale, ui::RESIZE_LABEL_WIDTH);
                 ui.add(
                     egui::DragValue::new(config.scale_mut())
-                        .range(resize::SCALE_RANGE_MIN..=resize::SCALE_RANGE_MAX)
+                        .range(config::SCALE_RANGE_MIN..=config::SCALE_RANGE_MAX)
                         .speed(10)
                         .suffix("%"),
                 );
@@ -64,7 +64,7 @@ pub(crate) fn view(
         });
     });
 
-    ui.add_space(setting::ADD_SPACING);
+    ui.add_space(ui::ADD_SPACING);
 
     // フィルターのヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_resize.header_filter);
@@ -74,7 +74,7 @@ pub(crate) fn view(
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_resize.filter, setting::RESIZE_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_resize.filter, ui::RESIZE_LABEL_WIDTH);
             egui::ComboBox::from_id_salt(FILTER_ID_SALT)
                 .selected_text(config.filter().to_string())
                 .show_ui(ui, |ui| {
@@ -91,6 +91,6 @@ pub(crate) fn view(
             resize::Filter::Gaussian => lang::current().resize_filter_note.gaussian,
             resize::Filter::Nearest => lang::current().resize_filter_note.nearest,
         };
-        setting::info_note(ui, note, Some(setting::RESIZE_LABEL_WIDTH));
+        setting::info_note(ui, note, Some(ui::RESIZE_LABEL_WIDTH));
     });
 }

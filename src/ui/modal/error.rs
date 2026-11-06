@@ -1,5 +1,5 @@
-use crate::{state, lang};
-use crate::ui::{self, modal};
+use crate::{state, lang, ui};
+use crate::ui::modal;
 use crate::ui::assets::{icon, svg};
 
 /// エラーモーダルを表示
@@ -13,7 +13,7 @@ pub(crate) fn error(ctx: &egui::Context, error_token: &mut state::ErrorToken) {
 
     // モーダルを表示
     let modal = egui::Modal::new(egui::Id::new("modal_error")).show(ctx, |ui| {
-        ui.set_width(modal::MODAL_WINDOW_WIDTH);
+        ui.set_width(ui::MODAL_WIDTH);
 
         // 見出し部分
         ui.horizontal(|ui| {
@@ -23,7 +23,7 @@ pub(crate) fn error(ctx: &egui::Context, error_token: &mut state::ErrorToken) {
 
         ui.separator();
 
-        ui.add_space(modal::MODAL_WINDOW_SPACING);
+        ui.add_space(ui::MODAL_SPACING);
 
         // エラー内容を表示
         if let Some(error) = &error_token.value {
@@ -32,12 +32,12 @@ pub(crate) fn error(ctx: &egui::Context, error_token: &mut state::ErrorToken) {
 
                 // エラーコードを表示
                 let code = error.code();
-                ui.add_space(modal::MODAL_WINDOW_SPACING);
+                ui.add_space(ui::MODAL_SPACING);
                 ui.label(egui::RichText::new(format!("Code: {}", code)).weak());
             });
         }
 
-        ui.add_space(modal::MODAL_WINDOW_SPACING);
+        ui.add_space(ui::MODAL_SPACING);
     });
 
     // モーダルを閉じたらモーダルを非表示にする

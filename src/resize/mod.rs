@@ -9,25 +9,13 @@ pub(crate) use guard::ResizeGuard;
 
 use serde::{Deserialize, Serialize};
 use std::fmt;
-use crate::lang;
+use crate::{config, lang};
 
 /// 一時ファイルの拡張子
 pub(crate) const TEMP_EXTENSION: &str = "sunga.temp";
 
 /// JPEG の品質
 pub(crate) const JPEG_QUALITY: u8 = 95;
-
-/// サイズの範囲
-pub(crate) const SIZED_RANGE_MIN: u32 = 10;
-pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
-
-/// 倍率の範囲
-pub(crate) const SCALE_RANGE_MIN: u16 = 10;
-pub(crate) const SCALE_RANGE_MAX: u16 = 200;
-
-// 並行処理数のスライダーの最小値と最大値
-pub(crate) const CONCURRENT_NUM_MIN: u8 = 1;
-pub(crate) const CONCURRENT_NUM_MAX: u8 = 8;
 
 /// リサイズの種類（拡大・縮小・両方）
 /// * `Enlarge` - 拡大
@@ -105,17 +93,17 @@ impl Target {
     pub fn validate(&self) -> Option<String> {
         match self {
             Target::Size { width, height } => {
-                if !(SIZED_RANGE_MIN..=SIZED_RANGE_MAX).contains(width) {
-                    Some(format!("Width is out of range ({}..={})", SIZED_RANGE_MIN, SIZED_RANGE_MAX))
-                } else if !(SIZED_RANGE_MIN..=SIZED_RANGE_MAX).contains(height) {
-                    Some(format!("Height is out of range ({}..={})", SIZED_RANGE_MIN, SIZED_RANGE_MAX))
+                if !(config::SIZED_RANGE_MIN..=config::SIZED_RANGE_MAX).contains(width) {
+                    Some(format!("Width is out of range ({}..={})", config::SIZED_RANGE_MIN, config::SIZED_RANGE_MAX))
+                } else if !(config::SIZED_RANGE_MIN..=config::SIZED_RANGE_MAX).contains(height) {
+                    Some(format!("Height is out of range ({}..={})", config::SIZED_RANGE_MIN, config::SIZED_RANGE_MAX))
                 } else {
                     None
                 }
             }
             Target::Scale(scale) => {
-                if !(SCALE_RANGE_MIN..=SCALE_RANGE_MAX).contains(scale) {
-                    Some(format!("Scale is out of range ({}..={})", SCALE_RANGE_MIN, SCALE_RANGE_MAX))
+                if !(config::SCALE_RANGE_MIN..=config::SCALE_RANGE_MAX).contains(scale) {
+                    Some(format!("Scale is out of range ({}..={})", config::SCALE_RANGE_MIN, config::SCALE_RANGE_MAX))
                 } else {
                     None
                 }

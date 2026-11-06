@@ -1,5 +1,4 @@
-use crate::{state, lang};
-use crate::ui::{self, setting};
+use crate::{state, lang, ui};
 use crate::ui::assets::{self, icon, svg};
 
 /// 設定ウィンドウの上部パネルを描画
@@ -17,7 +16,7 @@ pub(crate) fn view(
     // タブの選択時の背景色を設定
     ui.style_mut().visuals.selection.bg_fill = assets::tab_selected_color(ui);
 
-    egui::Panel::top(setting::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
+    egui::Panel::top(ui::TAB_PANEL_NAME).frame(style).show(ui, |ui| {
         ui.horizontal(|ui| {
             ui::add_icon(ui, svg::SETTINGS, icon::SETTINGS_TOP_ICON_SIZE, color);
 

@@ -1,6 +1,6 @@
 use crate::{event, state, ui};
 use crate::ui::assets::icon;
-use crate::ui::main::{self, top, bottom, middle};
+use crate::ui::main::{top, bottom, middle};
 use crate::ui::{modal, setting};
 
 /// 描画
@@ -13,7 +13,7 @@ pub(crate) fn view(
 ) {
     // 行の高さを取得
     let row_height = ui.text_style_height(&egui::TextStyle::Body)
-        .max(icon::LIST_ICON_SIZE) + main::SEPARATOR_HEIGHT;
+        .max(icon::LIST_ICON_SIZE) + ui::SEPARATOR_HEIGHT;
 
     // トップメニューバーを描画
     top::view(

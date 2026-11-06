@@ -1,5 +1,5 @@
-use crate::{config, lang, resize};
-use crate::ui::{self, setting};
+use crate::{config, lang, ui};
+use crate::ui::setting;
 
 /// 並行処理数を表示
 /// * `ui` - UI
@@ -16,10 +16,10 @@ pub(crate) fn view(
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_concurrent.concurrent, setting::CONCURRENT_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_concurrent.concurrent, ui::CONCURRENT_LABEL_WIDTH);
             ui.scope(|ui| {
                 ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
-                ui.add(egui::Slider::new(config.concurrent_num_mut(), resize::CONCURRENT_NUM_MIN..=resize::CONCURRENT_NUM_MAX));
+                ui.add(egui::Slider::new(config.concurrent_num_mut(), config::CONCURRENT_NUM_MIN..=config::CONCURRENT_NUM_MAX));
             });
         });
 

@@ -15,7 +15,7 @@ pub(crate) fn view(
     let button_icon_color = assets::button_icon_color(ui);
 
     // トップメニューバーを作成
-    egui::Panel::top(main::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
+    egui::Panel::top(ui::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));

@@ -10,14 +10,73 @@ use serde::{Deserialize, Serialize};
 use crate::file;
 use crate::ui::assets::{color, font, svg};
 
+// メインビューの const
+
+/// トップメニューバーの名前
+const TOP_PANEL_NAME: &str = "top_menubar";
+/// 下部メニューバーの名前
+const BOTTOM_PANEL_NAME: &str = "bottom_menubar";
+/// セパレータの高さ
+const SEPARATOR_HEIGHT: f32 = 4.0;
+/// リストアイコンのインデント
+const LIST_ICON_INDENT: f32 = 2.0;
+/// リストの角の半径
+const LIST_CORNER_RADIUS: f32 = 4.0;
+/// リストの名前の最小比率
+const LIST_NAME_MIN_RATIO: f32 = 1.0 / 3.3;
+/// リストの右インデント
+const LIST_RIGHT_INDENT: f32 = 10.0;
+
+// 設定ウィンドウの const
+
+/// 設定ウィンドウのID
+const SETTING_WINDOW_ID: &str = "setting_window";
+/// タブパネルの名前
+const TAB_PANEL_NAME: &str = "tab_panel";
+/// 設定ウィンドウの幅
+const SETTING_WIDTH: f32 = 480.0;
+/// 設定ウィンドウの高さ
+const SETTING_HEIGHT: f32 = 258.0;
+/// 追加のスペース
+const ADD_SPACING: f32 = 4.0;
+/// ヘッダーアイコンのスペース
+const HEADER_ICON_SPACING: f32 = 4.0;
+/// 警告アイコンのスペース
+const WARNING_ICON_SPACING: f32 = 3.0;
+/// 設定インデントのスペース
+const SETTING_INDENT_SPACING: f32 = 10.0;
+/// リサイズインデントのスペース
+const RESIZE_INDENT_SPACING: f32 = 8.0;
+/// 一般パスラベルの幅
+const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
+/// 一般ラベルの幅
+const GENERAL_LABEL_WIDTH: f32 = 94.0;
+/// リサイズラベルの幅
+const RESIZE_LABEL_WIDTH: f32 = 46.0;
+/// 並行処理数ラベルの幅
+const CONCURRENT_LABEL_WIDTH: f32 = 80.0;
+
+// モーダルの const
+
+/// モーダルウィンドウの幅
+const MODAL_WIDTH: f32 = 300.0;
+/// モーダルウィンドウのスペース
+const MODAL_SPACING: f32 = 8.0;
+/// モーダルラベルの幅
+const MODAL_LABEL_WIDTH: f32 = 130.0;
+
 // パネルの内側のマージン
-pub(crate) const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
+
+/// トップメニューバーの内側のマージン
+const TOP_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 4,
 };
-pub(crate) const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
+/// 下部メニューバーの内側のマージン
+const BOTTOM_PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 10, right: 10, top: 4, bottom: 6,
 };
-pub(crate) const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
+/// パネルの内側のマージン
+const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
 

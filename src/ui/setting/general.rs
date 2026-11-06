@@ -1,5 +1,5 @@
-use crate::{config, lang};
-use crate::ui::{self, setting};
+use crate::{config, lang, ui};
+use crate::ui::setting;
 
 /// 設定の一般設定を表示する
 pub(crate) fn view(
@@ -22,7 +22,7 @@ pub(crate) fn view(
         });
     });
 
-    ui.add_space(setting::ADD_SPACING);
+    ui.add_space(ui::ADD_SPACING);
 
     // テーマ選択のヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_general.header_theme);
@@ -41,7 +41,7 @@ pub(crate) fn view(
         });
     });
 
-    ui.add_space(setting::ADD_SPACING);
+    ui.add_space(ui::ADD_SPACING);
 
     // 効果音のヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_general.header_sound);
@@ -52,14 +52,14 @@ pub(crate) fn view(
 
         // 効果音を再生選択
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_general.sound_effects, setting::GENERAL_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_general.sound_effects, ui::GENERAL_LABEL_WIDTH);
             ui.radio_value(config.play_sound_mut(), true, lang::current().setting_general.play_sound);
             ui.radio_value(config.play_sound_mut(), false, lang::current().setting_general.dont_play_sound);
         });
 
         // 効果音の音量の選択
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_general.sound_volume, setting::GENERAL_LABEL_WIDTH);
+            ui::add_label(ui, lang::current().setting_general.sound_volume, ui::GENERAL_LABEL_WIDTH);
             ui.scope(|ui| {
                 ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
                 ui.add(egui::Slider::new(config.sound_volume_mut(), config::SOUND_VOLUME_MIN..=config::SOUND_VOLUME_MAX));

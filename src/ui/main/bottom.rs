@@ -19,7 +19,7 @@ pub(crate) fn view(
     let button_icon_color = assets::button_icon_color(ui);
 
     // ボトムメニューバーを作成
-    egui::Panel::bottom(main::BOTTOM_PANEL_NAME).frame(style).show(ui, |ui| {
+    egui::Panel::bottom(ui::BOTTOM_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
                 let spacing = ui.spacing_mut().item_spacing.x;

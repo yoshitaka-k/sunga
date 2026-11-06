@@ -8,33 +8,8 @@ mod about;
 
 pub(crate) use view::view;
 
-use crate::{event, ui, lang};
+use crate::{lang, event, ui};
 use crate::ui::assets::{self, icon, svg};
-
-// ウィンドウのID
-const SETTING_WINDOW_ID: &str = "setting_window";
-
-// ウィンドウのサイズ
-const WINDOW_WIDTH: f32 = 480.0;
-const WINDOW_HEIGHT: f32 = 258.0;
-
-// トップパネルの名前
-const TOP_PANEL_NAME: &str = "tab_panel";
-
-// パネルのスペースの幅
-const ADD_SPACING: f32 = 4.0;
-
-// ヘッダーのスペースの幅
-const HEADER_ICON_SPACING: f32 = 4.0;
-const WARNING_ICON_SPACING: f32 = 3.0;
-const SETTING_INDENT_SPACING: f32 = 10.0;
-const RESIZE_INDENT_SPACING: f32 = 8.0;
-
-// ラベルの幅
-const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
-const GENERAL_LABEL_WIDTH: f32 = 94.0;
-const RESIZE_LABEL_WIDTH: f32 = 46.0;
-const CONCURRENT_LABEL_WIDTH: f32 = 80.0;
 
 /// 設定ウィンドウのヘッダーパネルを表示
 /// * `ui` - UI
@@ -55,7 +30,7 @@ pub(crate) fn header_panel(
     let icon_color = ui::icon_color(ui);
 
     ui.horizontal(|ui| {
-        ui.spacing_mut().item_spacing.x = HEADER_ICON_SPACING;
+        ui.spacing_mut().item_spacing.x = ui::HEADER_ICON_SPACING;
         ui.add(egui::Image::new(icon).max_height(icon::SETTINGS_ICON_SIZE).tint(icon_color));
         ui.spacing_mut().item_spacing.x = spacing;
         ui.label(label);
@@ -78,7 +53,7 @@ pub(crate) fn group_header_panel(
     label: &str,
 ) {
     ui.horizontal(|ui| {
-        ui.add_space(SETTING_INDENT_SPACING);
+        ui.add_space(ui::SETTING_INDENT_SPACING);
         ui.label(label);
     });
 }
@@ -101,7 +76,7 @@ pub(crate) fn warning_note(
             ui.add_space(space);
         }
 
-        ui.spacing_mut().item_spacing.x = WARNING_ICON_SPACING;
+        ui.spacing_mut().item_spacing.x = ui::WARNING_ICON_SPACING;
         ui::add_icon(ui, svg::WARNING, icon::WARNING_ICON_SIZE, assets::warning_color(ui));
         ui.spacing_mut().item_spacing.x = spacing;
         ui.add(egui::Label::new(

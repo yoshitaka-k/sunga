@@ -50,16 +50,7 @@ impl Render {
         cc.egui_ctx.set_visuals(theme);
 
         // 範囲外の値をクランプ
-        let scale = config.scale_mut();
-        *scale = (*scale).clamp(resize::SCALE_RANGE_MIN, resize::SCALE_RANGE_MAX);
-        let width = config.width_mut();
-        *width = (*width).clamp(resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
-        let height = config.height_mut();
-        *height = (*height).clamp(resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
-        let concurrent_num = config.concurrent_num_mut();
-        *concurrent_num = (*concurrent_num).clamp(resize::CONCURRENT_NUM_MIN, resize::CONCURRENT_NUM_MAX);
-        let sound_volume = config.sound_volume_mut();
-        *sound_volume = (*sound_volume).clamp(config::SOUND_VOLUME_MIN, config::SOUND_VOLUME_MAX);
+        config.clamp_values();
 
         // アプリケーションの状態を作成
         let state = state::State {

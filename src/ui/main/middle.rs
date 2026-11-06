@@ -84,12 +84,12 @@ pub(crate) fn view(
 
                 // 交互に背景色を表示
                 if index % 2 == 0 {
-                    ui.painter().rect_filled(row_rect, main::LIST_CORNER_RADIUS, assets::alternate_background_color(ui));
+                    ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, assets::alternate_background_color(ui));
                 }
 
                 // 選択されている場合は背景を表示
                 if *state.files.selected_index() == Some(index) {
-                    ui.painter().rect_filled(row_rect, main::LIST_CORNER_RADIUS, assets::selected_background_color(ui));
+                    ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, assets::selected_background_color(ui));
                 }
 
                 // ステータスに応じてノートを表示
@@ -117,8 +117,8 @@ pub(crate) fn view(
                         let spacing = ui.spacing().item_spacing.x;
 
                         // ステータスアイコンを表示
-                        ui.add_space(main::LIST_ICON_INDENT);
-                        ui.spacing_mut().item_spacing.x = main::LIST_ICON_INDENT;
+                        ui.add_space(ui::LIST_ICON_INDENT);
+                        ui.spacing_mut().item_spacing.x = ui::LIST_ICON_INDENT;
                         main::status_icon(ui, image.status(), status_color, status_color.resized, false)
                             .on_hover_text(image.status().to_string());
                         ui.spacing_mut().item_spacing.x = spacing;
@@ -132,7 +132,7 @@ pub(crate) fn view(
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             // ステータスノートを表示
                             if let Some(note) = note {
-                                ui.add_space(main::LIST_RIGHT_INDENT);
+                                ui.add_space(ui::LIST_RIGHT_INDENT);
                                 ui.label(note);
                                 ui.separator();
                             }
@@ -143,7 +143,7 @@ pub(crate) fn view(
                             }
                             // ファイル名と元の画像の寸法を表示
                             ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| {
-                                ui.set_min_width(ui.available_width() * main::LIST_NAME_MIN_RATIO);
+                                ui.set_min_width(ui.available_width() * ui::LIST_NAME_MIN_RATIO);
 
                                 let mut label = image.file_name().as_ref().to_string();
 
