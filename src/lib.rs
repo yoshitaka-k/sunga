@@ -37,3 +37,7 @@ pub(crate) fn duration_format(duration: u64) -> String {
         format!("{:.2} h", duration as f64 / 60.0 / 60.0 / 1000.0)
     }
 }
+
+#[cfg(test)]
+#[path = "../tests/unit/duration.rs"]
+mod tests;

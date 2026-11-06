@@ -1,4 +1,4 @@
-use sunga::duration_format;
+use super::duration_format;
 
 #[test]
 fn duration_format_ms() {
