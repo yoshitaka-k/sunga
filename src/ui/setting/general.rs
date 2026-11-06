@@ -62,7 +62,7 @@ pub(crate) fn view(
             ui::add_label(ui, lang::current().setting_general.sound_volume, setting::GENERAL_LABEL_WIDTH);
             ui.scope(|ui| {
                 ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
-                ui.add(egui::Slider::new(config.sound_volume_mut(), setting::SOUND_VOLUME_MIN..=setting::SOUND_VOLUME_MAX));
+                ui.add(egui::Slider::new(config.sound_volume_mut(), config::SOUND_VOLUME_MIN..=config::SOUND_VOLUME_MAX));
             });
         });
     });

@@ -1,4 +1,4 @@
-use crate::{config, lang};
+use crate::{config, lang, resize};
 use crate::ui::{self, setting};
 
 /// 並行処理数を表示
@@ -19,7 +19,7 @@ pub(crate) fn view(
             ui::add_label(ui, lang::current().setting_concurrent.concurrent, setting::CONCURRENT_LABEL_WIDTH);
             ui.scope(|ui| {
                 ui.spacing_mut().slider_width = setting::remaining_slider_width(ui);
-                ui.add(egui::Slider::new(config.concurrent_num_mut(), setting::CONCURRENT_NUM_MIN..=setting::CONCURRENT_NUM_MAX));
+                ui.add(egui::Slider::new(config.concurrent_num_mut(), resize::CONCURRENT_NUM_MIN..=resize::CONCURRENT_NUM_MAX));
             });
         });
 

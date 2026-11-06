@@ -8,6 +8,10 @@ const DEFAULT_SCALE: u16 = 100;
 const DEFAULT_CONCURRENT_NUM: u8 = 4;
 const DEFAULT_SOUND_VOLUME: u8 = 5;
 
+// 効果音の音量のスライダーの最小値と最大値
+pub(crate) const SOUND_VOLUME_MIN: u8 = 1;
+pub(crate) const SOUND_VOLUME_MAX: u8 = 10;
+
 /// アプリケーションの設定
 #[derive(Clone, Getters, MutGetters, Deserialize, Serialize)]
 #[serde(default)]

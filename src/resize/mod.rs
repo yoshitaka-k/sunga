@@ -25,6 +25,10 @@ pub(crate) const SIZED_RANGE_MAX: u32 = 5120;
 pub(crate) const SCALE_RANGE_MIN: u16 = 10;
 pub(crate) const SCALE_RANGE_MAX: u16 = 200;
 
+// 並行処理数のスライダーの最小値と最大値
+pub(crate) const CONCURRENT_NUM_MIN: u8 = 1;
+pub(crate) const CONCURRENT_NUM_MAX: u8 = 8;
+
 /// リサイズの種類（拡大・縮小・両方）
 /// * `Enlarge` - 拡大
 /// * `Shrink` - 縮小

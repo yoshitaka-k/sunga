@@ -56,6 +56,10 @@ impl Render {
         *width = (*width).clamp(resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
         let height = config.height_mut();
         *height = (*height).clamp(resize::SIZED_RANGE_MIN, resize::SIZED_RANGE_MAX);
+        let concurrent_num = config.concurrent_num_mut();
+        *concurrent_num = (*concurrent_num).clamp(resize::CONCURRENT_NUM_MIN, resize::CONCURRENT_NUM_MAX);
+        let sound_volume = config.sound_volume_mut();
+        *sound_volume = (*sound_volume).clamp(config::SOUND_VOLUME_MIN, config::SOUND_VOLUME_MAX);
 
         // アプリケーションの状態を作成
         let state = state::State {
