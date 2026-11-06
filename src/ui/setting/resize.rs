@@ -36,7 +36,7 @@ pub(crate) fn view(
 
                 ui.separator();
 
-                ui::add_label(ui, lang::current().setting_resize.height, ui::RESIZE_LABEL_WIDTH);
+                ui::add_label(ui, lang::current().setting_resize.height, ui::RESIZE_LABEL_MIN_WIDTH);
                 ui.add(
                     egui::DragValue::new(config.height_mut())
                         .range(config::SIZED_RANGE_MIN..=config::SIZED_RANGE_MAX)
@@ -66,6 +66,22 @@ pub(crate) fn view(
 
     ui.add_space(ui::ADD_SPACING);
 
+    // リサイズの仕方のヘッダーパネルを表示
+    setting::group_header_panel(ui, lang::current().setting_resize.header_resize_policy);
+
+    // リサイズの仕方のフレームを表示
+    egui::Frame::group(ui.style()).show(ui, |ui| {
+        ui.take_available_width();
+
+        ui.horizontal(|ui| {
+            ui.radio_value(config.resize_policy_mut(), resize::ResizePolicy::Both, lang::current().setting_resize.both);
+            ui.radio_value(config.resize_policy_mut(), resize::ResizePolicy::Enlarge, lang::current().setting_resize.enlarge);
+            ui.radio_value(config.resize_policy_mut(), resize::ResizePolicy::Shrink, lang::current().setting_resize.shrink);
+        });
+    });
+
+    ui.add_space(ui::ADD_SPACING);
+
     // フィルターのヘッダーパネルを表示
     setting::group_header_panel(ui, lang::current().setting_resize.header_filter);
 
@@ -74,7 +90,6 @@ pub(crate) fn view(
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            ui::add_label(ui, lang::current().setting_resize.filter, ui::RESIZE_LABEL_WIDTH);
             egui::ComboBox::from_id_salt(FILTER_ID_SALT)
                 .selected_text(config.filter().to_string())
                 .show_ui(ui, |ui| {
@@ -91,6 +106,6 @@ pub(crate) fn view(
             resize::Filter::Gaussian => lang::current().resize_filter_note.gaussian,
             resize::Filter::Nearest => lang::current().resize_filter_note.nearest,
         };
-        setting::info_note(ui, note, Some(ui::RESIZE_LABEL_WIDTH));
+        setting::info_note(ui, note, None);
     });
 }

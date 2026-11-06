@@ -17,15 +17,15 @@ pub(crate) const TEMP_EXTENSION: &str = "sunga.temp";
 /// JPEG の品質
 pub(crate) const JPEG_QUALITY: u8 = 95;
 
-/// リサイズの種類（拡大・縮小・両方）
+/// リサイズの仕方（両方・拡大・縮小）
+/// * `Both` - 両方
 /// * `Enlarge` - 拡大
 /// * `Shrink` - 縮小
-/// * `Both` - 両方
 #[derive(Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
-pub(crate) enum Direction {
+pub(crate) enum ResizePolicy {
+    Both,
     Enlarge,
     Shrink,
-    Both,
 }
 
 /// リサイズする時の対象の種類
@@ -113,13 +113,12 @@ impl Target {
 }
 
 /// リサイズオプション
-/// * `direction` - リサイズの方向（拡大・縮小・両方）
+/// * `resize_policy` - リサイズの仕方（両方・拡大・縮小）
 /// * `target` - リサイズの対象（サイズ指定・倍率指定）
 /// * `filter` - 画像のフィルター種類
 #[derive(Clone)]
 pub(crate) struct Options {
-    #[expect(dead_code, reason = "拡大・縮小の切り替えは実装予定")]
-    pub direction: Direction,
+    pub resize_policy: ResizePolicy,
     pub target: Target,
     pub filter: Filter,
 }

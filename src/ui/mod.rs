@@ -36,7 +36,7 @@ const TAB_PANEL_NAME: &str = "tab_panel";
 /// 設定ウィンドウの幅
 const SETTING_WIDTH: f32 = 480.0;
 /// 設定ウィンドウの高さ
-const SETTING_HEIGHT: f32 = 258.0;
+const SETTING_HEIGHT: f32 = 290.0;
 /// 追加のスペース
 const ADD_SPACING: f32 = 4.0;
 /// ヘッダーアイコンのスペース
@@ -52,7 +52,9 @@ const GENERAL_PATH_LABEL_WIDTH: f32 = 30.0;
 /// 一般ラベルの幅
 const GENERAL_LABEL_WIDTH: f32 = 94.0;
 /// リサイズラベルの幅
-const RESIZE_LABEL_WIDTH: f32 = 46.0;
+const RESIZE_LABEL_WIDTH: f32 = 40.0;
+/// リサイズラベルの最小幅
+const RESIZE_LABEL_MIN_WIDTH: f32 = 30.0;
 /// 並行処理数ラベルの幅
 const CONCURRENT_LABEL_WIDTH: f32 = 80.0;
 

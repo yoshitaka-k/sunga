@@ -67,10 +67,13 @@
       "width": "幅",
       "height": "高さ",
       "sized_warning_note": "指定した値に収まるようにリサイズします。",
+      "header_resize_policy": "リサイズの仕方",
+      "both": "両方",
+      "enlarge": "拡大",
+      "shrink": "縮小",
       "header_scale": "倍率",
       "scale": "倍率",
-      "header_filter": "フィルター",
-      "filter": "種類"
+      "header_filter": "フィルター"
     },
     "setting_output": {
       "header_output": "出力",

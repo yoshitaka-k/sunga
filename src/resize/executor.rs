@@ -67,8 +67,8 @@ impl Resize {
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
-        // 画像のサイズが同じかどうかを判定
-        if Self::is_same_size(&image, options) {
+        // リサイズをスキップするかどうかを判定
+        if Self::should_skip(&image, options) {
             // 出力ファイルが存在しない場合は作成、エラーが発生した場合はエラーを返す
             match output_path.try_exists() {
                 Ok(true) => (),
@@ -160,15 +160,26 @@ impl Resize {
         image.resize_exact(width, height, filter)
     }
 
-    /// 画像のサイズが同じかどうかを判定
+    /// リサイズをスキップするかどうかを判定
+    ///
+    /// 両方時：元の画像とリサイズ後のサイズが同じ
+    /// 拡大時：元の画像がリサイズ後のサイズ以上
+    /// 縮小時：元の画像がリサイズ後のサイズ以下
+    /// の場合は true を返す
+    ///
     /// * `image` - 画像
     /// * `options` - リサイズオプション
-    /// * `return` - 画像のサイズが同じかどうか
-    fn is_same_size(image: &DynamicImage, options: &resize::Options) -> bool {
+    /// * `return` - リサイズをスキップするかどうか
+    fn should_skip(image: &DynamicImage, options: &resize::Options) -> bool {
         // リサイズ後のサイズを計算
         let (width, height) = Self::calculate_resized_size(image, options);
 
-        image.width() == width && image.height() == height
+        // 指定されているリサイズの仕方によって、それぞれの判定を行う
+        match options.resize_policy {
+            resize::ResizePolicy::Both => image.width() == width && image.height() == height,
+            resize::ResizePolicy::Enlarge => image.width() >= width && image.height() >= height,
+            resize::ResizePolicy::Shrink => image.width() <= width && image.height() <= height,
+        }
     }
 
     /// リサイズ後のサイズを計算

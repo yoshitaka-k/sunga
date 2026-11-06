@@ -53,7 +53,7 @@ impl ResizeJob {
 
         // リサイズオプション
         let options = resize::Options {
-            direction: *config.direction(),
+            resize_policy: *config.resize_policy(),
             target: config.resize_target(),
             filter: *config.filter(),
         };

@@ -67,10 +67,13 @@
       "width": "Width",
       "height": "Height",
       "sized_warning_note": "Resize to fit the specified values.",
+      "header_resize_policy": "Resize Policy",
+      "both": "Both",
+      "enlarge": "Enlarge",
+      "shrink": "Shrink",
       "header_scale": "Scale",
       "scale": "Scale",
-      "header_filter": "Filter",
-      "filter": "Type"
+      "header_filter": "Filter"
     },
     "setting_output": {
       "header_output": "Output",
