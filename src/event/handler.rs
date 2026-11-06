@@ -32,7 +32,7 @@ pub(crate) fn handle(
         },
         // ファイルをクリア
         event::EventAction::Clear => {
-            button::cancel_and_clear_files(&mut state.files, &mut jobs.scan_job, &mut jobs.resize_job)
+            button::cancel_and_clear_files(&mut state.files, &jobs.scan_job, &mut jobs.resize_job)
         },
         // 設定ウィンドウを表示
         event::EventAction::SettingOpen(pos) => {
