@@ -21,6 +21,9 @@ pub(crate) struct ScanJob {
 
     /// ジョブ実行世代
     generation: Arc<AtomicU64>,
+
+    /// ジョブ実行中のカウント
+    running_count: Arc<AtomicU64>,
 }
 
 impl ScanJob {
@@ -34,6 +37,7 @@ impl ScanJob {
             result_tx,
             result_rx,
             generation: Arc::new(AtomicU64::new(GENERATION_INIT)),
+            running_count: Arc::new(AtomicU64::new(0)),
         }
     }
 
@@ -50,6 +54,10 @@ impl ScanJob {
             current: Arc::clone(&self.generation),
         };
 
+        // ジョブ実行中のカウントを増やす
+        self.running_count.fetch_add(1, Ordering::Relaxed);
+        let running_count = Arc::clone(&self.running_count);
+
         // スキャンを実行
         std::thread::spawn(move || {
             // ファイルを検索
@@ -57,6 +65,12 @@ impl ScanJob {
                 let base_dir = path.parent().unwrap_or(&path);
                 find_file(&token, &path, base_dir)
             }
+
+            // ジョブ実行中のカウントを減らす
+            running_count.fetch_sub(1, Ordering::Relaxed);
+
+            // 再描画を要求
+            token.ctx.request_repaint();
         });
     }
 
@@ -75,6 +89,12 @@ impl ScanJob {
     pub fn stop_running(&self) {
         // ジョブ実行世代を更新
         self.generation.fetch_add(GENERATION_STEP, Ordering::Relaxed);
+    }
+
+    /// ジョブ実行中かどうかを取得
+    /// * `return` - ジョブ実行中のカウント
+    pub fn is_running(&self) -> bool {
+        self.running_count.load(Ordering::Relaxed) > 0
     }
 }
 

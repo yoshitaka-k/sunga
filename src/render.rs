@@ -14,6 +14,9 @@ pub struct Render {
 
     /// 効果音プレイヤー
     sound: sounds::SoundPlayer,
+
+    /// スキャン中か待機中かリサイズ中かどうか
+    was_busy: bool,
 }
 
 impl Render {
@@ -77,6 +80,7 @@ impl Render {
             jobs,
             pending_actions: Vec::new(),
             sound: sounds::SoundPlayer::new(),
+            was_busy: false,
         }
     }
 }
@@ -114,6 +118,9 @@ impl eframe::App for Render {
         // ファイル情報を更新
         self.state.files.update_file_info();
 
+        // 効果音を再生
+        self.finished_play_sound();
+
         // ステータスカラーを作成
         let status_color = ui::StatusColor::new(ui.ctx());
 
@@ -126,9 +133,6 @@ impl eframe::App for Render {
 impl Render {
     /// 結果を処理
     fn jobs_result(&mut self) {
-        // 待機中かリサイズ中かどうかをチェック
-        let was_busy = self.state.files.has_standby() || self.state.files.has_resizing();
-
         // ファイルスキャン結果を受信
         self.jobs.scan_job.result(&self.state.config, &mut self.state.files);
 
@@ -138,11 +142,17 @@ impl Render {
         // リサイズ結果を受信
         self.jobs.resize_job.result(&mut self.state.files);
 
-        // 最適化後か最適化中が終わっているかどうかをチェック
-        let now_idle = !self.state.files.has_standby() && !self.state.files.has_resizing();
+        // 更新結果を取得
+        self.jobs.update_job.result(&mut self.state.updated_token);
+    }
 
-        // 効果音を再生
-        if *self.state.config.play_sound() && was_busy && now_idle {
+    /// 効果音を再生
+    fn finished_play_sound(&mut self) {
+        // スキャン中か待機中かリサイズ中？（忙しいかどうか）
+        let busy = self.is_busy();
+
+        // ファイルがあって、忙しい状態が終わったら効果音を再生
+        if !self.state.files.is_empty() && *self.state.config.play_sound() && self.was_busy && !busy {
             // 効果音の音量を設定
             self.sound.set_volume(*self.state.config.sound_volume());
 
@@ -153,8 +163,8 @@ impl Render {
             }
         }
 
-        // 更新結果を取得
-        self.jobs.update_job.result(&mut self.state.updated_token);
+        // 忙しいかどうかを更新
+        self.was_busy = busy;
     }
 
     /// 入力イベントを処理
@@ -197,5 +207,13 @@ impl Render {
             // 再描画を要求
             ui.ctx().request_repaint();
         }
+    }
+
+    /// スキャン中か待機中かリサイズ中かどうかをチェック
+    /// * `return` - スキャン中か待機中かリサイズ中かどうか
+    fn is_busy(&self) -> bool {
+        self.jobs.scan_job.is_running()
+            || self.state.files.has_standby()
+            || self.state.files.has_resizing()
     }
 }
