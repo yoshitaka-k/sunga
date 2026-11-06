@@ -97,7 +97,8 @@ impl ResizeJob {
                 // ジョブ中のパニックをキャッチ
                 let result = catch_unwind(AssertUnwindSafe(|| {
                     // ジョブを実行
-                    image.resize(
+                    Self::resize(
+                        &mut image,
                         &output_path,
                         &options,
                         running,
@@ -182,5 +183,52 @@ impl ResizeJob {
             error::SungaError::lock_poisoned()
         })?.remove(&id);
         Ok(())
+    }
+
+    /// 画像をリサイズ
+    /// * `image` - リサイズする画像
+    /// * `output_path` - 出力先
+    /// * `options` - リサイズオプション
+    /// * `running` - ジョブ実行フラグ
+    /// * `canceled` - キャンセルフラグ
+    /// * `return` - リサイズステータス
+    fn resize(
+        image: &mut file::Image,
+        output_path: &str,
+        options: &resize::Options,
+        running: Arc<AtomicBool>,
+        canceled: Arc<Mutex<HashSet<u64>>>,
+    ) -> error::Result<file::Status> {
+        // 待機中・リサイズ中状態以外は実行しない
+        if !image.is_standby_or_resizing() {
+            return Ok(image.status().clone());
+        }
+
+        // 処理開始時間を取得
+        let start_time = std::time::Instant::now();
+
+        // 出力先
+        let output_path = image.make_output_path(output_path);
+        image.set_output_path(Some(output_path.clone()));
+
+        // リサイズトークン
+        let token = resize::Token {
+            id: *image.id(),
+            running,
+            canceled,
+        };
+
+        // リサイズを実行してステータスを取得
+        let status = match resize::Resize::execute(image.path(), &output_path, options, &token)? {
+            resize::ExecuteResult::Success { width, height } => {
+                // リサイズ結果を設定
+                image.set_resized((width, height), start_time.elapsed().as_millis() as u64);
+                file::Status::Resized
+            }
+            resize::ExecuteResult::Canceled => file::Status::Canceled,
+            resize::ExecuteResult::Unchanged => file::Status::Unchanged,
+        };
+
+        Ok(status)
     }
 }

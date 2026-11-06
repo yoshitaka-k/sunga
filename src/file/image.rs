@@ -1,9 +1,7 @@
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
-use std::sync::atomic::{AtomicU64, Ordering, AtomicBool};
-use std::collections::HashSet;
+use std::sync::atomic::{AtomicU64, Ordering};
 use getset::{Getters, Setters};
-use crate::{error, file, resize};
+use crate::file;
 
 /// Image の一意 ID を発行する
 const COUNT_UP: u64 = 1;
@@ -26,6 +24,7 @@ pub(crate) struct Image {
     relative_path: PathBuf,
 
     /// 出力先
+    #[getset(set = "pub")]
     output_path: Option<PathBuf>,
 
     /// 画像の寸法
@@ -43,7 +42,6 @@ pub(crate) struct Image {
     status: file::Status,
 
     /// リサイズ時間（ミリ秒）
-    #[getset(set = "pub")]
     duration: u64,
 }
 
@@ -142,53 +140,13 @@ impl Image {
         }
     }
 
-    /// ファイルをリサイズ
-    /// * `output_path` - 出力先のパス
-    /// * `options` - リサイズオプション
-    /// * `running` - リサイズ実行中フラグ
-    /// * `canceled` - リサイズキャンセルフラグ
-    /// * `return` - リサイズステータス
-    pub fn resize(
-        &mut self,
-        output_path: &str,
-        options: &resize::Options,
-        running: Arc<AtomicBool>,
-        canceled: Arc<Mutex<HashSet<u64>>>,
-    ) -> error::Result<file::Status> {
-        // 待機中・リサイズ中状態以外は実行しない
-        if !self.is_standby_or_resizing() {
-            return Ok(self.status.clone());
-        }
-
-        // 処理開始時間を取得
-        let start_time = std::time::Instant::now();
-
-        // 出力先
-        let output_path = self.make_output_path(output_path);
-        self.output_path = Some(output_path.clone());
-
-        // リサイズトークン
-        let token = resize::Token {
-            id: self.id,
-            running,
-            canceled,
-        };
-
-        // リサイズを実行してステータスを取得
-        let status = match resize::Resize::execute(&self.path, &output_path, options, &token)? {
-            resize::ExecuteResult::Success { width, height } => {
-                // 処理時間を計算
-                self.duration = start_time.elapsed().as_millis() as u64;
-                // 新しい画像の寸法を設定
-                self.resized_dimensions = Some((width, height));
-
-                file::Status::Resized
-            }
-            resize::ExecuteResult::Canceled => file::Status::Canceled,
-            resize::ExecuteResult::Unchanged => file::Status::Unchanged,
-        };
-
-        Ok(status)
+    /// リサイズ結果を設定
+    /// * `width` - リサイズ後の幅
+    /// * `height` - リサイズ後の高さ
+    /// * `duration` - リサイズ時間（ミリ秒）
+    pub fn set_resized(&mut self, (width, height): (u32, u32), duration: u64) {
+        self.resized_dimensions = Some((width, height));
+        self.duration = duration;
     }
 }
 
