@@ -34,9 +34,6 @@ impl Resize {
             error::SungaError::resize_error("Unknown image format".to_string(), path.to_path_buf())
         })?;
 
-        // フォーマットの拡張子を取得
-        let extension = format.extensions_str()[0].to_string();
-
         // リーダーをデコーダーに変換
         let mut decoder = reader.into_decoder().map_err(|e| {
             error::SungaError::resize_error(e.to_string(), path.to_path_buf())
@@ -100,7 +97,7 @@ impl Resize {
         // 出力パスを作成
         Self::make_output_path(output_path)?;
         // 一時ファイルのパスを作成
-        let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
+        let temp_path = output_path.with_added_extension(TEMP_EXTENSION);
 
         // キャンセルされた場合は処理を中断
         if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
