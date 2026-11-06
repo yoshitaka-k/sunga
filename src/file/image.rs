@@ -174,14 +174,19 @@ impl Image {
             canceled,
         };
 
-        // リサイズを実行
-        let status = resize::Resize::execute(&self.path, &output_path, options, &token)?;
-        if matches!(status, file::Status::Resized) {
-            // 処理時間を計算
-            self.duration = start_time.elapsed().as_millis() as u64;
-            // 新しい画像の寸法を設定
-            self.resized_dimensions = open_dimensions(&output_path);
-        }
+        // リサイズを実行してステータスを取得
+        let status = match resize::Resize::execute(&self.path, &output_path, options, &token)? {
+            resize::ExecuteResult::Success { width, height } => {
+                // 処理時間を計算
+                self.duration = start_time.elapsed().as_millis() as u64;
+                // 新しい画像の寸法を設定
+                self.resized_dimensions = Some((width, height));
+
+                file::Status::Resized
+            }
+            resize::ExecuteResult::Canceled => file::Status::Canceled,
+            resize::ExecuteResult::Unchanged => file::Status::Unchanged,
+        };
 
         Ok(status)
     }

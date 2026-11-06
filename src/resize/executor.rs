@@ -2,7 +2,7 @@ use std::path::Path;
 use std::io::BufWriter;
 use image::{self, GenericImageView, ImageDecoder, DynamicImage, ImageEncoder};
 use image::codecs::{jpeg::JpegEncoder, png::PngEncoder};
-use crate::{error, file, resize};
+use crate::{error, resize};
 use crate::resize::{TEMP_EXTENSION, JPEG_QUALITY, ResizeGuard};
 
 /// リサイズ
@@ -14,15 +14,15 @@ impl Resize {
     /// * `output_path` - リサイズしたファイルの出力先のパス
     /// * `options` - リサイズオプション
     /// * `token` - リサイズトークン
-    /// * `return` - リサイズが成功したかどうか
+    /// * `return` - リサイズ結果
     pub fn execute(
         path: &Path,
         output_path: &Path,
         options: &resize::Options,
         token: &resize::Token,
-    ) -> error::Result<file::Status> {
+    ) -> error::Result<resize::ExecuteResult> {
         // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+        if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
         // 画像を読み込む
         let reader = image::ImageReader::open(path)
@@ -54,7 +54,7 @@ impl Resize {
         })?;
 
         // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+        if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
         // 画像をデコードからピクセルデータへ変換
         let mut image = DynamicImage::from_decoder(decoder).map_err(|e| {
@@ -65,7 +65,7 @@ impl Resize {
         image.apply_orientation(orientation);
 
         // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+        if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
         // 画像のサイズが同じかどうかを判定
         if Self::is_same_size(&image, options) {
@@ -85,17 +85,17 @@ impl Resize {
                 }
             }
 
-            return Ok(file::Status::Unchanged);
+            return Ok(resize::ExecuteResult::Unchanged);
         }
 
         // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+        if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
         // リサイズを実行
         let resized = Self::resize(&image, options);
 
         // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+        if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
         // 出力パスを作成
         Self::make_output_path(output_path)?;
@@ -103,7 +103,7 @@ impl Resize {
         let temp_path = output_path.with_extension(format!("{}.{}", extension, TEMP_EXTENSION));
 
         // キャンセルされた場合は処理を中断
-        if token.is_canceled()? { return Ok(file::Status::Canceled); }
+        if token.is_canceled()? { return Ok(resize::ExecuteResult::Canceled); }
 
         // 一時ファイルを削除するためのガードを作成
         let mut guard = ResizeGuard::new(temp_path.clone());
@@ -133,7 +133,7 @@ impl Resize {
         // 削除しない
         guard.keep();
 
-        Ok(file::Status::Resized)
+        Ok(resize::ExecuteResult::Success { width: resized.width(), height: resized.height() })
     }
 }
 

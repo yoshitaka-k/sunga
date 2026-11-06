@@ -131,3 +131,13 @@ pub(crate) struct Options {
     pub target: Target,
     pub filter: Filter,
 }
+
+/// リサイズ実行結果
+/// * `Success` - リサイズ成功（リサイズ後の画像のサイズ）
+/// * `Canceled` - リサイズキャンセル
+/// * `Unchanged` - リサイズ未実行
+pub(crate) enum ExecuteResult {
+    Success { width: u32, height: u32 },
+    Canceled,
+    Unchanged,
+}
