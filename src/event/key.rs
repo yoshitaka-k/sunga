@@ -2,7 +2,6 @@ use std::path::Path;
 use crate::{error, file, resize, state};
 
 /// 上矢印キーが押されたら選択された行を上に移動する
-/// * `id` - 選択された行のID
 /// * `files` - ファイル一覧
 /// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn up(
@@ -14,7 +13,6 @@ pub(crate) fn up(
 }
 
 /// 下矢印キーが押されたら選択された行を下に移動する
-/// * `id` - 選択された行のID
 /// * `files` - ファイル一覧
 /// * `scroll_token` - スクロールエリアを表示するためのトークン
 pub(crate) fn down(
@@ -52,6 +50,7 @@ pub(crate) fn backspace(
 
 /// スペースキーが押されたらファイルを選択表示する
 /// * `path` - ファイルのパス
+/// * `return` - 操作結果
 pub(crate) fn space(path: &Path) -> error::Result<()> {
     if !path.exists() {
         return Err(error::SungaError::file_not_found(path.to_path_buf()));
@@ -63,6 +62,7 @@ pub(crate) fn space(path: &Path) -> error::Result<()> {
 
 /// QuickLook でファイルを表示する
 /// * `path` - ファイルのパス
+/// * `return` - 操作結果
 #[cfg(target_os = "macos")]
 fn preview_file_command(path: &Path) -> error::Result<()> {
     std::process::Command::new("qlmanage").arg("-p").arg(path).spawn()?;
@@ -71,6 +71,7 @@ fn preview_file_command(path: &Path) -> error::Result<()> {
 
 /// Windows では QuickLook を使用しない
 /// * `path` - ファイルのパス
+/// * `return` - 操作結果（常に成功）
 #[cfg(target_os = "windows")]
 fn preview_file_command(_path: &Path) -> error::Result<()> {
     Ok(())
@@ -78,6 +79,7 @@ fn preview_file_command(_path: &Path) -> error::Result<()> {
 
 /// Linux では QuickLook を使用しない
 /// * `path` - ファイルのパス
+/// * `return` - 操作結果（常に成功）
 #[cfg(target_os = "linux")]
 fn preview_file_command(_path: &Path) -> error::Result<()> {
     Ok(())
