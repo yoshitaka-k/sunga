@@ -267,6 +267,7 @@ impl OpenFiles {
 
                 // 出力パスを作成
                 let output_path = image.make_output_path(config.output_path());
+                image.set_output_path(Some(output_path.clone()));
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
                 if self.is_standby_or_resizing(&path) {

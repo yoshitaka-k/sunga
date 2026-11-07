@@ -81,7 +81,6 @@ impl ResizeJob {
             let mut image = image.clone();
 
             // そのほかもクローン
-            let output_path = config.output_path().clone();
             let options = options.clone();
             let ctx = self.ctx.clone();
             let result_tx = self.result_tx.clone();
@@ -99,7 +98,6 @@ impl ResizeJob {
                     // ジョブを実行
                     Self::resize(
                         &mut image,
-                        &output_path,
                         &options,
                         running,
                         canceled,
@@ -187,14 +185,12 @@ impl ResizeJob {
 
     /// 画像をリサイズ
     /// * `image` - リサイズする画像
-    /// * `output_path` - 出力先
     /// * `options` - リサイズオプション
     /// * `running` - ジョブ実行フラグ
     /// * `canceled` - キャンセルフラグ
     /// * `return` - リサイズステータス
     fn resize(
         image: &mut file::Image,
-        output_path: &str,
         options: &resize::Options,
         running: Arc<AtomicBool>,
         canceled: Arc<Mutex<HashSet<u64>>>,
@@ -207,10 +203,6 @@ impl ResizeJob {
         // 処理開始時間を取得
         let start_time = std::time::Instant::now();
 
-        // 出力先
-        let output_path = image.make_output_path(output_path);
-        image.set_output_path(Some(output_path.clone()));
-
         // リサイズトークン
         let token = resize::Token {
             id: *image.id(),
@@ -218,8 +210,13 @@ impl ResizeJob {
             canceled,
         };
 
+        // 出力先を取得
+        let Some(output_path) = image.output_path() else {
+            return Ok(file::Status::Error("Output path is not set".to_string()));
+        };
+
         // リサイズを実行してステータスを取得
-        let status = match resize::Resize::execute(image.path(), &output_path, options, &token)? {
+        let status = match resize::Resize::execute(image.path(), output_path, options, &token)? {
             resize::ExecuteResult::Success { width, height } => {
                 // リサイズ結果を設定
                 image.set_resized((width, height), start_time.elapsed().as_millis() as u64);
