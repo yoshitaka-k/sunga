@@ -253,8 +253,7 @@ impl OpenFiles {
     /// ファイルスキャン結果を反映
     /// * `config` - 設定
     /// * `result` - ファイルスキャン結果
-    pub fn scan_result(
-        &mut self,
+    pub fn scan_result(&mut self,
         config: &config::Config,
         result: file::ScanResult
     ) {
@@ -336,7 +335,10 @@ impl OpenFiles {
     /// * `path` - ファイルのパス
     /// * `output_path` - 出力パス
     /// * `return` - 入力パスと出力パスが同じかどうか
-    fn is_input_and_output(&self, path: &Path, output_path: &Path) -> bool {
+    fn is_input_and_output(&self,
+        path: &Path,
+        output_path: &Path,
+    ) -> bool {
         self.images.iter().any(|f| {
             f.path() == path
                 && f.output_path().as_deref() == Some(output_path)
@@ -348,8 +350,7 @@ impl OpenFiles {
     /// * `path` - ファイルのパス
     /// * `base_dir` - ドロップされたパスの親（相対パスの基準）
     /// * `error` - エラー内容
-    fn error_file(
-        &mut self,
+    fn error_file(&mut self,
         path: &Path,
         base_dir: &Path,
         error: String
