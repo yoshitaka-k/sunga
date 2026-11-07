@@ -104,6 +104,7 @@ impl ResizeJob {
                     )
                 }));
 
+                // ジョブ結果からステータスを取得
                 let status = match result {
                     Ok(Ok(status)) => status,
                     Ok(Err(e)) => file::Status::Error(e.to_string()),
@@ -115,6 +116,7 @@ impl ResizeJob {
                     }
                 };
 
+                // ステータスを設定
                 image.set_status(status);
 
                 // ジョブ結果を送信
