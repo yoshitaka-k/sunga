@@ -166,7 +166,10 @@ impl OpenFiles {
             file::Status::Resizing
         } else if self.file_info.error_len > 0 {
             file::Status::Error(String::new())
-        } else if (self.file_info.resized_len + self.file_info.unchanged_len + self.file_info.skipped_len) > 0 {
+        } else if (self.file_info.resized_len
+                + self.file_info.unchanged_len
+                + self.file_info.skipped_len) > 0
+        {
             file::Status::Resized
         } else {
             file::Status::Standby
@@ -250,14 +253,20 @@ impl OpenFiles {
     /// ファイルスキャン結果を反映
     /// * `config` - 設定
     /// * `result` - ファイルスキャン結果
-    pub fn scan_result(&mut self, config: &config::Config, result: file::ScanResult) {
+    pub fn scan_result(
+        &mut self,
+        config: &config::Config,
+        result: file::ScanResult
+    ) {
         match result {
             file::ScanResult::Found { path, base_dir } => {
                 // base_dir からの相対パスを求める
                 let relative_path = path.strip_prefix(base_dir);
 
                 // フォルダ経由で追加されたファイルかどうか
-                let is_in_folder = relative_path.as_ref().is_ok_and(|p| p.components().count() > 1);
+                let is_in_folder = relative_path.as_ref().is_ok_and(|p| {
+                    p.components().count() > 1
+                });
 
                 // 所有権のある PathBuf にする
                 let relative_path = relative_path.unwrap_or(&path).to_path_buf();
