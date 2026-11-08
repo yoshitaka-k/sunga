@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use getset::{Getters, Setters};
 
 use crate::{config, file};
@@ -205,13 +205,13 @@ impl OpenFiles {
     /// * `exclude_id` - 除外するファイルの ID
     /// * `return` - 出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
     pub fn has_output_conflict(&self,
-        output_path: &Option<PathBuf>,
+        output_path: Option<&Path>,
         exclude_id: u64,
     ) -> bool {
         if let Some(output_path) = output_path {
             // 出力パスが一致するファイルでリサイズ中、リサイズ済み、変更なしの状態
             self.images.iter().any(|f| {
-                f.output_path().as_ref() == Some(output_path)
+                f.output_path().as_deref() == Some(output_path)
                         && *f.id() != exclude_id
                         && (
                             f.is_resizing()
@@ -271,6 +271,15 @@ impl OpenFiles {
             && image.is_standby_or_resizing()
         {
             image.set_status(file::Status::Canceled);
+        }
+    }
+
+    /// エラーのファイルのステータスを更新
+    /// * `id` - エラーのファイルの ID
+    /// * `error` - エラー内容
+    pub fn set_status_error(&mut self, id: u64, error: &str) {
+        if let Some(image) = self.images.iter_mut().find(|i| *i.id() == id) {
+            image.set_status(file::Status::Error(error.to_string()));
         }
     }
 
