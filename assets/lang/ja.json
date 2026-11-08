@@ -3,7 +3,7 @@
   "name": "日本語",
   "labels": {
     "main_top": {
-      "header_resize": "リサイズ",
+      "header_policy": "方式",
       "header_scale": "倍率",
       "header_sized": "サイズ",
       "header_filter": "フィルター",
@@ -28,6 +28,11 @@
       "completed": "完了",
       "canceled": "キャンセル",
       "error": "エラー"
+    },
+    "resize_policy": {
+      "both": "拡大・縮小",
+      "enlarge": "拡大",
+      "shrink": "縮小"
     },
     "resize_filter": {
       "lanczos3": "Lanczos3",

@@ -27,6 +27,17 @@ pub(crate) enum ResizePolicy {
     Enlarge,
     Shrink,
 }
+impl fmt::Display for ResizePolicy {
+    /// リサイズの仕方を文字列に変換
+    /// * `return` - リサイズの仕方を文字列に変換
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ResizePolicy::Both => write!(f, "{}", lang::current().resize_policy.both),
+            ResizePolicy::Enlarge => write!(f, "{}", lang::current().resize_policy.enlarge),
+            ResizePolicy::Shrink => write!(f, "{}", lang::current().resize_policy.shrink),
+        }
+    }
+}
 
 /// リサイズする時の対象の種類
 /// * `Size` - サイズ指定

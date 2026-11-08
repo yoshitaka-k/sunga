@@ -19,7 +19,9 @@ pub(crate) fn view(
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
                 ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
-                ui.label(format!("{}: ", lang::current().main_top.header_resize));
+                ui.label(format!("{}: {}", lang::current().main_top.header_policy, state.config.resize_policy()));
+
+                ui.label("|");
 
                 match state.config.target_kind() {
                     resize::TargetKind::Size => {

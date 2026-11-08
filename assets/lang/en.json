@@ -3,7 +3,7 @@
   "name": "English",
   "labels": {
     "main_top": {
-      "header_resize": "Resize",
+      "header_policy": "Resize Policy",
       "header_scale": "Scale",
       "header_sized": "Sized",
       "header_filter": "Filter",
@@ -28,6 +28,11 @@
       "completed": "Completed",
       "canceled": "Canceled",
       "error": "Error"
+    },
+    "resize_policy": {
+      "both": "Both",
+      "enlarge": "Enlarge",
+      "shrink": "Shrink"
     },
     "resize_filter": {
       "lanczos3": "Lanczos3",
