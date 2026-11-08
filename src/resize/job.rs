@@ -161,7 +161,7 @@ impl ResizeJob {
 
     /// ジョブをキャンセル
     pub fn stop_running(&self) {
-        self.running.store(false, Ordering::Release);
+        self.running.store(false, Ordering::Relaxed);
     }
 
     /// キャンセルに登録されているファイル ID を追加
