@@ -80,6 +80,19 @@ impl ResizeJob {
             image.set_status(file::Status::Resizing);
             let mut image = image.clone();
 
+            // 出力先パスが同じファイルが処理中、処理済みの状態である場合はエラーを返す
+            if files.has_output_conflict(image.output_path(), *image.id()) {
+                image.set_status(file::Status::Error("Output path conflicts".to_string()));
+
+                // ジョブ結果を送信
+                let _ = self.result_tx.send(image);
+
+                // 再描画を要求
+                self.ctx.request_repaint();
+
+                continue;
+            }
+
             // そのほかもクローン
             let options = options.clone();
             let ctx = self.ctx.clone();

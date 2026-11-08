@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use getset::{Getters, Setters};
 
 use crate::{config, file};
@@ -200,6 +200,30 @@ impl OpenFiles {
         self.images.iter().any(|f| f.is_error())
     }
 
+    /// 出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
+    /// * `output_path` - 出力パス
+    /// * `exclude_id` - 除外するファイルの ID
+    /// * `return` - 出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
+    pub fn has_output_conflict(&self,
+        output_path: &Option<PathBuf>,
+        exclude_id: u64,
+    ) -> bool {
+        if let Some(output_path) = output_path {
+            // 出力パスが一致するファイルでリサイズ中、リサイズ済み、変更なしの状態
+            self.images.iter().any(|f| {
+                f.output_path().as_ref() == Some(output_path)
+                        && *f.id() != exclude_id
+                        && (
+                            f.is_resizing()
+                            || f.is_resized()
+                            || f.is_unchanged()
+                        )
+            })
+        } else {
+            false
+        }
+    }
+
     /// 寸法を読み込んでないファイルを1件取得
     /// * `return` - 寸法を読み込んでないファイル1件
     pub fn get_pending_file(&mut self) -> Option<&mut file::Image> {
@@ -279,7 +303,7 @@ impl OpenFiles {
 
                 // 同じパスが待機中かリサイズ中の場合はエラーを返す
                 if self.is_standby_or_resizing(&path) {
-                    image.set_status(file::Status::Error("Already in progress".to_string()));
+                    image.set_status(file::Status::Error("Input already in progress".to_string()));
                     self.images.push(image);
                     return;
                 }
