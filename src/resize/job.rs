@@ -76,12 +76,15 @@ impl ResizeJob {
             // 待機中のファイルがない場合は、ジョブを終了
             let Some(image) = files.get_standby_file() else { break };
 
-            // ジョブステータスを設定して、クローン
+            // ジョブステータスを設定
             image.set_status(file::Status::Resizing);
+
+            // クローンして借用を解除しておく
+            // files の可変借用を終わらせて、下の衝突チェックで files を読めるようにするため
             let mut image = image.clone();
 
-            // 出力先パスが同じファイルが処理中、処理済みの状態である場合はエラーを返す
-            if files.has_output_conflict(image.output_path().as_deref(), *image.id()) {
+            // 入力が違くて、出力先パスが同じファイルが処理中、処理済みの状態である場合はエラーを返す
+            if files.has_output_conflict(image.path(), image.output_path().as_deref()) {
                 files.set_status_error(*image.id(), "Output path conflicts");
                 continue;
             }

@@ -200,24 +200,24 @@ impl OpenFiles {
         self.images.iter().any(|f| f.is_error())
     }
 
-    /// 出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
+    /// 入力が違くて、出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
+    /// * `path` - 入力パス
     /// * `output_path` - 出力パス
-    /// * `exclude_id` - 除外するファイルの ID
-    /// * `return` - 出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
+    /// * `return` - 入力が違くて、出力パスが一致するファイルが処理中、処理済みの状態であるかどうか
     pub fn has_output_conflict(&self,
+        path: &Path,
         output_path: Option<&Path>,
-        exclude_id: u64,
     ) -> bool {
         if let Some(output_path) = output_path {
             // 出力パスが一致するファイルでリサイズ中、リサイズ済み、変更なしの状態
             self.images.iter().any(|f| {
-                f.output_path().as_deref() == Some(output_path)
-                        && *f.id() != exclude_id
-                        && (
-                            f.is_resizing()
-                            || f.is_resized()
-                            || f.is_unchanged()
-                        )
+                f.path() != path
+                    && f.output_path().as_deref() == Some(output_path)
+                    && (
+                        f.is_resizing()
+                        || f.is_resized()
+                        || f.is_unchanged()
+                    )
             })
         } else {
             false
