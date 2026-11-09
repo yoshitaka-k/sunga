@@ -116,15 +116,10 @@ impl Config {
 
     /// 範囲外の値をクランプ
     pub(crate) fn clamp_values(&mut self) {
-        let width = self.width_mut();
-        *width = (*width).clamp(SIZED_RANGE_MIN, SIZED_RANGE_MAX);
-        let height = self.height_mut();
-        *height = (*height).clamp(SIZED_RANGE_MIN, SIZED_RANGE_MAX);
-        let scale = self.scale_mut();
-        *scale = (*scale).clamp(SCALE_RANGE_MIN, SCALE_RANGE_MAX);
-        let concurrent_num = self.concurrent_num_mut();
-        *concurrent_num = (*concurrent_num).clamp(CONCURRENT_NUM_MIN, CONCURRENT_NUM_MAX);
-        let sound_volume = self.sound_volume_mut();
-        *sound_volume = (*sound_volume).clamp(SOUND_VOLUME_MIN, SOUND_VOLUME_MAX);
+        self.width = self.width.clamp(SIZED_RANGE_MIN, SIZED_RANGE_MAX);
+        self.height = self.height.clamp(SIZED_RANGE_MIN, SIZED_RANGE_MAX);
+        self.scale = self.scale.clamp(SCALE_RANGE_MIN, SCALE_RANGE_MAX);
+        self.concurrent_num = self.concurrent_num.clamp(CONCURRENT_NUM_MIN, CONCURRENT_NUM_MAX);
+        self.sound_volume = self.sound_volume.clamp(SOUND_VOLUME_MIN, SOUND_VOLUME_MAX);
     }
 }
