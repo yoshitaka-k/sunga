@@ -267,7 +267,7 @@ impl Resize {
         icc: Option<Vec<u8>>,
         path: &Path,
     ) -> error::Result<()> {
-        // EXIF 情報を削除
+        // EXIF の Orientation をリセット
         if let Some(mut exif) = exif {
             let _ = image::metadata::Orientation::remove_from_exif_chunk(&mut exif);
             let _ = encoder.set_exif_metadata(exif);
