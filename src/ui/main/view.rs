@@ -3,17 +3,21 @@ use crate::ui::assets::icon;
 use crate::ui::main::{top, bottom, middle};
 use crate::ui::{modal, setting};
 
-/// 描画
+/// メイン画面を描画
 /// * `ui` - UI
+/// * `state` - アプリケーションの状態
+/// * `pending_actions` - 待機中のアクション
 pub(crate) fn view(
     ui: &mut egui::Ui,
     state: &mut state::State,
     pending_actions: &mut Vec<event::EventAction>,
-    status_color: &ui::StatusColor,
 ) {
     // 行の高さを取得
     let row_height = ui.text_style_height(&egui::TextStyle::Body)
         .max(icon::LIST_ICON_SIZE) + ui::SEPARATOR_HEIGHT;
+
+    // ステータスカラーを作成
+    let status_color = ui::StatusColor::new(ui.ctx());
 
     // トップメニューバーを描画
     top::view(
@@ -27,7 +31,7 @@ pub(crate) fn view(
         ui,
         state,
         pending_actions,
-        status_color,
+        &status_color,
     );
 
     // 中央パネルを描画
@@ -35,7 +39,7 @@ pub(crate) fn view(
         ui,
         state,
         pending_actions,
-        status_color,
+        &status_color,
         row_height,
     );
 

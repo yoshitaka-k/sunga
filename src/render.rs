@@ -116,11 +116,8 @@ impl eframe::App for Render {
         // 効果音を再生
         self.finished_play_sound();
 
-        // ステータスカラーを作成
-        let status_color = ui::StatusColor::new(ui.ctx());
-
         // 描画は一番最後
-        ui::draw(ui, &mut self.state, &mut self.pending_actions, &status_color);
+        ui::draw(ui, &mut self.state, &mut self.pending_actions);
     }
 }
 
