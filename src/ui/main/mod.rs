@@ -6,7 +6,7 @@ mod middle;
 pub(crate) use view::view;
 
 use crate::{file, ui};
-use crate::ui::assets::{icon, svg};
+use crate::ui::assets::{size, svg};
 
 /// アイコンウィジェットを作成
 /// * `icon` - アイコン
@@ -40,29 +40,29 @@ fn status_icon(
 ) -> egui::Response {
     match status {
         file::Status::Standby => {
-            ui.add(icon_widget(svg::CIRCLE, icon::STATUS_ICON_SIZE, status_color.standby))
+            ui.add(icon_widget(svg::CIRCLE, size::STATUS_ICON_SIZE, status_color.standby))
         },
         file::Status::Resizing => {
             if is_spinner {
-                ui.add(spinner_widget(icon::STATUS_ICON_SIZE, status_color.resizing))
+                ui.add(spinner_widget(size::STATUS_ICON_SIZE, status_color.resizing))
             } else {
-                ui.add(icon_widget(svg::AUTORENEW, icon::STATUS_ICON_SIZE, status_color.resizing))
+                ui.add(icon_widget(svg::AUTORENEW, size::STATUS_ICON_SIZE, status_color.resizing))
             }
         },
         file::Status::Resized => {
-            ui.add(icon_widget(svg::CHECK, icon::STATUS_ICON_SIZE, completed_color))
+            ui.add(icon_widget(svg::CHECK, size::STATUS_ICON_SIZE, completed_color))
         },
         file::Status::Unchanged => {
-            ui.add(icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.unchanged))
+            ui.add(icon_widget(svg::CHECK_INDETERMINATE_SMALL, size::STATUS_ICON_SIZE, status_color.unchanged))
         },
         file::Status::Skipped => {
-            ui.add(icon_widget(svg::CHECK_INDETERMINATE_SMALL, icon::STATUS_ICON_SIZE, status_color.skipped))
+            ui.add(icon_widget(svg::CHECK_INDETERMINATE_SMALL, size::STATUS_ICON_SIZE, status_color.skipped))
         },
         file::Status::Canceled => {
-            ui.add(icon_widget(svg::CANCEL, icon::STATUS_ICON_SIZE, status_color.canceled))
+            ui.add(icon_widget(svg::CANCEL, size::STATUS_ICON_SIZE, status_color.canceled))
         },
         file::Status::Error(_) => {
-            ui.add(icon_widget(svg::ERROR, icon::STATUS_ICON_SIZE, status_color.error))
+            ui.add(icon_widget(svg::ERROR, size::STATUS_ICON_SIZE, status_color.error))
         },
     }
 }
@@ -84,5 +84,5 @@ pub(crate) fn opentype_icon(
     let icon_color = ui::icon_color(ui);
     let hover_text = path.relative_path().display().to_string();
 
-    ui.add(icon_widget(icon, icon::LIST_ICON_SIZE, icon_color)).on_hover_text(hover_text)
+    ui.add(icon_widget(icon, size::LIST_ICON_SIZE, icon_color)).on_hover_text(hover_text)
 }

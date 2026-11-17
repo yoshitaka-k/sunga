@@ -1,6 +1,6 @@
 use crate::{event, state, ui, lang, resize};
-use crate::ui::main;
-use crate::ui::assets::{self, icon, svg};
+use crate::ui::{assets, main};
+use crate::ui::assets::{size, svg};
 
 /// トップメニューバーを描画
 /// * `ui` - UI
@@ -18,7 +18,7 @@ pub(crate) fn view(
     egui::Panel::top(ui::TOP_PANEL_NAME).frame(style).show(ui, |ui| {
         egui::Sides::new().shrink_left().truncate().show(ui,
             |ui| {
-                ui.add(main::icon_widget(svg::RESIZE, icon::TOP_ICON_SIZE, ui::icon_color(ui)));
+                ui.add(main::icon_widget(svg::RESIZE, size::TOP_ICON_SIZE, ui::icon_color(ui)));
                 ui.label(format!("{}: {}", lang::current().main_top.header_policy, state.config.resize_policy()));
 
                 ui.label("|");
@@ -40,7 +40,7 @@ pub(crate) fn view(
                 // 設定ボタン
                 let hover_text = lang::current().main_top.settings;
                 let settings_button_image = egui::Image::new(svg::SETTINGS).tint(button_icon_color);
-                if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(settings_button_image))
+                if ui.add_sized(size::ICON_BUTTON_SIZE, egui::Button::image(settings_button_image))
                     .on_hover_text(hover_text).clicked()
                 {
                     let pos = ui.ctx().input(|input| {
@@ -53,7 +53,7 @@ pub(crate) fn view(
                 #[cfg(target_os = "macos")]
                 {
                     let svg_image = egui::Image::new(svg::UPLOAD).tint(button_icon_color);
-                    if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
+                    if ui.add_sized(size::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
                         .on_hover_text(lang::current().main_top.file_or_folder_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FolderOpen);
@@ -62,7 +62,7 @@ pub(crate) fn view(
                 #[cfg(not(target_os = "macos"))]
                 {
                     let svg_image = egui::Image::new(svg::FOLDER_OPEN).tint(button_icon_color);
-                    if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
+                    if ui.add_sized(size::ICON_BUTTON_SIZE, egui::Button::image(svg_image))
                         .on_hover_text(lang::current().main_top.folder_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FolderOpen);
@@ -74,7 +74,7 @@ pub(crate) fn view(
                 #[cfg(not(target_os = "macos"))]
                 {
                     let file_open_button_image = egui::Image::new(svg::FILE_OPEN).tint(button_icon_color);
-                    if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(file_open_button_image))
+                    if ui.add_sized(size::ICON_BUTTON_SIZE, egui::Button::image(file_open_button_image))
                         .on_hover_text(lang::current().main_top.files_open).clicked()
                     {
                         pending_actions.push(event::EventAction::FilesOpen);

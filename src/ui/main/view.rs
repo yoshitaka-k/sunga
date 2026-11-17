@@ -1,5 +1,5 @@
 use crate::{event, state, ui};
-use crate::ui::assets::icon;
+use crate::ui::assets::size;
 use crate::ui::main::{top, bottom, middle};
 use crate::ui::{modal, setting};
 
@@ -14,7 +14,7 @@ pub(crate) fn view(
 ) {
     // 行の高さを取得
     let row_height = ui.text_style_height(&egui::TextStyle::Body)
-        .max(icon::LIST_ICON_SIZE) + ui::SEPARATOR_HEIGHT;
+        .max(size::LIST_ICON_SIZE) + ui::SEPARATOR_HEIGHT;
 
     // ステータスカラーを作成
     let status_color = ui::StatusColor::new(ui.ctx());

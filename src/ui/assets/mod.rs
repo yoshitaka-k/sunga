@@ -1,6 +1,6 @@
 pub(crate) mod color;
+pub(crate) mod size;
 pub(crate) mod font;
-pub(crate) mod icon;
 pub(crate) mod svg;
 
 use crate::file;

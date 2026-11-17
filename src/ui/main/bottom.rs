@@ -1,6 +1,6 @@
 use crate::{event, state, ui, duration_format, lang};
-use crate::ui::main;
-use crate::ui::assets::{self, icon, svg};
+use crate::ui::{assets, main};
+use crate::ui::assets::{size, svg};
 
 const LEN_SPACING_X: f32 = 4.0;
 
@@ -103,7 +103,7 @@ pub(crate) fn view(
             |ui| {
                 let hover_text = lang::current().main_bottom.clear;
                 let clear_button_image = egui::Image::new(svg::CLEAR_ALL).tint(button_icon_color);
-                if ui.add_sized(icon::ICON_BUTTON_SIZE, egui::Button::image(clear_button_image))
+                if ui.add_sized(size::ICON_BUTTON_SIZE, egui::Button::image(clear_button_image))
                     .on_hover_text(hover_text).clicked()
                 {
                     pending_actions.push(event::EventAction::Clear);

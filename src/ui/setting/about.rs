@@ -1,7 +1,7 @@
 use crate::{APP_NAME, GITHUB_URL};
-use crate::{event, lang};
-use crate::ui::{self, setting};
-use crate::ui::assets::{self, svg, icon};
+use crate::{event, lang, ui};
+use crate::ui::{assets, setting};
+use crate::ui::assets::{size, svg};
 
 /// バージョンを表示
 /// * `ui` - UI
@@ -19,7 +19,7 @@ pub(crate) fn view(
 
     egui::Frame::default().inner_margin(ui::TOP_PANEL_INNER_MARGIN).show(ui, |ui| {
         // アプリのアイコンを表示
-        ui.add(egui::Image::new(assets::APP_ICON).max_height(icon::APP_ICON_SIZE));
+        ui.add(egui::Image::new(assets::APP_ICON).max_height(size::APP_ICON_SIZE));
 
         // バージョンを表示
         ui.label(format!("{} v{}", APP_NAME, env!("CARGO_PKG_VERSION")));

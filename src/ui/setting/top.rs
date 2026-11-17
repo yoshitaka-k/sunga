@@ -1,5 +1,6 @@
 use crate::{state, lang, ui};
-use crate::ui::assets::{self, icon, svg};
+use crate::ui::assets;
+use crate::ui::assets::{size, svg};
 
 /// 設定ウィンドウの上部パネルを描画
 /// * `ui` - UI
@@ -18,7 +19,7 @@ pub(crate) fn view(
 
     egui::Panel::top(ui::TAB_PANEL_NAME).frame(style).show(ui, |ui| {
         ui.horizontal(|ui| {
-            ui::add_icon(ui, svg::SETTINGS, icon::SETTINGS_TOP_ICON_SIZE, color);
+            ui::add_icon(ui, svg::SETTINGS, size::SETTINGS_TOP_ICON_SIZE, color);
 
             ui.selectable_value(&mut setting_token.tab, state::SettingTab::General, lang::current().setting.general);
             ui.selectable_value(&mut setting_token.tab, state::SettingTab::Resize, lang::current().setting.resize);
