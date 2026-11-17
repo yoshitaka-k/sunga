@@ -59,13 +59,11 @@ pub struct Config {
 
     /// 出力パス
     output_path: String,
-
     /// 同じパスはスキップ
     skip_same_path: bool,
 
     /// サウンドを再生するかどうか
     play_sound: bool,
-
     /// サウンドの音量
     sound_volume: u8,
 
