@@ -113,12 +113,12 @@ impl StatusColor {
     }
 }
 
+/// フォントと SVG ローダーを追加
+/// * `ctx` - コンテキスト
 pub(crate) fn install(ctx: &egui::Context) {
-    // フォントと SVG ローダーを追加
     font::install(ctx);
     svg::install(ctx);
 }
-
 /// アイコンを追加
 /// * `ui` - UI
 /// * `icon` - アイコンのパス
