@@ -2,8 +2,6 @@ use crate::{event, state, ui, duration_format, lang};
 use crate::ui::{assets, main};
 use crate::ui::assets::{size, svg};
 
-const LEN_SPACING_X: f32 = 4.0;
-
 /// ボトムメニューバーを描画
 /// * `ui` - UI
 /// * `state` - アプリケーションの状態
@@ -27,17 +25,8 @@ pub(crate) fn view(
                 // ジョブの状態を取得
                 let status = state.files.job_status();
 
-                // 完了色
-                // 優先度: リサイズ済み > 変更なし > スキップ > 完了
-                let completed_color = if state.files.resized_len() > 0 {
-                    status_color.resized
-                } else if state.files.unchanged_len() > 0 {
-                    status_color.unchanged
-                } else if state.files.skipped_len() > 0 {
-                    status_color.skipped
-                } else {
-                    status_color.resized
-                };
+                // 完了色を取得
+                let completed_color = completed_color(state, status_color);
 
                 // ジョブ状態のアイコン
                 main::status_icon(ui, &status, status_color, completed_color, true).on_hover_ui(|ui| {
@@ -51,54 +40,64 @@ pub(crate) fn view(
                 ui.separator();
 
                 // 未処理
-                ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                ui::rich_label(ui, &state.files.standby_len().to_string(), status_color.standby);
-                ui.spacing_mut().item_spacing.x = spacing;
-                ui.label(format!("{},", lang::current().resize_status.standby));
+                status_value(ui, spacing,
+                    lang::current().resize_status.standby,
+                    state.files.standby_len(),
+                    status_color.standby
+                );
+                ui.label(",");
 
                 // 処理中
-                ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                ui::rich_label(ui, &state.files.resizing_len().to_string(), status_color.resizing);
-                ui.spacing_mut().item_spacing.x = spacing;
-                ui.label(format!("{},", lang::current().resize_status.resizing));
+                status_value(ui, spacing,
+                    lang::current().resize_status.resizing,
+                    state.files.resizing_len(),
+                    status_color.resizing
+                );
+                ui.label(",");
 
                 // 完了
                 ui.scope(|ui| {
-                    ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                    ui::rich_label(ui, &state.files.completed_len().to_string(), completed_color);
-                    ui.spacing_mut().item_spacing.x = spacing;
-                    ui.label(format!("{},", lang::current().resize_status.completed));
+                    status_value(ui, spacing,
+                        lang::current().resize_status.completed,
+                        state.files.completed_len(),
+                        completed_color
+                    );
+                    ui.label(",");
                 }).response.on_hover_ui(|ui| {
                     // リサイズ済み
                     ui.horizontal(|ui| {
-                        ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                        ui::rich_label(ui, &state.files.resized_len().to_string(), status_color.resized);
-                        ui.spacing_mut().item_spacing.x = spacing;
-                        ui.label(lang::current().resize_status.resized);
+                        status_value(ui, spacing,
+                            lang::current().resize_status.resized,
+                            state.files.resized_len(),
+                            status_color.resized
+                        );
                     });
 
                     // 変更なし
                     ui.horizontal(|ui| {
-                        ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                        ui::rich_label(ui, &state.files.unchanged_len().to_string(), status_color.unchanged);
-                        ui.spacing_mut().item_spacing.x = spacing;
-                        ui.label(lang::current().resize_status.unchanged);
+                        status_value(ui, spacing,
+                            lang::current().resize_status.unchanged,
+                            state.files.unchanged_len(),
+                            status_color.unchanged
+                        );
                     });
 
                     // スキップ
                     ui.horizontal(|ui| {
-                        ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                        ui::rich_label(ui, &state.files.skipped_len().to_string(), status_color.skipped);
-                        ui.spacing_mut().item_spacing.x = spacing;
-                        ui.label(lang::current().resize_status.skipped);
+                        status_value(ui, spacing,
+                            lang::current().resize_status.skipped,
+                            state.files.skipped_len(),
+                            status_color.skipped
+                        );
                     });
                 });
 
                 // エラー
-                ui.spacing_mut().item_spacing.x = LEN_SPACING_X;
-                ui::rich_label(ui, &state.files.error_len().to_string(), status_color.error);
-                ui.spacing_mut().item_spacing.x = spacing;
-                ui.label(lang::current().resize_status.error);
+                status_value(ui, spacing,
+                    lang::current().resize_status.error,
+                    state.files.error_len(),
+                    status_color.error
+                );
             },
             |ui| {
                 let hover_text = lang::current().main_bottom.clear;
@@ -113,4 +112,45 @@ pub(crate) fn view(
             }
         );
     });
+}
+
+/// 完了色を取得
+///
+/// 優先度: リサイズ済み > 変更なし > スキップ > 完了
+///
+/// * `state` - アプリケーションの状態
+/// * `status_color` - ステータスカラー
+/// * `return` - 完了色
+fn completed_color(
+    state: &state::State,
+    status_color: &ui::StatusColor
+) -> egui::Color32 {
+    if state.files.resized_len() > 0 {
+        status_color.resized
+    } else if state.files.unchanged_len() > 0 {
+        status_color.unchanged
+    } else if state.files.skipped_len() > 0 {
+        status_color.skipped
+    } else {
+        status_color.resized
+    }
+}
+
+/// ステータス値を描画
+/// * `ui` - UI
+/// * `spacing` - スペース
+/// * `label` - ラベル
+/// * `value` - 値
+/// * `status_color` - ステータスカラー
+fn status_value(
+    ui: &mut egui::Ui,
+    spacing: f32,
+    label: &str,
+    value: u32,
+    status_color: egui::Color32,
+) {
+    ui.spacing_mut().item_spacing.x = 0.0;
+    ui.label(format!("{}: ", label));
+    ui::rich_label(ui, &value.to_string(), status_color);
+    ui.spacing_mut().item_spacing.x = spacing;
 }
