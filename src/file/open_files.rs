@@ -166,10 +166,7 @@ impl OpenFiles {
             file::Status::Resizing
         } else if self.file_info.error_len > 0 {
             file::Status::Error(String::new())
-        } else if (self.file_info.resized_len
-                + self.file_info.unchanged_len
-                + self.file_info.skipped_len) > 0
-        {
+        } else if self.file_info.completed_len > 0 {
             file::Status::Resized
         } else {
             file::Status::Standby
