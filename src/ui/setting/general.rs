@@ -32,10 +32,10 @@ pub(crate) fn view(
         ui.take_available_width();
 
         ui.horizontal(|ui| {
-            if ui.radio_value(config.theme_mut(), ui::Theme::Dark, lang::current().setting_general.dark_theme).changed() {
+            if ui.radio_value(config.theme_mut(), ui::Theme::Dark, ui::Theme::Dark.to_string()).changed() {
                 ui.ctx().set_visuals(egui::Visuals::dark());
             }
-            if ui.radio_value(config.theme_mut(), ui::Theme::Light, lang::current().setting_general.light_theme).changed() {
+            if ui.radio_value(config.theme_mut(), ui::Theme::Light, ui::Theme::Light.to_string()).changed() {
                 ui.ctx().set_visuals(egui::Visuals::light());
             }
         });

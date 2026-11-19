@@ -7,7 +7,7 @@ mod modal;
 pub(crate) use main::view as draw;
 
 use serde::{Deserialize, Serialize};
-use crate::file;
+use crate::{lang, file};
 use crate::ui::assets::{color, font, svg};
 
 // メインビューの const
@@ -87,6 +87,14 @@ const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
 pub(crate) enum Theme {
     Dark,
     Light,
+}
+impl std::fmt::Display for Theme {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", match self {
+            Theme::Dark => lang::current().setting_general.dark_theme.to_string(),
+            Theme::Light => lang::current().setting_general.light_theme.to_string(),
+        })
+    }
 }
 
 /// ステータスアイコンの色
