@@ -82,6 +82,13 @@ const PANEL_INNER_MARGIN: egui::Margin = egui::Margin {
     left: 8, right: 8, top: 0, bottom: 0,
 };
 
+/// フォントと SVG ローダーを追加
+/// * `ctx` - コンテキスト
+pub(crate) fn install(ctx: &egui::Context) {
+    font::install(ctx);
+    svg::install(ctx);
+}
+
 /// テーマ
 #[derive(Clone, Copy, PartialEq, Deserialize, Serialize)]
 pub(crate) enum Theme {
@@ -121,12 +128,6 @@ impl StatusColor {
     }
 }
 
-/// フォントと SVG ローダーを追加
-/// * `ctx` - コンテキスト
-pub(crate) fn install(ctx: &egui::Context) {
-    font::install(ctx);
-    svg::install(ctx);
-}
 /// アイコンを追加
 /// * `ui` - UI
 /// * `icon` - アイコンのパス
