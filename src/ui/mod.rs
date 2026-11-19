@@ -174,13 +174,34 @@ pub(crate) fn icon_color(ui: &egui::Ui) -> egui::Color32 {
     ui.visuals().text_color()
 }
 
+/// リッチテキストを作成する
+/// * `text` - テキスト
+/// * `color` - テキストの色
+/// * `size` - テキストのサイズ
+/// * `return` - リッチテキスト
+pub(crate) fn rich_text(
+    text: &str,
+    color: egui::Color32,
+    size: Option<f32>
+) -> egui::RichText {
+    let mut rich_text = egui::RichText::new(text).color(color);
+    if let Some(size) = size {
+        rich_text = rich_text.size(size);
+    }
+    rich_text
+}
+
 /// テキストカラーを設定する
 /// * `ui` - UI
 /// * `text` - テキスト
 /// * `color` - カラー
 /// * `return` - ラベルのレスポンス
-pub(crate) fn rich_label(ui: &mut egui::Ui, text: &str, color: egui::Color32) -> egui::Response {
-    ui.label(egui::RichText::new(text).color(color))
+pub(crate) fn rich_label(
+    ui: &mut egui::Ui,
+    text: &str,
+    color: egui::Color32
+) -> egui::Response {
+    ui.label(rich_text(text, color, None))
 }
 
 /// パネルのスタイルを設定

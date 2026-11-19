@@ -21,8 +21,26 @@ fn icon_widget(icon: egui::ImageSource<'static>, size: f32, color: egui::Color32
 /// * `size` - スピナーのサイズ
 /// * `color` - スピナーの色
 /// * `return` - スピナーウィジェット
-pub(crate) fn spinner_widget(size: f32, color: egui::Color32) -> impl egui::Widget {
+fn spinner_widget(size: f32, color: egui::Color32) -> impl egui::Widget {
     egui::Spinner::new().size(size).color(color)
+}
+
+/// 交互に表示する背景色を取得
+/// * `ui` - UI
+/// * `return` - 交互に表示する背景色
+fn alternate_background_color(ui: &egui::Ui) -> egui::Color32 {
+    if ui.ctx().global_style().visuals.dark_mode {
+        egui::Color32::from_rgba_unmultiplied(255, 255, 255, 5)
+    } else {
+        egui::Color32::from_rgba_unmultiplied(0, 0, 0, 10)
+    }
+}
+
+/// 選択されている背景色を取得
+/// * `ui` - UI
+/// * `return` - 選択されている背景色
+pub(crate) fn selected_background_color(_ui: &egui::Ui) -> egui::Color32 {
+    egui::Color32::from_rgba_unmultiplied(140, 130, 240, 50)
 }
 
 /// ステータスアイコンを描画

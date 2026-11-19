@@ -69,7 +69,7 @@ pub(crate) fn view(
             if visibles.is_empty() {
                 ui.horizontal(|ui| {
                     ui.add(main::icon_widget(svg::UPLOAD_FILE, size::EMPTY_ICON_SIZE, assets::list_empty_color(ui)));
-                    ui.label(assets::text_color(lang::current().main_middle.upload_note, assets::list_empty_color(ui), None));
+                    ui.label(ui::rich_text(lang::current().main_middle.upload_note, assets::list_empty_color(ui), None));
                 });
             }
 
@@ -84,22 +84,22 @@ pub(crate) fn view(
 
                 // 交互に背景色を表示
                 if index % 2 == 0 {
-                    ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, assets::alternate_background_color(ui));
+                    ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, main::alternate_background_color(ui));
                 }
 
                 // 選択されている場合は背景を表示
                 if *state.files.selected_index() == Some(index) {
-                    ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, assets::selected_background_color(ui));
+                    ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, main::selected_background_color(ui));
                 }
 
                 // ステータスに応じてノートを表示
                 let note = match image.status() {
                     file::Status::Standby | file::Status::Resizing => None,
                     file::Status::Resized => Some(egui::RichText::new(duration_format(*image.duration()))),
-                    file::Status::Skipped => Some(assets::text_color(lang::current().resize_status.skipped, status_color.skipped, None)),
-                    file::Status::Unchanged => Some(assets::text_color(lang::current().resize_status.unchanged, status_color.unchanged, None)),
-                    file::Status::Canceled => Some(assets::text_color(lang::current().resize_status.canceled, status_color.canceled, None)),
-                    file::Status::Error(e) => Some(assets::text_color(e, status_color.error, None)),
+                    file::Status::Skipped => Some(ui::rich_text(lang::current().resize_status.skipped, status_color.skipped, None)),
+                    file::Status::Unchanged => Some(ui::rich_text(lang::current().resize_status.unchanged, status_color.unchanged, None)),
+                    file::Status::Canceled => Some(ui::rich_text(lang::current().resize_status.canceled, status_color.canceled, None)),
+                    file::Status::Error(e) => Some(ui::rich_text(e, status_color.error, None)),
                 };
 
                 // アイテムの表示
