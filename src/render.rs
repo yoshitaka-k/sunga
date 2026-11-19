@@ -1,5 +1,5 @@
 use crate::{config, lang, event, file, resize, update, state, sounds, ui};
-use crate::event::{input, handler};
+use crate::event::input;
 
 /// アプリケーション本体
 pub struct Render {
@@ -191,7 +191,7 @@ impl Render {
     /// * `pending_actions` - 待機中のアクション
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
-            if let Err(e) = handler::handle(ui.ctx(), &mut self.state, &mut self.jobs, action) {
+            if let Err(e) = event::handle(ui.ctx(), &mut self.state, &mut self.jobs, action) {
                 self.state.error_token.reset();
                 self.state.error_token.show(e);
             }
