@@ -73,6 +73,7 @@ pub(crate) fn view(
                 .unwrap_or(&[])
                 .to_vec();
 
+            // リストを表示
             for (offset, image) in visibles.iter().enumerate() {
                 let index = start + offset;
 
