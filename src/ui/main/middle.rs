@@ -34,6 +34,14 @@ pub(crate) fn view(
             ui, row_height, total_length,
             |ui, row_range|
         {
+            // ファイルがない場合はアップロードノートを表示
+            if state.files.is_empty() {
+                ui.horizontal(|ui| {
+                    ui.add(main::icon_widget(svg::UPLOAD_FILE, size::EMPTY_ICON_SIZE, assets::list_empty_color(ui)));
+                    ui.label(ui::rich_text(lang::current().main_middle.upload_note, assets::list_empty_color(ui), None));
+                });
+            }
+
             // 行の幅と行間を取得
             let width = ui.available_width();
             let row_spacing = ui.spacing().item_spacing.y;
@@ -64,14 +72,6 @@ pub(crate) fn view(
                 .get(row_range)
                 .unwrap_or(&[])
                 .to_vec();
-
-            // ファイルがない場合はアップロードノートを表示
-            if visibles.is_empty() {
-                ui.horizontal(|ui| {
-                    ui.add(main::icon_widget(svg::UPLOAD_FILE, size::EMPTY_ICON_SIZE, assets::list_empty_color(ui)));
-                    ui.label(ui::rich_text(lang::current().main_middle.upload_note, assets::list_empty_color(ui), None));
-                });
-            }
 
             for (offset, image) in visibles.iter().enumerate() {
                 let index = start + offset;
