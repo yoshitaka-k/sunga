@@ -83,7 +83,7 @@ pub(crate) fn view(
                 );
 
                 // 交互に背景色を表示
-                if index % 2 == 0 {
+                if index.is_multiple_of(2) {
                     ui.painter().rect_filled(row_rect, ui::LIST_CORNER_RADIUS, main::alternate_background_color(ui));
                 }
 
