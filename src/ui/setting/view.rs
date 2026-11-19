@@ -41,7 +41,7 @@ pub(crate) fn view(
                 state::SettingTab::Resize => setting::resize::view(ui, &mut state.config),
                 state::SettingTab::Output => setting::output::view(ui, &mut state.config),
                 state::SettingTab::Concurrent => setting::concurrent::view(ui, &mut state.config),
-                state::SettingTab::About => setting::about::view(ui, pending_actions, true),
+                state::SettingTab::About => setting::about::view(ui, pending_actions),
             }
         });
 

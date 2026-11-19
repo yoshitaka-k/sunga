@@ -10,10 +10,9 @@ use crate::ui::assets::{size, svg};
 pub(crate) fn view(
     ui: &mut egui::Ui,
     pending_actions: &mut Vec<event::EventAction>,
-    is_update_check: bool,
 ) {
     // アプリ情報のヘッダーパネルを表示
-    setting::header_panel(ui, svg::INFO, lang::current().setting_about.heading, pending_actions, is_update_check);
+    setting::about_header_panel(ui, svg::INFO, lang::current().setting_about.heading, pending_actions);
 
     ui.separator();
 

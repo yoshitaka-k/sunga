@@ -39,6 +39,11 @@ pub(crate) fn handle(
             button::setting_open(&mut state.setting_token, pos);
             Ok(())
         },
+        // 設定ウィンドウを閉じる
+        event::EventAction::SettingClose => {
+            state.setting_token.open = false;
+            Ok(())
+        }
         // ファイルをクリック
         event::EventAction::Click { index } => {
             click::click(index, &mut state.files);
@@ -47,6 +52,16 @@ pub(crate) fn handle(
         // ファイルをダブルクリック
         event::EventAction::DoubleClick(path) => {
             click::double_click(&path)
+        }
+        // 上矢印キーが押されたら選択された行を上に移動する
+        event::EventAction::Up => {
+            key::up(&mut state.files, &mut state.scroll_token);
+            Ok(())
+        }
+        // 下矢印キーが押されたら選択された行を下に移動する
+        event::EventAction::Down => {
+            key::down(&mut state.files, &mut state.scroll_token);
+            Ok(())
         }
         // エンターキーが押されたら選択された行を開く
         event::EventAction::Enter(path) => {
@@ -59,21 +74,6 @@ pub(crate) fn handle(
         // バックスペースキーが押されたら選択された行をキャンセル
         event::EventAction::Backspace => {
             key::backspace(&mut state.files, &mut jobs.resize_job)
-        }
-        // 上矢印キーが押されたら選択された行を上に移動する
-        event::EventAction::Up => {
-            key::up(&mut state.files, &mut state.scroll_token);
-            Ok(())
-        }
-        // 下矢印キーが押されたら選択された行を下に移動する
-        event::EventAction::Down => {
-            key::down(&mut state.files, &mut state.scroll_token);
-            Ok(())
-        }
-        // 設定ウィンドウを閉じる
-        event::EventAction::SettingClose => {
-            state.setting_token.open = false;
-            Ok(())
         }
         // アップデート確認ボタンが押されたらアップデート確認を行う
         event::EventAction::CheckForUpdate => {

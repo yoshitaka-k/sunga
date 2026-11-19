@@ -12,18 +12,16 @@ use crate::{lang, event, ui};
 use crate::ui::assets;
 use crate::ui::assets::{size, svg};
 
-/// 設定ウィンドウのヘッダーパネルを表示
+/// アプリ情報のヘッダーパネルを表示
 /// * `ui` - UI
 /// * `icon` - アイコン
 /// * `label` - ラベル
 /// * `pending_actions` - 処理予約
-/// * `is_update_check` - アップデート確認ボタンを表示するかどうか
-pub(crate) fn header_panel(
+pub(crate) fn about_header_panel(
     ui: &mut egui::Ui,
     icon: egui::ImageSource<'static>,
     label: &str,
     pending_actions: &mut Vec<event::EventAction>,
-    is_update_check: bool,
 ) {
     let spacing = ui.spacing().item_spacing.x;
 
@@ -37,13 +35,11 @@ pub(crate) fn header_panel(
         ui.label(label);
 
         // アップデート確認ボタン
-        if is_update_check {
-            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.button(lang::current().setting_about.update_check).clicked() {
-                    pending_actions.push(event::EventAction::CheckForUpdate);
-                }
-            });
-        }
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            if ui.button(lang::current().setting_about.update_check).clicked() {
+                pending_actions.push(event::EventAction::CheckForUpdate);
+            }
+        });
     });
 }
 
