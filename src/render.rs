@@ -123,6 +123,34 @@ impl eframe::App for Render {
 
 /// private methods
 impl Render {
+    /// 入力イベントを処理
+    /// * `ui` - UI
+    fn input_events(&mut self, ui: &mut egui::Ui) {
+        // ドロップされたファイルを処理
+        input::drop(ui, &mut self.pending_actions);
+
+        // Command + O キーが押されたらファイルを開く
+        input::command_open(ui, &mut self.pending_actions);
+
+        // Command + Comma キーが押されたら設定ウィンドウを開く
+        input::command_comma(ui, &mut self.pending_actions);
+
+        // 上矢印キーが押されたら選択された行を上に移動する
+        input::up(ui, &self.state.files, &mut self.pending_actions);
+
+        // 下矢印キーが押されたら選択された行を下に移動する
+        input::down(ui, &self.state.files, &mut self.pending_actions);
+
+        // エンターキーが押されたら選択された行を開く
+        input::enter(ui, &self.state.files, &mut self.pending_actions);
+
+        // スペースキーが押されたら選択された行を開く
+        input::space(ui, &self.state.files, &mut self.pending_actions);
+
+        // バックスペースキーが押されたら選択された行をキャンセル
+        input::backspace(ui, &mut self.pending_actions);
+    }
+
     /// 結果を処理
     fn jobs_result(&mut self) {
         // ファイルスキャン結果を受信
@@ -157,34 +185,6 @@ impl Render {
 
         // 忙しいかどうかを更新
         self.was_busy = busy;
-    }
-
-    /// 入力イベントを処理
-    /// * `ui` - UI
-    fn input_events(&mut self, ui: &mut egui::Ui) {
-        // ドロップされたファイルを処理
-        input::drop(ui, &mut self.pending_actions);
-
-        // Command + O キーが押されたらファイルを開く
-        input::command_open(ui, &mut self.pending_actions);
-
-        // Command + Comma キーが押されたら設定ウィンドウを開く
-        input::command_comma(ui, &mut self.pending_actions);
-
-        // 上矢印キーが押されたら選択された行を上に移動する
-        input::up(ui, &self.state.files, &mut self.pending_actions);
-
-        // 下矢印キーが押されたら選択された行を下に移動する
-        input::down(ui, &self.state.files, &mut self.pending_actions);
-
-        // エンターキーが押されたら選択された行を開く
-        input::enter(ui, &self.state.files, &mut self.pending_actions);
-
-        // スペースキーが押されたら選択された行を開く
-        input::space(ui, &self.state.files, &mut self.pending_actions);
-
-        // バックスペースキーが押されたら選択された行をキャンセル
-        input::backspace(ui, &mut self.pending_actions);
     }
 
     /// 待機中のアクションを処理
