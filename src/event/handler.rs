@@ -77,7 +77,7 @@ pub(crate) fn handle(
         }
         // アップデート確認ボタンが押されたらアップデート確認を行う
         event::EventAction::CheckForUpdate => {
-            jobs.update_job.run();
+            jobs.update_job.run(&mut state.update_token);
             Ok(())
         }
     }

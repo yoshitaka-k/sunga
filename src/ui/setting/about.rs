@@ -1,18 +1,25 @@
 use crate::{APP_NAME, GITHUB_URL};
-use crate::{event, lang, ui};
+use crate::{event, lang, ui, update};
 use crate::ui::{assets, setting};
 use crate::ui::assets::{size, svg};
 
 /// バージョンを表示
 /// * `ui` - UI
+/// * `update_token` - 更新モーダルを表示するためのトークン
 /// * `pending_actions` - 処理予約
-/// * `is_update_check` - アップデート確認ボタンを表示するかどうか
 pub(crate) fn view(
     ui: &mut egui::Ui,
+    update_token: &update::UpdateToken,
     pending_actions: &mut Vec<event::EventAction>,
 ) {
     // アプリ情報のヘッダーパネルを表示
-    setting::about_header_panel(ui, svg::INFO, lang::current().setting_about.heading, pending_actions);
+    setting::about_header_panel(
+        ui,
+        svg::INFO,
+        lang::current().setting_about.heading,
+        update_token,
+        pending_actions
+    );
 
     ui.separator();
 

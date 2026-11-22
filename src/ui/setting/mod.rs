@@ -8,7 +8,7 @@ mod about;
 
 pub(crate) use view::view;
 
-use crate::{lang, event, ui};
+use crate::{lang, event, ui, update};
 use crate::ui::assets;
 use crate::ui::assets::{size, svg};
 
@@ -21,6 +21,7 @@ pub(crate) fn about_header_panel(
     ui: &mut egui::Ui,
     icon: egui::ImageSource<'static>,
     label: &str,
+    update_token: &update::UpdateToken,
     pending_actions: &mut Vec<event::EventAction>,
 ) {
     let spacing = ui.spacing().item_spacing.x;
@@ -36,9 +37,11 @@ pub(crate) fn about_header_panel(
 
         // アップデート確認ボタン
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-            if ui.button(lang::current().setting_about.update_check).clicked() {
-                pending_actions.push(event::EventAction::CheckForUpdate);
-            }
+            ui.add_enabled_ui(!update_token.running, |ui| {
+                if ui.button(lang::current().setting_about.update_check).clicked() {
+                    pending_actions.push(event::EventAction::CheckForUpdate);
+                }
+            });
         });
     });
 }

@@ -1,13 +1,13 @@
 use crate::{lang, ui};
-use crate::update::{UpdateCheck, UpdatedToken};
+use crate::update::{UpdateCheck, UpdateToken};
 use crate::ui::modal;
 use crate::ui::assets::{size, svg};
 
 /// 更新モーダルを表示
 /// * `ctx` - コンテキスト
-/// * `updated_token` - 更新モーダルを表示するためのトークン
-pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
-    let Some(check) = updated_token.check.clone() else {
+/// * `update_token` - 更新モーダルを表示するためのトークン
+pub(crate) fn updated(ctx: &egui::Context, update_token: &mut UpdateToken) {
+    let Some(check) = update_token.check.clone() else {
         return;
     };
 
@@ -45,9 +45,9 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
             // アップデートがある場合
             UpdateCheck::Available { version, url } => {
                 egui::Frame::default().inner_margin(ui::PANEL_INNER_MARGIN).show(ui, |ui| {
-                    ui::add_label(ui, &format!("{}{}", lang::current().modal_updated.new_version, version), ui::MODAL_LABEL_WIDTH);
+                    ui::add_label(ui, &format!("{}: {}", lang::current().modal_updated.new_version, version), ui::MODAL_LABEL_WIDTH);
                     ui.add(egui::Label::new(
-                        egui::RichText::new(format!("{}{}", lang::current().modal_updated.current_version, env!("CARGO_PKG_VERSION"))).weak(),
+                        egui::RichText::new(format!("{}: {}", lang::current().modal_updated.current_version, env!("CARGO_PKG_VERSION"))).weak(),
                     ));
                     ui.add_space(ui::MODAL_SPACING);
                 });
@@ -63,7 +63,7 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
             // アップデートが最新の場合
             UpdateCheck::Latest => {
                 egui::Frame::default().inner_margin(ui::PANEL_INNER_MARGIN).show(ui, |ui| {
-                    ui.label(format!("{}{}", lang::current().modal_updated.current_version, env!("CARGO_PKG_VERSION")));
+                    ui.label(format!("{}: {}", lang::current().modal_updated.current_version, env!("CARGO_PKG_VERSION")));
                     ui.add_space(ui::MODAL_SPACING);
                 });
             }
@@ -79,7 +79,7 @@ pub(crate) fn updated(ctx: &egui::Context, updated_token: &mut UpdatedToken) {
 
     // モーダルを閉じたらモーダルを非表示にする
     if modal.should_close() {
-        updated_token.open = false;
-        updated_token.check = None;
+        update_token.open = false;
+        update_token.check = None;
     }
 }
