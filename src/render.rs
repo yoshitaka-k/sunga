@@ -7,7 +7,7 @@ pub struct Render {
     state: state::State,
 
     /// ジョブ
-    jobs: state::Jobs,
+    job: state::Job,
 
     /// 待機中のアクション
     pending_actions: Vec<event::EventAction>,
@@ -63,7 +63,7 @@ impl Render {
         };
 
         // ジョブを作成
-        let jobs = state::Jobs {
+        let job = state::Job {
             scan_job: file::ScanJob::new(cc.egui_ctx.clone()),
             dimensions_job: file::DimensionsJob::new(cc.egui_ctx.clone()),
             resize_job: resize::ResizeJob::new(cc.egui_ctx.clone()),
@@ -72,7 +72,7 @@ impl Render {
 
         Self {
             state,
-            jobs,
+            job,
             pending_actions: Vec::new(),
             sound: sounds::SoundPlayer::new(),
             was_busy: false,
@@ -93,7 +93,7 @@ impl eframe::App for Render {
     /// * `frame` - フレーム
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         // ジョブの結果を受信
-        self.jobs_result();
+        self.job_results();
 
         // 選択された行を解除はイベント・アクションの前
         self.state.scroll_token.selected = false;
@@ -105,10 +105,10 @@ impl eframe::App for Render {
         self.process_pending_actions(ui);
 
         // 寸法読み込みジョブを実行
-        self.jobs.dimensions_job.run(&mut self.state.files);
+        self.job.dimensions_job.run(&mut self.state.files);
 
         // リサイズジョブを実行
-        self.jobs.resize_job.run(&self.state.config, &mut self.state.files);
+        self.job.resize_job.run(&self.state.config, &mut self.state.files);
 
         // ファイル情報を更新
         self.state.files.update_file_info();
@@ -152,18 +152,18 @@ impl Render {
     }
 
     /// 結果を処理
-    fn jobs_result(&mut self) {
+    fn job_results(&mut self) {
         // ファイルスキャン結果を受信
-        self.jobs.scan_job.result(&self.state.config, &mut self.state.files);
+        self.job.scan_job.result(&self.state.config, &mut self.state.files);
 
         // 寸法読み込み結果を受信
-        self.jobs.dimensions_job.result(&mut self.state.files);
+        self.job.dimensions_job.result(&mut self.state.files);
 
         // リサイズ結果を受信
-        self.jobs.resize_job.result(&mut self.state.files);
+        self.job.resize_job.result(&mut self.state.files);
 
         // 更新結果を取得
-        self.jobs.update_job.result(&mut self.state.update_token);
+        self.job.update_job.result(&mut self.state.update_token);
     }
 
     /// 効果音を再生
@@ -191,7 +191,7 @@ impl Render {
     /// * `pending_actions` - 待機中のアクション
     fn process_pending_actions(&mut self, ui: &egui::Ui) {
         for action in self.pending_actions.drain(..) {
-            if let Err(e) = event::handle(ui.ctx(), &mut self.state, &mut self.jobs, action) {
+            if let Err(e) = event::handle(ui.ctx(), &mut self.state, &mut self.job, action) {
                 self.state.error_token.reset();
                 self.state.error_token.show(e);
             }
@@ -204,7 +204,7 @@ impl Render {
     /// スキャン中か待機中かリサイズ中かどうかをチェック
     /// * `return` - スキャン中か待機中かリサイズ中かどうか
     fn is_busy(&self) -> bool {
-        self.jobs.scan_job.is_running()
+        self.job.scan_job.is_running()
             || self.state.files.has_standby()
             || self.state.files.has_resizing()
     }

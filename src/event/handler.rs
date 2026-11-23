@@ -9,30 +9,30 @@ use crate::event::{button, click, key, open};
 pub(crate) fn handle(
     ctx: &egui::Context,
     state: &mut state::State,
-    jobs: &mut state::Jobs,
+    job: &mut state::Job,
     action: event::EventAction,
 ) -> error::Result<()> {
     match action {
         // ファイルダイアログを表示
         event::EventAction::FilesOpen => {
             let label = lang::current().file_dialog.image_files;
-            open::file(&jobs.scan_job, label);
+            open::file(&job.scan_job, label);
             Ok(())
         },
         // フォルダダイアログを表示
         event::EventAction::FolderOpen => {
             let label = lang::current().file_dialog.image_files;
-            open::folder(&jobs.scan_job, label);
+            open::folder(&job.scan_job, label);
             Ok(())
         },
         // ドロップされたファイルを処理
         event::EventAction::DropOpen(files) => {
-            open::drop(ctx, &jobs.scan_job, files);
+            open::drop(ctx, &job.scan_job, files);
             Ok(())
         },
         // ファイルをクリア
         event::EventAction::Clear => {
-            button::cancel_and_clear_files(&mut state.files, &jobs.scan_job, &mut jobs.resize_job)
+            button::cancel_and_clear_files(&mut state.files, &job.scan_job, &mut job.resize_job)
         },
         // 設定ウィンドウを表示
         event::EventAction::SettingOpen(pos) => {
@@ -73,11 +73,11 @@ pub(crate) fn handle(
         }
         // バックスペースキーが押されたら選択された行をキャンセル
         event::EventAction::Backspace => {
-            key::backspace(&mut state.files, &mut jobs.resize_job)
+            key::backspace(&mut state.files, &mut job.resize_job)
         }
         // アップデート確認ボタンが押されたらアップデート確認を行う
         event::EventAction::CheckForUpdate => {
-            jobs.update_job.run(&mut state.update_token);
+            job.update_job.run(&mut state.update_token);
             Ok(())
         }
     }
