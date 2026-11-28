@@ -27,7 +27,12 @@ pub(crate) fn handle(
         },
         // ドロップされたファイルを処理
         event::EventAction::DropOpen(files) => {
-            open::drop(ctx, &job.scan_job, files);
+            open::drop(&job.scan_job, files);
+            // ウィンドウを前面に持ってくる
+            ctx.send_viewport_cmd_to(
+                egui::ViewportId::ROOT,
+                egui::ViewportCommand::Focus,
+            );
             Ok(())
         },
         // ファイルをクリア

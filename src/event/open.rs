@@ -49,21 +49,13 @@ pub(crate) fn folder(
 }
 
 /// ドロップされたファイルを処理
-/// * `ctx` - コンテキスト
 /// * `scan_job` - ファイルスキャンジョブ
 /// * `files` - ドロップされたファイルのパス
 pub(crate) fn drop(
-    ctx: &egui::Context,
     scan_job: &file::ScanJob,
     files: Vec<PathBuf>,
 ) {
     open_paths(scan_job, files);
-
-    // ウィンドウを前面に持ってくる
-    ctx.send_viewport_cmd_to(
-        egui::ViewportId::ROOT,
-        egui::ViewportCommand::Focus,
-    );
 }
 
 /// ファイルを追加
